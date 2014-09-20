@@ -1,6 +1,6 @@
 
 #include "RingCoder.h"
-
+#define UNCONNECTED_PIN 14
 RingCoder::RingCoder(int bPin, int aPin, 
                      int redPin, int bluPin, int grnPin, 
                      int swhPin, 
@@ -18,6 +18,7 @@ RingCoder::RingCoder(int bPin, int aPin,
   setLedPins();
   setShiftRegisterPins(enPin, latchPin, clkPin, clrPin, datPin);
 
+  randomSeed(analogRead(UNCONNECTED_PIN));
   setShift(0x0000);
 }
 
@@ -106,11 +107,16 @@ void RingCoder::reverse_spin() {
   spin(true);
 }
 
+//Wheel of fortune like spinner.  
+//Will spin around 3 times and land on a random 
+//number of the 4th, moving progressively slower 
+//as it approaches the number.
+//The speed of the slowdown is controlled by the rotary encoder's initial state
+//This uses delays where it probably should use a combination "start" and "update"
+//methods so it can be called in the sketch's loop() and allow for other interactions.
 void RingCoder::spin_the_wheel() {
-  //Random number
   //fast spin around 1-2 time, slower 3rd, land on 4th
   int pos = readEncoder();
-  randomSeed(pos);
   int scaleDelay = pos * 50 / _range;
   int min = LED_COUNT * 4;
   int max = LED_COUNT * 5;
@@ -128,6 +134,19 @@ void RingCoder::spin_the_wheel() {
     if (i > lastLap) {
       delay((i - lastLap) * scaleDelay);
     }
+  }
+
+}
+
+//Blinks random LEDs as it approaches a final random value
+void RingCoder::random_the_wheel() {
+  int pos = readEncoder();
+  int scaleDelay = pos * 50 / _range;
+  unsigned int randNumber;
+  for(unsigned int i = 0; i < LED_COUNT; i++) {
+    randNumber = random(LED_COUNT);
+    setShift(1 << randNumber);
+    delay(scaleDelay * 2);
   }
 
 }

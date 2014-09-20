@@ -1,4 +1,6 @@
 /*
+ * https://www.sparkfun.com/products/11040
+ * in conjunction with https://www.pjrc.com/teensy/td_libs_Encoder.html
 */
 #ifndef RingCoder_h
 #define RingCoder_h
@@ -38,6 +40,7 @@ class RingCoder
     void spin();
     void reverse_spin();
     void spin_the_wheel();
+    void random_the_wheel();
     void setKnobRgb(int r, int b, int g);
 
     bool update();

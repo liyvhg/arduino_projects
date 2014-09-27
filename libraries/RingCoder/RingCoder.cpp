@@ -138,15 +138,19 @@ void RingCoder::spin_the_wheel() {
 
 }
 
-//Blinks random LEDs as it approaches a final random value
 void RingCoder::random_the_wheel() {
-  int pos = readEncoder();
-  int scaleDelay = pos * 50 / _range;
+  int pos = readEncoder() + 1; //prevent 0
+  random_the_wheel(pos);
+}
+
+//Blinks random LEDs as it approaches a final random value
+void RingCoder::random_the_wheel(int multiplier) {
+  int scaleDelay = multiplier * 50;
   unsigned int randNumber;
   for(unsigned int i = 0; i < LED_COUNT; i++) {
     randNumber = random(LED_COUNT);
     setShift(1 << randNumber);
-    delay(scaleDelay * 2);
+    delay(scaleDelay);
   }
 
 }

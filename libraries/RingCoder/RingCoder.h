@@ -41,6 +41,7 @@ class RingCoder
     void reverse_spin();
     void spin_the_wheel();
     void random_the_wheel();
+    void random_the_wheel(int multiplier);
     void setKnobRgb(int r, int b, int g);
 
     bool update();

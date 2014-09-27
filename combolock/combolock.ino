@@ -24,16 +24,13 @@ const int enPin = 10;  // Shift registers' Output Enable pin
 RingCoder ringcoder = RingCoder(bPin, aPin, redPin, bluPin, grnPin, swhPin, datPin, clrPin, clkPin, latchPin, enPin);
 int lastPos = 0;
 
-enum ledCounter {RED = 0, BLUE = 1, GREEN = 2, NONE = 3};
+enum ledCounter {RED = 0, BLUE = 1, GREEN = 2};
 byte ledCount = RED;
 byte ledValue[3] = {KNOB_LED_MAX, KNOB_LED_MAX, KNOB_LED_MAX};
 
 void setup() {
   Serial.begin(9600);
-  ringcoder.spin();
-  ringcoder.spin();
-  ringcoder.spin();
-  //randomize();
+  ringcoder.random_the_wheel(2);
 }
 
 void loop() {
@@ -42,37 +39,22 @@ void loop() {
   int pos = ringcoder.readEncoder();
 
   if (stateChanged && state == HIGH) {
-    ledCount = ++ledCount % (NONE + 1);
-
-    if (ledCount == NONE) {
-      ringcoder.writeEncoder(0);
+    if (ledCount == RED) {
       checkValues();
-    } else {
-      //set to the encoder value from the last time we adjusted that LED
-      ringcoder.writeEncoder(ledValue[ledCount]);
-      Serial.print("loading former value ");
-      Serial.print(ringcoder.readEncoder());
-      Serial.print(" From stored LED value ");
-      Serial.print(ledValue[ledCount]);
-      Serial.println("");
     }
-
-    Serial.println("ledCount: " + String(ledCount));
+    ledCount = ++ledCount % 3;
+    ringcoder.writeEncoder(0);
   }
 
   if (ringcoder.moved() || stateChanged) {
     Serial.println("Encoder position: " + String(pos));
 
-    if (ledCount != NONE) {  // Only update the LED if it's RED, GREEN or BLUE
-      ledValue[ledCount] = pos * (KNOB_LED_MAX / LED_COUNT);
-      Serial.println("Setting LED to " + String(ledValue[ledCount]));
-      ringcoder.setKnobRgb(ledValue[RED], ledValue[GREEN], ledValue[BLUE]);
-    }
+    ledValue[ledCount] = pos * KNOB_LED_MAX / (LED_COUNT - 1);
+    Serial.println("Setting LED to " + String(ledValue[ledCount]));
+    ringcoder.setKnobRgb(ledValue[RED], ledValue[GREEN], ledValue[BLUE]);
     lastPos = pos;
   }
-  if (ledCount != NONE) {
-    ringcoder.ledRingFollower();  // Update the bar graph LED
-  }
+  ringcoder.ledRingFollower();  // Update the bar graph LED
 }
 
 void checkValues() {
@@ -83,6 +65,9 @@ void checkValues() {
   if (r == ledValue[RED] &&
       g == ledValue[GREEN] &&
       b == ledValue[BLUE]) {
+    ringcoder.spin();
+    ringcoder.spin();
+    ringcoder.spin();
     Keyboard.print("Secret Word");
   } else {
     Serial.print("(");

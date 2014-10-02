@@ -68,6 +68,10 @@ uint8_t txBuffer[SHA204_CMD_SIZE_MIN] = {0};
 uint8_t rxBuffer[SHA204_CMD_SIZE_MIN] = {0};
 uint8_t randOut[RANDOM_RSP_SIZE] = {0};
 
+#define MAX_SERIAL_BYTES 255
+char inputBuffer[MAX_SERIAL_BYTES] = {0};
+int bytesRead = 0;
+
 void loop() {
   int stateChanged = button.update();
   int state = button.read();
@@ -89,16 +93,24 @@ void loop() {
       Serial.println("sha204dev.random() return: " + returnString(returnValue));
     }
 
+    int speed = 1000/MAX_LED;
+    for (int i = 0; i < MAX_LED; i++) {
+      setBRGW(0, 0, 0, i);
+      delay(speed);
+    }
+    for (int i = MAX_LED - 1; i > 0; i--){
+      setBRGW(0, 0, 0, i);
+      delay(speed);
+    }
+
   }
 
-  int speed = 1000/MAX_LED;
-  for (int i = 0; i < MAX_LED; i++) {
-    setBRGW(0, 0, 0, i);
-    delay(speed);
-  }
-  for (int i = MAX_LED - 1; i > 0; i--){
-    setBRGW(0, 0, 0, i);
-    delay(speed);
+  if (Serial.available()) {
+    bytesRead = Serial.readBytes(inputBuffer, MAX_SERIAL_BYTES);
+    if (bytesRead > 0) {
+      Serial.println("So, what you're saying is, " + String(inputBuffer));
+    }
+
   }
 
 }

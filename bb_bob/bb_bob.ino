@@ -65,6 +65,7 @@ void setBRGW(int b, int r, int g, int w) {
 
 byte returnValue;
 uint8_t txBuffer[SHA204_CMD_SIZE_MIN] = {0};
+uint8_t rxBuffer[SHA204_CMD_SIZE_MIN] = {0};
 uint8_t randOut[RANDOM_RSP_SIZE] = {0};
 
 void loop() {
@@ -73,6 +74,10 @@ void loop() {
 
   if (stateChanged && state == LOW) {//button down
     Serial.println("Button pushed");
+    returnValue = sha204dev.wakeup(txBuffer);
+    if (returnValue != SHA204_SUCCESS) {
+      return;
+    }
     returnValue = sha204dev.random(txBuffer, randOut, RANDOM_NO_SEED_UPDATE);
     if (returnValue == SHA204_SUCCESS) {
       for (int i = 0; i < RANDOM_RSP_SIZE; i++) {

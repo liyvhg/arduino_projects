@@ -1,5 +1,6 @@
 arduino_projects
 ================
+[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/bettse/arduino_projects?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 The arduino IDE has a preference for how projects are organized, so this repo serves to support that until I have a project worthy of git submodules.
 

@@ -9,23 +9,70 @@
 
 //Defines
 
+#define MOVEMENT_STEP 20
 #define MAX_LED 255
 #define SERIAL_NUMBER_SIZE 9
+#define COMPILED_AT __TIMESTAMP__
 
 //Consts
-const int sha204Pin = 18;
+const int sha204Pin = 10;
 
-const int btnPin = 19;
-const int whtPin = 20;
-const int grnPin = 21;
-const int redPin = 22;
-const int bluPin = 23;
+const int btnPin = 13;
 
-const int ledPin = 13;
+const int rightPin = 14;
+const int leftPin = 15;
+const int downPin = 16;
+const int upPin = 17;
+
+const int whtPin = 18;
+const int grnPin = 19;
+const int redPin = 20;
+const int bluPin = 21;
 
 //Objects
 Bounce button;
 SHA204SWI sha204dev(sha204Pin);
+
+
+volatile byte yPos;
+volatile byte xPos;
+
+//If using as mouse, up is negative
+void isrUp( void ) {
+  yPos = mod(yPos + MOVEMENT_STEP, MAX_LED);
+  Mouse.move(0, -MOVEMENT_STEP);
+}
+
+void isrDown( void ) {
+  yPos = mod(yPos - MOVEMENT_STEP, MAX_LED);
+  Mouse.move(0, MOVEMENT_STEP);
+}
+
+void isrRight( void ) {
+  xPos = mod(xPos + MOVEMENT_STEP, MAX_LED);
+  Mouse.move(MOVEMENT_STEP, 0);
+}
+
+void isrLeft( void ) {
+  xPos = mod(xPos - MOVEMENT_STEP, MAX_LED);
+  Mouse.move(-MOVEMENT_STEP, 0);
+}
+
+void setupIsr() {
+  // attachInterrupt(interrupt, function, mode)
+  pinMode(upPin, INPUT);
+  attachInterrupt(upPin, isrUp, CHANGE);
+  pinMode(downPin, INPUT);
+  attachInterrupt(downPin, isrDown, CHANGE);
+  pinMode(rightPin, INPUT);
+  attachInterrupt(rightPin, isrRight, CHANGE);
+  pinMode(leftPin, INPUT);
+  attachInterrupt(leftPin, isrLeft, CHANGE);
+}
+
+inline int mod(int i, int n) {
+  return (i % n + n) % n;
+}
 
 void setupBRGWpins() {
   pinMode(bluPin, OUTPUT);
@@ -34,26 +81,17 @@ void setupBRGWpins() {
   pinMode(whtPin, OUTPUT);
 }
 
-void setupTennsyLed() {
-  pinMode(ledPin, OUTPUT);
-}
-
 void setup() {
   Serial.begin(9600);
-  while(!Serial);
-
   setupBRGWpins();
-  setupTennsyLed();
 
   pinMode(btnPin, INPUT_PULLUP);
   button.attach(btnPin);
   button.interval(5);
 
-  tennsyBlink();
-
   wakeupExample();
-  serialNumberExample();
-
+  setupIsr();
+  Mouse.screenSize(2560, 1440);
 }
 
 void setBRGW(int b, int r, int g, int w) {
@@ -76,12 +114,29 @@ void loop() {
   int stateChanged = button.update();
   int state = button.read();
 
+  if (Serial.available()) {
+    bytesRead = Serial.readBytes(inputBuffer, MAX_SERIAL_BYTES);
+    if (bytesRead > 0) {
+      Serial.println("So, what you're saying is, " + String(inputBuffer));
+    }
+  }
+
   if (stateChanged && state == LOW) {//button down
-    Serial.println("Button pushed");
+    Serial.println("Button pushed: " + String(xPos) + "," + String(yPos));
     returnValue = sha204dev.wakeup(txBuffer);
     if (returnValue != SHA204_SUCCESS) {
       return;
     }
+    serialNumberExample();
+    Mouse.click();
+
+  }
+
+  setBRGW(xPos, yPos, xPos, yPos);
+
+}
+
+void getRandom() {
     returnValue = sha204dev.random(txBuffer, randOut, RANDOM_NO_SEED_UPDATE);
     if (returnValue == SHA204_SUCCESS) {
       for (int i = 0; i < RANDOM_RSP_SIZE; i++) {
@@ -92,34 +147,6 @@ void loop() {
     } else {
       Serial.println("sha204dev.random() return: " + returnString(returnValue));
     }
-
-    int speed = 1000/MAX_LED;
-    for (int i = 0; i < MAX_LED; i++) {
-      setBRGW(0, 0, 0, i);
-      delay(speed);
-    }
-    for (int i = MAX_LED - 1; i > 0; i--){
-      setBRGW(0, 0, 0, i);
-      delay(speed);
-    }
-
-  }
-
-  if (Serial.available()) {
-    bytesRead = Serial.readBytes(inputBuffer, MAX_SERIAL_BYTES);
-    if (bytesRead > 0) {
-      Serial.println("So, what you're saying is, " + String(inputBuffer));
-    }
-
-  }
-
-}
-
-void tennsyBlink() {
-  digitalWrite(ledPin, HIGH);   // set the LED on
-  delay(500);                  // wait for a second
-  digitalWrite(ledPin, LOW);    // set the LED off
-  delay(500);                  // wait for a second
 }
 
 byte wakeupExample() {

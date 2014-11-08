@@ -9,9 +9,9 @@
 #define UTC_OFFSET -8
 
 //Max of unit
-#define HOURS 12
-#define MINUTES 60
-#define SECONDS 60
+#define HOURS 12.0
+#define MINUTES 60.0
+#define SECONDS 60.0
 
 #define TIME_HEADER  "T"   // Header tag for serial time sync message
 #define TIME_REQUEST  7    // ASCII bell character requests a time sync message
@@ -55,11 +55,17 @@ void loop() {
     int minuteLed = minute() / (MINUTES / LED_COUNT);
     int secondLed = second() / (SECONDS / LED_COUNT);
 
-    //Serial.println("hour: " + String(hourFormat12()) + " -> " + String(hourLed));
 
-    strip.setPixelColor(hourLed, red | strip.getPixelColor(hourLed));
-    strip.setPixelColor(minuteLed, green | strip.getPixelColor(minuteLed));
-    strip.setPixelColor(secondLed, blue | strip.getPixelColor(secondLed));
+    strip.setPixelColor((int)hourLed, red | strip.getPixelColor(hourLed));
+    strip.setPixelColor((int)minuteLed, green | strip.getPixelColor(minuteLed));
+    strip.setPixelColor((int)secondLed, blue | strip.getPixelColor(secondLed));
+
+    if (second() > 55) {
+      Serial.println("hour: " + String(hourFormat12()) + " -> " + String(hourLed));
+      Serial.println("minute: " + String(minute()) + " -> " + String(minuteLed));
+      Serial.println("second: " + String(second()) + " -> " + String(secondLed));
+    }
+
     strip.show();
   } else {
     digitalWrite(LED_PIN, HIGH); // LED on if needs sync

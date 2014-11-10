@@ -6,7 +6,7 @@
 #define LED_PIN 13
 #define LED_COUNT 24
 #define MAX_BRIGHTNESS 255
-#define UTC_OFFSET -8
+#define UTC_OFFSET 0 //0 when using processing sketch
 
 //Max of unit
 #define HOURS 12.0
@@ -29,14 +29,15 @@ inline int positive_modulo(int i, int n) {
 
 void setup() {
   pinMode(LED_PIN, OUTPUT);
-
   strip.begin();
   strip.setBrightness(MAX_BRIGHTNESS/10);
   strip.show(); // Initialize all pixels to 'off'
 
   Serial.begin(9600);
-  setSyncProvider(requestSync);  //set function to call when sync required
+  while (!Serial) ; // Needed for Leonardo only
+  setSyncProvider( requestSync);  //set function to call when sync required
   Serial.println("Waiting for sync message");
+
 }
 
 void loop() {
@@ -45,26 +46,29 @@ void loop() {
     processSyncMessage();
   }
 
+  for (int i = 0; i < LED_COUNT; i++) {
+    strip.setPixelColor(i, off);
+  }
+
   if (timeStatus() == timeSet) {
     digitalWrite(LED_PIN, LOW);  // LED off if synced
-    for (int i = 0; i < LED_COUNT; i++) {
-      strip.setPixelColor(i, off);
-    }
-
     int hourLed = positive_modulo(hourFormat12() + UTC_OFFSET, HOURS) * (LED_COUNT / HOURS);
     int minuteLed = minute() / (MINUTES / LED_COUNT);
     int secondLed = second() / (SECONDS / LED_COUNT);
+    int secondRemain = second() % (int)(SECONDS / LED_COUNT) + 1;
+    uint32_t partialBlue = strip.Color(0, 0, MAX_BRIGHTNESS / secondRemain);
 
+    strip.setPixelColor(hourLed, red | strip.getPixelColor(hourLed));
+    strip.setPixelColor(minuteLed, green | strip.getPixelColor(minuteLed));
+    strip.setPixelColor(secondLed, partialBlue | strip.getPixelColor(secondLed));
 
-    strip.setPixelColor((int)hourLed, red | strip.getPixelColor(hourLed));
-    strip.setPixelColor((int)minuteLed, green | strip.getPixelColor(minuteLed));
-    strip.setPixelColor((int)secondLed, blue | strip.getPixelColor(secondLed));
-
+    /*
     if (second() > 55) {
       Serial.println("hour: " + String(hourFormat12()) + " -> " + String(hourLed));
       Serial.println("minute: " + String(minute()) + " -> " + String(minuteLed));
       Serial.println("second: " + String(second()) + " -> " + String(secondLed));
     }
+    */
 
     strip.show();
   } else {
@@ -86,6 +90,6 @@ void processSyncMessage() {
 }
 
 time_t requestSync() {
-  //Serial.write(TIME_REQUEST);
+  Serial.write(TIME_REQUEST);
   return 0; // the time will be sent later in response to serial mesg
 }

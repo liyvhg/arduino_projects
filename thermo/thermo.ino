@@ -5,33 +5,30 @@
   would approximate the look of a thermometer with red mercury.
 */
 
-#include <Adafruit_NeoPixel.h>
-
-#define NEO_PIN 1
-#define LED_COUNT 24
-#define MAX_BRIGHTNESS 255
+#include <Charlieplex.h>
 
 #define ANALOG_MAX 1023
-
 #define SENSOR_PIN A1
 //3.3v reference if using teensy 3.x
 #define V_REF 2.56
 //0.5V at 0 degrees C, 0.75V at 25 C, and 10mV per degree C.
 #define VOLT_AT_0C 0.5
 
-long previousMillis = 0;
-long interval = 1000;
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(LED_COUNT, NEO_PIN, NEO_GRB + NEO_KHZ800);
-uint32_t white = strip.Color(MAX_BRIGHTNESS, MAX_BRIGHTNESS, MAX_BRIGHTNESS);
-uint32_t off = strip.Color(0, 0, 0);
+#define NUMBER_OF_PINS 4
+//define pins in the order you want to adress them
+byte pins[] = {1, 2, 3, 4};
+
+//initialize object
+Charlieplex charlieplex = Charlieplex(pins, NUMBER_OF_PINS);
+
+//individual 'pins' , adress charlieplex pins as you would adress an array
+charliePin led2 = { 0 , 1 };
+charliePin led3 = { 0 , 2 };
+charliePin led1 = { 1 , 2 }; //led1 is indicated by current flow from 12 to 13
 
 void setup(void) {
   pinMode(SENSOR_PIN, INPUT);
-  strip.begin();
-  strip.setBrightness(MAX_BRIGHTNESS/10);
-  strip.show(); // Initialize all pixels to 'off'
 }
-
 
 void loop(void) {
   int sensorValue = analogRead(SENSOR_PIN);
@@ -40,26 +37,14 @@ void loop(void) {
   float temperatureC = (voltage - VOLT_AT_0C) * 100 ;
   float temperatureF = c2f(temperatureC);
 
-  unsigned long currentMillis = millis();
-
-  if(currentMillis - previousMillis > interval) {
-    previousMillis = currentMillis;
-
-    for (int i = 0; i < LED_COUNT; i++) {
-      strip.setPixelColor(i, off);
-    }
-
-    for (int i = 0; i < temperatureF / 10; i++) {
-      strip.setPixelColor(i, white);
-    }
-
-  }
-  strip.show();
-
+  charlieplex.charlieWrite(led1,HIGH);
+  charlieplex.charlieWrite(led2,HIGH);
+  charlieplex.charlieWrite(led3,HIGH);
 
 }
 
 float c2f(float c) {
   return (c * 9.0 / 5.0) + 32.0;
 }
+
 

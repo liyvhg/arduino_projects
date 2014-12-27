@@ -1,4 +1,16 @@
 
+
+
+
+
+
+
+
+
+
+
+
+
 #include "blend.h"
 
 #ifdef SERVICES_PIPE_TYPE_MAPPING_CONTENT
@@ -245,6 +257,17 @@ static void process_events()
                 /*Get the device version of the nRF8001 and store it in the Hardware Revision String*/
                 lib_aci_device_version();
                 break;
+
+            case ACI_EVT_PIPE_STATUS:
+                Serial.println(F("Evt Pipe Status"));
+                if (lib_aci_is_pipe_available(&aci_state, PIPE_SKYLANDERS_PORTAL_PORTAL_TX_TX) && (false == timing_change_done))
+                {
+                    lib_aci_change_timing_GAP_PPCP(); // change the timing on the link as specified in the nRFgo studio -> nRF8001 conf. -> GAP.
+                                                      // Used to increase or decrease bandwidth
+                    timing_change_done = true;
+                }
+                break;
+
 
             case ACI_EVT_TIMING:
                 Serial.println(F("Evt link connection interval changed"));

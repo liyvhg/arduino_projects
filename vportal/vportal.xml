@@ -5,44 +5,44 @@
     <Device>nRF8001_Dx</Device>
     <Service Type="local" PrimaryService="true">
         <Name>Skylanders Portal</Name>
-        <Uuid BaseUUID="533e00003abef33fcd00594e8b0a8ea3" BaseUUIDName="Skylanders Portal">1530</Uuid>
+        <Uuid BaseUUID="533E00003ABEF33FCD00594E8B0A8EA3" BaseUUIDName="Skylanders Portal">1530</Uuid>
         <Characteristic>
-            <Name>Portal Read</Name>
-            <Uuid BaseUUID="533e00003abef33fcd00594e8b0a8ea3" BaseUUIDName="Skylanders Portal">1542</Uuid>
+            <Name>Portal RX</Name>
+            <Uuid BaseUUID="533E00003ABEF33FCD00594E8B0A8EA3" BaseUUIDName="Skylanders Portal">1543</Uuid>
             <DefaultValue></DefaultValue>
             <UsePresentationFormat>0</UsePresentationFormat>
             <MaxDataLength>20</MaxDataLength>
             <AttributeLenType>1</AttributeLenType>
             <ForceOpen>false</ForceOpen>
             <Properties>
-                <Read>true</Read>
-                <WriteWithoutResponse>false</WriteWithoutResponse>
-                <Write>false</Write>
-                <Notify>true</Notify>
-                <Indicate>false</Indicate>
-                <Broadcast>false</Broadcast>
-            </Properties>
-            <AckIsAuto>false</AckIsAuto>
-            <PresentationFormatDescriptor Value="0000" Exponent="0" Format="1" NameSpace="01" Unit="0000"/>
-            <PeriodForReadingThisCharacteristic>0</PeriodForReadingThisCharacteristic>
-            <PeriodForProperties/>
-        </Characteristic>
-        <Characteristic>
-            <Name>Portal Write</Name>
-            <Uuid BaseUUID="533e00003abef33fcd00594e8b0a8ea3" BaseUUIDName="Skylanders Portal">1543</Uuid>
-            <DefaultValue></DefaultValue>
-            <UsePresentationFormat>0</UsePresentationFormat>
-            <MaxDataLength>20</MaxDataLength>
-            <AttributeLenType>1</AttributeLenType>
-            <ForceOpen>false</ForceOpen>
-            <Properties>
-                <Read>false</Read>
                 <WriteWithoutResponse>true</WriteWithoutResponse>
                 <Write>true</Write>
                 <Notify>false</Notify>
                 <Indicate>false</Indicate>
                 <Broadcast>false</Broadcast>
             </Properties>
+            <SetPipe>false</SetPipe>
+            <AckIsAuto>false</AckIsAuto>
+            <PresentationFormatDescriptor Value="0000" Exponent="0" Format="1" NameSpace="01" Unit="0000"/>
+            <PeriodForReadingThisCharacteristic>0</PeriodForReadingThisCharacteristic>
+            <PeriodForProperties/>
+        </Characteristic>
+        <Characteristic>
+            <Name>Portal TX</Name>
+            <Uuid BaseUUID="533E00003ABEF33FCD00594E8B0A8EA3" BaseUUIDName="Skylanders Portal">1542</Uuid>
+            <DefaultValue></DefaultValue>
+            <UsePresentationFormat>0</UsePresentationFormat>
+            <MaxDataLength>20</MaxDataLength>
+            <AttributeLenType>1</AttributeLenType>
+            <ForceOpen>false</ForceOpen>
+            <Properties>
+                <WriteWithoutResponse>false</WriteWithoutResponse>
+                <Write>false</Write>
+                <Notify>true</Notify>
+                <Indicate>false</Indicate>
+                <Broadcast>false</Broadcast>
+            </Properties>
+            <SetPipe>false</SetPipe>
             <AckIsAuto>false</AckIsAuto>
             <PresentationFormatDescriptor Value="0000" Exponent="0" Format="1" NameSpace="01" Unit="0000"/>
             <PeriodForReadingThisCharacteristic>0</PeriodForReadingThisCharacteristic>
@@ -79,15 +79,11 @@
         <MaximumConnectionInterval>18</MaximumConnectionInterval>
         <SlaveLatency>0</SlaveLatency>
         <TimeoutMultipler>10</TimeoutMultipler>
-        <AddServiceUpdateCharacteristic>true</AddServiceUpdateCharacteristic>
-        <AddServiceUpdateCharacteristicPipe>true</AddServiceUpdateCharacteristicPipe>
-        <ServiceToAdvertise>
-            <Uuid BaseUUID="1530" BaseUUIDName="Portal Read">1530</Uuid>
-        </ServiceToAdvertise>
-
+        <AddServiceUpdateCharacteristic>false</AddServiceUpdateCharacteristic>
+        <AddServiceUpdateCharacteristicPipe>false</AddServiceUpdateCharacteristicPipe>
         <CustomAdTypes>
             <AdType index="1">
-                <Type>19</Type>
+                <Type>3</Type>
                 <Value>1530</Value>
             </AdType>
             <AdType index="2">

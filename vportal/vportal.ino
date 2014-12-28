@@ -28,8 +28,7 @@ void setup() {
   blePeripheral.setAdvertisedServiceUuid(shortService.uuid());
 
   // add attributes (services, characteristics, descriptors) to peripheral
-  //blePeripheral.addAttribute(service);
-  blePeripheral.addAttribute(shortService);
+  blePeripheral.addAttribute(service);
   blePeripheral.addAttribute(rxCharacteristic);
   blePeripheral.addAttribute(txCharacteristic);
 

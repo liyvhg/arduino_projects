@@ -3,11 +3,10 @@
 
 
 VirtualPortal::VirtualPortal(int lightPin) : lightPin(lightPin), sequence(0) {
-
+    characterToken = NULL;
 }
 
 int VirtualPortal::respondTo(uint8_t* message, uint8_t* response) {
-
 
   switch(message[0]) {
     case 'A':
@@ -23,6 +22,7 @@ int VirtualPortal::respondTo(uint8_t* message, uint8_t* response) {
       return 0; //No response
       break;
     case 'Q': //Query / read
+      query(message, response);
       break;
     case 'R':
       reset(response);
@@ -55,6 +55,20 @@ int VirtualPortal::activate(uint8_t* message, uint8_t* response) {
 
 }
 
+int VirtualPortal::query(uint8_t* message, uint8_t* response) {
+    int index = message[1];
+    int block = message[2];
+    int arrayIndex = index & 0x0f;
+
+    response[0] = message[0]; //'Q'
+    response[1] = arrayIndex;
+    response[2] = block;
+
+    //characterToken->read(block, response+3);
+
+    return BLE_ATTRIBUTE_MAX_VALUE_LENGTH;
+}
+
 int VirtualPortal::reset(uint8_t* response) {
 
   response[0] = 0x52;
@@ -71,7 +85,14 @@ int VirtualPortal::reset(uint8_t* response) {
 int VirtualPortal::status(uint8_t* response) {
   uint8_t temp[BLE_ATTRIBUTE_MAX_VALUE_LENGTH] = {'S', 0, 0, 0, 0, 0xFF, 1, 0xaa, 0x86, 2, 0x19, 0, 0, 0, 0, 0, 0, 0, 0};
   memcpy(response, temp, BLE_ATTRIBUTE_MAX_VALUE_LENGTH);
+
+  response[1] = characterToken ? 0x01 : 0x00;
+
   response[5] = sequence++ % 0xFF;
 
   return BLE_ATTRIBUTE_MAX_VALUE_LENGTH;
+}
+
+bool VirtualPortal::loadToken() {
+    characterToken = new Token();
 }

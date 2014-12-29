@@ -28,7 +28,7 @@ void setup()
 {
     Serial.begin(115200);
     delay(3000);  //3 seconds delay for enabling to see the start up comments on the serial board
-    lib_aci_debug_print(true);
+
     blePeripheral.setDeviceName("Skylanders Portal\0");
     blePeripheral.setLocalName("Skylanders Portal\0");
     blePeripheral.setAdvertisedServiceUuid(shortService.uuid());
@@ -60,12 +60,21 @@ bool subscribed = false;
 
 void loop() {
   blePeripheral.poll();
-
   unsigned long currentMillis = millis();
 
   if(subscribed && currentMillis - previousMillis > interval) {
     previousMillis = currentMillis;
     //Do something every interval
+
+
+    //Testing character loading
+    if ( Serial.available() ) {
+        char cmd = Serial.read();
+        if (cmd == 'L') {
+          Serial.println("calling VirtualPortal loadToken");
+          vp.loadToken();
+        }
+    }
 
 
   }

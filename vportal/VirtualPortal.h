@@ -7,20 +7,22 @@
   #include "WProgram.h"
 #endif
 
-#define BLE_ATTRIBUTE_MAX_VALUE_LENGTH 20
+#define BLE_ATTRIBUTE_MAX_VALUE_LENGTH 19
 
 #include "Token.h"
 
 class VirtualPortal
 {
   public:
-    VirtualPortal(int lightPin);
+    VirtualPortal();
 
     int respondTo(uint8_t *message, uint8_t *response);
-    bool loadToken();
+    bool loadToken(Token *t);
+    uint8_t light(); //get current light value
 
   private:
-    int lightPin, sequence;
+    int sequence;
+    uint8_t lightVal;
     Token *characterToken;
 
     int activate(uint8_t* message, uint8_t* response);

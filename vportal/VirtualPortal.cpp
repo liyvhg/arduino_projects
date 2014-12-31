@@ -2,7 +2,7 @@
 #include "VirtualPortal.h"
 
 
-VirtualPortal::VirtualPortal(int lightPin) : lightPin(lightPin), sequence(0) {
+VirtualPortal::VirtualPortal() : lightVal(0), sequence(0) {
     characterToken = NULL;
 }
 
@@ -19,6 +19,7 @@ int VirtualPortal::respondTo(uint8_t* message, uint8_t* response) {
       return 0; //No response
       break;
     case 'L': //Trap light
+      light(message);
       return 0; //No response
       break;
     case 'Q': //Query / read
@@ -93,6 +94,16 @@ int VirtualPortal::status(uint8_t* response) {
   return BLE_ATTRIBUTE_MAX_VALUE_LENGTH;
 }
 
-bool VirtualPortal::loadToken() {
-    characterToken = new Token();
+bool VirtualPortal::loadToken(Token *t) {
+
+  //Switch on Token type to set to right var
+  characterToken = t;
+}
+
+int VirtualPortal::light(uint8_t* message) {
+  lightVal = message[1];
+}
+
+uint8_t VirtualPortal::light() {
+  return lightVal;
 }

@@ -2,42 +2,48 @@
 
 #include "Token.h"
 
+Token::Token(Dataflash *dflash, int libraryId) : dflash(dflash) {
+  //Read in character name and save
+  //The pages are 256 + 8 bytes, so I store the character name at the end of the first 2 pages
+  readFlash(0, PAGE_SIZE, pageBuffer);
+  memcpy(name, pageBuffer + 256, 8);
+}
+
 
 int Token::read(int block, uint8_t* buffer) {
-  memcpy(buffer, data+(block*BLOCK_SIZE), BLOCK_SIZE);
+  if (block > BLOCK_COUNT) {
+    return 0;
+  }
+
+  int page = block / PAGES_PER_TOKEN;
+  int offset = (block % PAGES_PER_TOKEN) * BLOCK_SIZE;
+
+  //Go get the data
+  readFlash(page, PAGE_SIZE, pageBuffer);
+
+  memcpy(buffer, pageBuffer+offset, BLOCK_SIZE);
+
+  return BLOCK_SIZE;
 }
 
 int Token::write(int block, uint8_t* data) {
-
-}
-
-
-uint16_t Token::crc_16_ccitt(uint8_t * data_in, uint16_t data_len) {
-  uint16_t i;
-  uint16_t crc = 0xffff;
-
-  for(i = 0; i < data_len; i++) {
-    crc  = (unsigned char)(crc >> 8) | (crc << 8);
-    crc ^= data_in[i];
-    crc ^= (unsigned char)(crc & 0xff) >> 4;
-    crc ^= (crc << 8) << 4;
-    crc ^= ((crc & 0xff) << 4) << 1;
+  if (block > BLOCK_COUNT) {
+    return 0;
   }
 
-  return crc;
+
+  return BLOCK_SIZE;
 }
 
-Token::Token() {
-  Serial.println("Token: About to initialize temp");
-  uint8_t temp[BLOCK_SIZE * 4] = {
-    0xaf, 0xbe, 0xe9, 0xef, 0x17, 0x81, 0x01, 0x0f, 0xc4, 0x07, 0x00, 0x00, 0x00, 0x00, 0x00, 0x14,
-    0xe4, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x30, 0x31, 0xa2,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0x0f, 0x0f, 0x0f, 0x69, 0, 0, 0, 0, 0, 0
-  };
-
-  Serial.println("Token: About to memcpy token data");
-  memcpy(data, temp, BLOCK_SIZE * 4);
+//Consider moving this into a common location where I can ask for just a single block
+void Token::readFlash(int page, int len, uint8_t* buffer) {
+  dflash->Page_To_Buffer(PRIMARY_BUFFER, page);
+  dflash->Buffer_Read_Str(PRIMARY_BUFFER, page, len, (unsigned char*)buffer);
 }
 
+
+void Token::writeFlash(int page, int len, uint8_t* buffer) {
+  dflash->Buffer_Write_Str(PRIMARY_BUFFER, page, len, (unsigned char*)buffer);
+  dflash->Buffer_To_Page(PRIMARY_BUFFER, page);
+}
 

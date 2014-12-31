@@ -3,13 +3,20 @@
 #include <SPI.h>
 #include <BLEPeripheral.h>
 #include "VirtualPortal.h"
-//#include <MemoryFree.h>
+#include <dataflash.h>
+#include <MemoryFree.h>
 
 
 // define pins (varies per shield/board)
 #define BLE_REQ   6
 #define BLE_RDY   7
 #define BLE_RST   4
+
+#define LED_PIN   9
+
+Dataflash dflash;
+
+Token previewToken(&dflash, 0);
 
 // create peripheral instance, see pinouts above
 BLEPeripheral blePeripheral = BLEPeripheral(BLE_REQ, BLE_RDY, BLE_RST);
@@ -22,10 +29,13 @@ BLEService shortService = BLEService("1530");
 BLECharacteristic txCharacteristic = BLECharacteristic("533E15423ABEF33FCD00594E8B0A8EA3", BLERead | BLENotify, BLE_ATTRIBUTE_MAX_VALUE_LENGTH);
 BLECharacteristic rxCharacteristic = BLECharacteristic("533E15433ABEF33FCD00594E8B0A8EA3", BLEWrite, BLE_ATTRIBUTE_MAX_VALUE_LENGTH);
 
-VirtualPortal vp = VirtualPortal(0); //LightPin, none yet
+VirtualPortal vp = VirtualPortal();
 
 void setup()
 {
+
+    pinMode(LED_PIN, OUTPUT);
+
     Serial.begin(115200);
     delay(3000);  //3 seconds delay for enabling to see the start up comments on the serial board
 
@@ -47,6 +57,8 @@ void setup()
     // begin initialization
     blePeripheral.begin();
 
+    dflash.init(); //initialize the memory (pins are defined in dataflash.cpp
+
     Serial.println(F("BLE Portal Peripheral"));
 }
 
@@ -57,22 +69,30 @@ long previousMillis = 0;        // will store last time LED was updated
 long interval = 1000;           // interval at which to blink (milliseconds)
 bool subscribed = false;
 
-
 void loop() {
   blePeripheral.poll();
   unsigned long currentMillis = millis();
 
-  if(subscribed && currentMillis - previousMillis > interval) {
+  //Maybe limit this to $interval if its taking too many cycles
+  analogWrite(LED_PIN, vp.light());
+
+  if(currentMillis - previousMillis > interval) {
     previousMillis = currentMillis;
     //Do something every interval
 
 
+    /* 1073 during my last check
+    Serial.print("freeMemory()=");
+    Serial.println(freeMemory());
+    */
+
+
     //Testing character loading
-    if ( Serial.available() ) {
+    if ( subscribed && Serial.available() ) {
         char cmd = Serial.read();
         if (cmd == 'L') {
           Serial.println("calling VirtualPortal loadToken");
-          vp.loadToken();
+          vp.loadToken(0);//parameter:libraryIndex
         }
     }
 
@@ -115,20 +135,9 @@ void writeHandler(BLECentral& central, BLECharacteristic& characteristic)
     uint8_t response[BLE_ATTRIBUTE_MAX_VALUE_LENGTH] = {0};
 
     Serial.println(" ");
-
-    Serial.print("<= ");
-    for(int i = 0; i < len; i++) {
-      Serial.write(val[i]);
-    }
-    Serial.println(" ");
-
-
+    printHex("<= ", val, len, " ");
     len = vp.respondTo((uint8_t*)val, response);
-    Serial.print("=> ");
-    for(int i = 0; i < len; i++) {
-      Serial.write(val[i]);
-    }
-    Serial.println(" ");
+    printHex("=> ", val, len, " ");
 
     //respond if data to respond with
     if (len > 0) {
@@ -138,6 +147,15 @@ void writeHandler(BLECentral& central, BLECharacteristic& characteristic)
       }
     }
 
+}
+
+void printHex(String prefix, const unsigned char* buffer, int len, String suffix) {
+    Serial.print(prefix);
+    for(int i = 0; i < len; i++) {
+      Serial.print(buffer[i], HEX);
+      Serial.print(" ");
+    }
+    Serial.println(suffix);
 }
 
 

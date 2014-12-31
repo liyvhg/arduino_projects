@@ -17,7 +17,7 @@
 #define PAGE_DATA_SIZE 256
 #define PAGE_COUNT 2048 //4Mbit chip
 
-#define PAGES_PER_TOKEN 4 // (1024 / 256)
+#define BLOCKS_PER_PAGE 16
 
 
 enum Element { MAGIC, EARTH, WATER, FIRE, TECH, UNDEAD, LIFE, AIR, DARK, LIGHT};
@@ -32,7 +32,11 @@ class Token
     int read(int block, uint8_t* buffer);
     int write(int block, uint8_t* data);
 
+
+    static void import(int libraryId, char *name, uint8_t elementAndType, uint8_t* data);
+
   private:
+    int libraryId;
     Dataflash *dflash;
     uint8_t pageBuffer[PAGE_SIZE];
 

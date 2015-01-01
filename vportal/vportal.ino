@@ -17,7 +17,7 @@
 #define LED_PIN   9
 
 Photocopier pc;
-NavSwitch nav = NavSwitch(0, 0, 0);
+NavSwitch nav = NavSwitch(8, 5, 3);
 
 // create peripheral instance, see pinouts above
 BLEPeripheral blePeripheral = BLEPeripheral(BLE_REQ, BLE_RDY, BLE_RST);
@@ -84,29 +84,35 @@ void loop() {
     //Maybe limit this to $interval if its taking too many cycles
     analogWrite(LED_PIN, vp.light());
 
-    //Look for navigation
-    if (update) {
-      NavSwitch::NavDir direction = nav.read();
-      switch (direction) {
-        case NavSwitch::ONE: //up?  down?
-          Token::display(libraryId, topline, bottomline);
-          break;
-        case NavSwitch::TWO:
-          Token::display(libraryId, topline, bottomline);
-          break;
-        case NavSwitch::TEE: //Select
-          vp.loadToken(new Token(libraryId));
-          break;
-      } //end switch
-    }//end update
   }//end subscribed
+
+  //Look for navigation
+  if (update) {
+    Serial.println("Nav switch update!");
+    NavSwitch::NavDir direction = nav.read();
+    switch (direction) {
+      case NavSwitch::ONE: //up?  down?
+        //Token::display(libraryId, topline, bottomline);
+        Serial.println("Activated nav switch one");
+        break;
+      case NavSwitch::TWO:
+        Serial.println("Activated nav switch two");
+        //Token::display(libraryId, topline, bottomline);
+        break;
+      case NavSwitch::TEE: //Select
+        Serial.println("Activated nav switch select");
+        //vp.loadToken(new Token(libraryId));
+        break;
+    } //end switch
+  }//end update
+
 
   //Do something every interval
   if(currentMillis - previousMillis > interval) {
     previousMillis = currentMillis;
 
 
-    /* 1073 during my last check
+    /* //1073 during my last check
     Serial.print("freeMemory()=");
     Serial.println(freeMemory());
     */

@@ -4,9 +4,10 @@
 #include <BLEPeripheral.h>
 #include <MemoryFree.h>
 #include <dataflash.h>
+#include <Bounce2.h>
 #include "Photocopier.h"
 #include "VirtualPortal.h"
-
+#include "NavSwitch.h"
 
 // define pins (varies per shield/board)
 #define BLE_REQ   6
@@ -16,6 +17,7 @@
 #define LED_PIN   9
 
 Photocopier pc;
+NavSwitch nav = NavSwitch(0, 0, 0);
 
 // create peripheral instance, see pinouts above
 BLEPeripheral blePeripheral = BLEPeripheral(BLE_REQ, BLE_RDY, BLE_RST);
@@ -32,7 +34,7 @@ VirtualPortal vp = VirtualPortal();
 
 void setup()
 {
-
+    nav.init();
     pinMode(LED_PIN, OUTPUT);
 
     Serial.begin(115200);
@@ -61,40 +63,53 @@ void setup()
     Serial.println(F("BLE Portal Peripheral"));
 }
 
-unsigned char buf[BLE_ATTRIBUTE_MAX_VALUE_LENGTH] = {0};
 unsigned char len = 0;
 
 long previousMillis = 0;        // will store last time LED was updated
 long interval = 1000;           // interval at which to blink (milliseconds)
 bool subscribed = false;
 
+int libraryId = 0; //Token being displayed
+char topline[BLOCK_SIZE] = {0};
+char bottomline[BLOCK_SIZE] = {0};
+
+
 void loop() {
   blePeripheral.poll();
+  int update = nav.update();
   unsigned long currentMillis = millis();
 
-  //Maybe limit this to $interval if its taking too many cycles
-  analogWrite(LED_PIN, vp.light());
 
+  if (subscribed) {
+    //Maybe limit this to $interval if its taking too many cycles
+    analogWrite(LED_PIN, vp.light());
+
+    //Look for navigation
+    if (update) {
+      NavSwitch::NavDir direction = nav.read();
+      switch (direction) {
+        case NavSwitch::ONE: //up?  down?
+          Token::display(libraryId, topline, bottomline);
+          break;
+        case NavSwitch::TWO:
+          Token::display(libraryId, topline, bottomline);
+          break;
+        case NavSwitch::TEE: //Select
+          vp.loadToken(new Token(libraryId));
+          break;
+      } //end switch
+    }//end update
+  }//end subscribed
+
+  //Do something every interval
   if(currentMillis - previousMillis > interval) {
     previousMillis = currentMillis;
-    //Do something every interval
 
 
     /* 1073 during my last check
     Serial.print("freeMemory()=");
     Serial.println(freeMemory());
     */
-
-
-    //Testing character loading
-    if ( subscribed && Serial.available() ) {
-        char cmd = Serial.read();
-        if (cmd == 'L') {
-          Serial.println("calling VirtualPortal loadToken");
-          vp.loadToken(0);//parameter:libraryIndex
-        }
-    }
-
 
   }
 }

@@ -97,6 +97,7 @@ int VirtualPortal::status(uint8_t* response) {
 bool VirtualPortal::loadToken(Token *t) {
 
   //Switch on Token type to set to right var
+  //If a token is being replaced, destruct previous
   characterToken = t;
 }
 

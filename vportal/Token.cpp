@@ -2,13 +2,13 @@
 
 #include "Token.h"
 
-Token::Token(int libraryId) : libraryId(libraryId) {
+void Token::display(int libraryId, char* topline, char* bottomline) {
+  //Topline Character name
+  //Bottomline: Element, type
 
 }
 
-int Token::display(uint8_t* topline, uint8_t* bottomline) {
-  //Topline Character name
-  //Bottomline: Element, type
+Token::Token(int libraryId) : libraryId(libraryId) {
 
 }
 

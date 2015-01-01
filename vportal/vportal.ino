@@ -2,9 +2,10 @@
 // Import libraries (BLEPeripheral depends on SPI)
 #include <SPI.h>
 #include <BLEPeripheral.h>
-#include "VirtualPortal.h"
-#include <dataflash.h>
 #include <MemoryFree.h>
+#include <dataflash.h>
+#include "Photocopier.h"
+#include "VirtualPortal.h"
 
 
 // define pins (varies per shield/board)
@@ -14,9 +15,7 @@
 
 #define LED_PIN   9
 
-Dataflash dflash;
-
-Token previewToken(&dflash, 0);
+Photocopier pc;
 
 // create peripheral instance, see pinouts above
 BLEPeripheral blePeripheral = BLEPeripheral(BLE_REQ, BLE_RDY, BLE_RST);
@@ -57,7 +56,7 @@ void setup()
     // begin initialization
     blePeripheral.begin();
 
-    dflash.init(); //initialize the memory (pins are defined in dataflash.cpp
+    pc.init();
 
     Serial.println(F("BLE Portal Peripheral"));
 }
@@ -137,7 +136,7 @@ void writeHandler(BLECentral& central, BLECharacteristic& characteristic)
     Serial.println(" ");
     printHex("<= ", val, len, " ");
     len = vp.respondTo((uint8_t*)val, response);
-    printHex("=> ", val, len, " ");
+    printHex("=> ", response, len, " ");
 
     //respond if data to respond with
     if (len > 0) {

@@ -1,47 +1,11 @@
 #ifndef __DATAFLASH_INCLUDED
 #define __DATAFLASH_INCLUDED
 
-//*****************************************************************************
-//
-//      COPYRIGHT (c) ATMEL Norway, 1996-2001
-//
-//      The copyright to the document(s) herein is the property of
-//      ATMEL Norway, Norway.
-//
-//      The document(s) may be used  and/or copied only with the written
-//      permission from ATMEL Norway or in accordance with the terms and
-//      conditions stipulated in the agreement/contract under which the
-//      document(s) have been supplied.
-//
-//*****************************************************************************
-//
-//  File........: DATAFLASH.H
-//
-//  Author(s)...: ATMEL Norway
-//
-//  Target(s)...: Independent
-//
-//  Description.: Defines and prototypes for AT45Dxxx
-//
-//  Revisions...:
-//
-//  YYYYMMDD - VER. - COMMENT                                       - SIGN.
-//
-//  20010117 - 0.10 - Generated file                                -  RM
-//  20031009          port to avr-gcc/avr-libc                      - M.Thomas
-//
-//*****************************************************************************
-
-// mt #endif
-// #define MTEXTRAS
 //General macro definitions
-//changed to *DF for avr-libc compatiblity
-//#define sbiDF(port,bit)	(port |=  (1<<bit))
-//#define cbiDF(port,bit)	(port &= ~(1<<bit))
-//mtE
 #define SetBit(x,y)		(x |= (y))
 #define ClrBit(x,y)		(x &=~(y))
 #define ChkBit(x,y)		(x  & (y))
+
 //Dataflash opcodes
 #define FlashPageRead			0x52	// Main memory page read
 #define FlashToBuf1Transfer 		0x53	// Main memory page to buffer 1 transfer
@@ -64,20 +28,32 @@
 #define Buf2ToFlash		        0x89	// Buffer 2 to main memory page program without built-in erase
 #define PageErase                   0x81	// Page erase, added by Martin Thomas
 
+#define READY_BIT 0b10000000
+#define COMPARE_BIT 0b01000000
+#define DENSITY_BITS 0b00111100
+#define DENSITY_SHIFT 2
+
+#define ONE_SECOND 1000
+#define DUMMY_BYTE 0x00
+
 #include <inttypes.h>
 #include <avr/pgmspace.h>
+
 #if defined(ARDUINO) && ARDUINO >= 100
 #include "Arduino.h"
 #else
 #include "WProgram.h"
 #endif
 
-const uint8_t DF_pagebits[] PROGMEM = {9,  9,  9,  9,  9,  10,  10,  11};
-const uint16_t DF_pagesize[] PROGMEM = {264,264, 264, 264, 264, 528, 528,1056};
+#include <SPI.h>
+
+
 class Dataflash
 {
 public:
-    Dataflash(void);
+    Dataflash();
+    Dataflash(uint8_t cs_pin);
+    ~Dataflash();
     void init(void);
     void Page_To_Buffer (unsigned int PageAdr, unsigned char BufferNo);
     unsigned char Buffer_Read_Byte (unsigned char BufferNo, unsigned int IntPageAdr);
@@ -87,18 +63,17 @@ public:
     void Buffer_Write_Str (unsigned char BufferNo, unsigned int IntPageAdr, unsigned int No_of_bytes, unsigned char *BufferPtr);
     void Buffer_To_Page (unsigned char BufferNo, unsigned int PageAdr);
     void Cont_Flash_Read_Enable (unsigned int PageAdr, unsigned int IntPageAdr);
-//#ifdef MTEXTRAS
     void Page_Erase (unsigned int PageAdr); // added by mthomas
     unsigned char Page_Buffer_Compare(unsigned char BufferNo, unsigned int PageAdr); // added by mthomas
 
 private:
-    unsigned char DF_SPI_RW (unsigned char output);
-    void DF_SPI_init (void);
-    unsigned char Read_DF_status (void);
-    void DF_CS_inactive(void);
-    void DF_CS_active(void);
+    uint8_t cs_pin;
+    unsigned char Read_status (void);
+    uint8_t waitForReady(uint32_t timeout);
+
 
 };
 
 #endif
 // *****************************[ End Of DATAFLASH.H ]*****************************
+

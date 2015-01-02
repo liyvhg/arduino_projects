@@ -1,45 +1,60 @@
+
+#include <SPI.h>
 #include <dataflash.h>
 
 #define PAGE 1
 #define PRIMARY_BUFFER 1
+#define PAGE_START 0
+#define TEST_STRING_MAX 100
 
 Dataflash dflash;
 
-void setup()
-{
+void setup() {
     Serial.begin(115200);
     while(!Serial);
     Serial.println("Lets begin!");
-    dflash.init(); //initialize the memory (pins are defined in dataflash.cpp
+    Serial.print("Using Slave select "); Serial.println(SS, DEC);
+    dflash.init();
 }
 
-void loop()
-{
 
-    //Copy some text (including something like the time) into a page
+#define REQN 6
+void loop() {
+    Serial.println("******    Loop    ******");
 
-    char messageline[100] = "when this was written, millis was: ";
-    char time[64];
+    //BLE busy
+#ifdef BLEND_MICRO
+    while(digitalRead(REQN) == LOW);
+#endif
+
+    //Copy some dynamic text into a page
+    char writeBuffer[TEST_STRING_MAX] = "when this was written, millis was: ";
+    char time[64] = {0};
     sprintf(time,"%d",millis());
-    strncat(messageline, time, 64);
-    int len = strlen(messageline);
+    strncat(writeBuffer, time, 64);
 
-    dflash.Buffer_Write_Str(PRIMARY_BUFFER, PAGE, len+1, (unsigned char*)messageline);
+    dflash.Page_To_Buffer(PAGE, PRIMARY_BUFFER);
+    dflash.Buffer_Write_Str(PRIMARY_BUFFER, PAGE_START, TEST_STRING_MAX, (unsigned char*)writeBuffer);
+    dflash.Buffer_To_Page(PRIMARY_BUFFER, PAGE);
 
-    Serial.println(messageline);
-    dflash.Buffer_To_Page(PRIMARY_BUFFER, PAGE); //write the buffer to the memory on page: lastpage
-
+    Serial.println("Saved a string to memory, sleeping 1000ms");
     delay(1000);
 
     //print it out
-    char readBuffer[100];
+    char readBuffer[TEST_STRING_MAX] = {0};
 
-    dflash.Page_To_Buffer(PRIMARY_BUFFER, PAGE);
-    dflash.Buffer_Read_Str(PRIMARY_BUFFER, PAGE, len+1, (unsigned char*)readBuffer);
+    dflash.Page_To_Buffer(PAGE, PRIMARY_BUFFER);
+    dflash.Buffer_Read_Str(PRIMARY_BUFFER, PAGE_START, TEST_STRING_MAX, (unsigned char*)readBuffer);
+
     Serial.print("The current millis is: ");
     Serial.print(millis());
     Serial.println("");
-    Serial.println(readBuffer);
 
+    Serial.print("Here is the data I saved: ");
+    for(int i = 0; i < TEST_STRING_MAX; i++) {
+      Serial.print(readBuffer[i], HEX);
+    }
+    Serial.println(" ");
 
+    delay(5000);
 }

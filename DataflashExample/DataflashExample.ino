@@ -22,7 +22,7 @@ void setup() {
     Serial.print("SCK=");Serial.println(SCK);
 
     uint8_t status = dflash.init();
-    Serial.print("Dataflash status = "); Serial.println(status, BIN);
+    Serial.print("Dataflash status: "); Serial.println(status, BIN);
 
     char writeBuffer[PAGE_SIZE] = {0};
     char pangram[] = "The quick brown fox jumps over the lazy dog ";
@@ -32,10 +32,7 @@ void setup() {
     strncat((char*)writeBuffer, clock, 10);
 
     Serial.print("WRITING: ");
-
-    Serial.print(strlen(writeBuffer));
-    Serial.print(" ");
-    Serial.println(writeBuffer);
+    printString(writeBuffer);
 
     dflash.Page_To_Buffer(page, PRIMARY_BUFFER);
     dflash.Buffer_Write_Str(PRIMARY_BUFFER, PAGE_START, PAGE_SIZE, (uint8_t*)writeBuffer);
@@ -48,13 +45,21 @@ void setup() {
 
     dflash.Page_To_Buffer(page, PRIMARY_BUFFER);
     dflash.Buffer_Read_Str(PRIMARY_BUFFER, PAGE_START, PAGE_SIZE, (uint8_t*)readBuffer);
-
-    Serial.print(strlen(readBuffer));
-    Serial.print(" ");
-    Serial.println(readBuffer);
+    printString(readBuffer);
 
 }
 
 
 void loop() {
+}
+
+void printString(char* buffer) {
+    Serial.print(strlen(buffer));
+    Serial.print(" ");
+    for(int i = 0; i < strlen(buffer); i++) {
+      Serial.print((char)buffer[i]);
+      Serial.print(" ");
+    }
+    Serial.println(" ");
+    //Serial.println(buffer);
 }

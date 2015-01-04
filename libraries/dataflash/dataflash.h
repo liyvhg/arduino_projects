@@ -52,7 +52,6 @@ class Dataflash
 {
 public:
     Dataflash();
-    Dataflash(uint8_t cs_pin);
     ~Dataflash();
     uint8_t init(void);
     void Page_To_Buffer (unsigned int PageAdr, uint8_t BufferNo);
@@ -67,8 +66,7 @@ public:
     uint8_t Page_Buffer_Compare(uint8_t BufferNo, unsigned int PageAdr); // added by mthomas
 
 private:
-    uint8_t cs_pin;
-    uint8_t Read_status (void);
+    uint8_t readStatus();
     uint8_t waitForReady(uint32_t timeout);
 
 

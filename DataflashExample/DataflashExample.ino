@@ -2,59 +2,59 @@
 #include <SPI.h>
 #include <dataflash.h>
 
-#define PAGE 1
+#define DECIMAL 10
 #define PRIMARY_BUFFER 1
 #define PAGE_START 0
-#define TEST_STRING_MAX 100
+#define PAGE_SIZE 256
+#define REQN 6
 
 Dataflash dflash;
+const int page = 0;
 
 void setup() {
-    Serial.begin(115200);
+    Serial.begin(9600);
     while(!Serial);
-    Serial.println("Lets begin!");
-    Serial.print("Using Slave select "); Serial.println(SS, DEC);
-    dflash.init();
+    Serial.println("HELLO");      // ACK to host
+
+    Serial.print("SS=");Serial.println(SS);
+    Serial.print("MOSI=");Serial.println(MOSI);
+    Serial.print("MISO=");Serial.println(MISO);
+    Serial.print("SCK=");Serial.println(SCK);
+
+    uint8_t status = dflash.init();
+    Serial.print("Dataflash status = "); Serial.println(status, BIN);
+
+    char writeBuffer[PAGE_SIZE] = {0};
+    char pangram[] = "The quick brown fox jumps over the lazy dog ";
+    char clock[10] = {0};
+    itoa(millis(), clock, DECIMAL);
+    strncat((char*)writeBuffer, pangram, PAGE_SIZE);
+    strncat((char*)writeBuffer, clock, 10);
+
+    Serial.print("WRITING: ");
+
+    Serial.print(strlen(writeBuffer));
+    Serial.print(" ");
+    Serial.println(writeBuffer);
+
+    dflash.Page_To_Buffer(page, PRIMARY_BUFFER);
+    dflash.Buffer_Write_Str(PRIMARY_BUFFER, PAGE_START, PAGE_SIZE, (uint8_t*)writeBuffer);
+    dflash.Buffer_To_Page(PRIMARY_BUFFER, page);
+
+    delay(1000);
+
+    char readBuffer[PAGE_SIZE] = {0};
+    Serial.print("READING: ");
+
+    dflash.Page_To_Buffer(page, PRIMARY_BUFFER);
+    dflash.Buffer_Read_Str(PRIMARY_BUFFER, PAGE_START, PAGE_SIZE, (uint8_t*)readBuffer);
+
+    Serial.print(strlen(readBuffer));
+    Serial.print(" ");
+    Serial.println(readBuffer);
+
 }
 
 
-#define REQN 6
 void loop() {
-    Serial.println("******    Loop    ******");
-
-    //BLE busy
-#ifdef BLEND_MICRO
-    while(digitalRead(REQN) == LOW);
-#endif
-
-    //Copy some dynamic text into a page
-    char writeBuffer[TEST_STRING_MAX] = "when this was written, millis was: ";
-    char time[64] = {0};
-    sprintf(time,"%d",millis());
-    strncat(writeBuffer, time, 64);
-
-    dflash.Page_To_Buffer(PAGE, PRIMARY_BUFFER);
-    dflash.Buffer_Write_Str(PRIMARY_BUFFER, PAGE_START, TEST_STRING_MAX, (unsigned char*)writeBuffer);
-    dflash.Buffer_To_Page(PRIMARY_BUFFER, PAGE);
-
-    Serial.println("Saved a string to memory, sleeping 1000ms");
-    delay(1000);
-
-    //print it out
-    char readBuffer[TEST_STRING_MAX] = {0};
-
-    dflash.Page_To_Buffer(PAGE, PRIMARY_BUFFER);
-    dflash.Buffer_Read_Str(PRIMARY_BUFFER, PAGE_START, TEST_STRING_MAX, (unsigned char*)readBuffer);
-
-    Serial.print("The current millis is: ");
-    Serial.print(millis());
-    Serial.println("");
-
-    Serial.print("Here is the data I saved: ");
-    for(int i = 0; i < TEST_STRING_MAX; i++) {
-      Serial.print(readBuffer[i], HEX);
-    }
-    Serial.println(" ");
-
-    delay(5000);
 }

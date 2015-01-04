@@ -54,21 +54,21 @@ public:
     Dataflash();
     Dataflash(uint8_t cs_pin);
     ~Dataflash();
-    void init(void);
-    void Page_To_Buffer (unsigned int PageAdr, unsigned char BufferNo);
-    unsigned char Buffer_Read_Byte (unsigned char BufferNo, unsigned int IntPageAdr);
-    void Buffer_Read_Str (unsigned char BufferNo, unsigned int IntPageAdr, unsigned int No_of_bytes, unsigned char *BufferPtr);
-    void Buffer_Write_Enable (unsigned char BufferNo, unsigned int IntPageAdr);
-    void Buffer_Write_Byte (unsigned char BufferNo, unsigned int IntPageAdr, unsigned char Data);
-    void Buffer_Write_Str (unsigned char BufferNo, unsigned int IntPageAdr, unsigned int No_of_bytes, unsigned char *BufferPtr);
-    void Buffer_To_Page (unsigned char BufferNo, unsigned int PageAdr);
+    uint8_t init(void);
+    void Page_To_Buffer (unsigned int PageAdr, uint8_t BufferNo);
+    uint8_t Buffer_Read_Byte (uint8_t BufferNo, unsigned int IntPageAdr);
+    void Buffer_Read_Str (uint8_t BufferNo, unsigned int IntPageAdr, unsigned int No_of_bytes, uint8_t *BufferPtr);
+    void Buffer_Write_Enable (uint8_t BufferNo, unsigned int IntPageAdr);
+    void Buffer_Write_Byte (uint8_t BufferNo, unsigned int IntPageAdr, uint8_t Data);
+    void Buffer_Write_Str (uint8_t BufferNo, unsigned int IntPageAdr, unsigned int No_of_bytes, uint8_t *BufferPtr);
+    void Buffer_To_Page (uint8_t BufferNo, unsigned int PageAdr);
     void Cont_Flash_Read_Enable (unsigned int PageAdr, unsigned int IntPageAdr);
     void Page_Erase (unsigned int PageAdr); // added by mthomas
-    unsigned char Page_Buffer_Compare(unsigned char BufferNo, unsigned int PageAdr); // added by mthomas
+    uint8_t Page_Buffer_Compare(uint8_t BufferNo, unsigned int PageAdr); // added by mthomas
 
 private:
     uint8_t cs_pin;
-    unsigned char Read_status (void);
+    uint8_t Read_status (void);
     uint8_t waitForReady(uint32_t timeout);
 
 

@@ -47,18 +47,18 @@ void deviceid()
 void setup()
 {
   Serial.begin(9600);
-  
-//  digitalWrite(SS,HIGH); //already declared in SPI.cpp
-//  pinMode(SS, OUTPUT);   //already declared in SPI.cpp
+
+  digitalWrite(SS,HIGH); //already declared in SPI.cpp
+  pinMode(SS, OUTPUT);   //already declared in SPI.cpp
   SPI.setBitOrder(MSBFIRST);
-  SPI.setClockDivider(SPI_CLOCK_DIV16); //16MHz div by 16=1MHz
+  SPI.setClockDivider(SPI_CLOCK_DIV32); //16MHz div by 16=1MHz
   SPI.setDataMode(SPI_MODE0);
   SPI.begin();
-  
+
 }
 
 void loop()
 {
   deviceid();
-  delay(100);
+  delay(1000);
 }

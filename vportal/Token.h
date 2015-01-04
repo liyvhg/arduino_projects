@@ -45,7 +45,7 @@ class Token
     int write(int block, uint8_t* data);
     void display(int libraryId, char* topline, char* bottomline);
 
-    static void import(Dataflash* dflash);
+    static void import(Dataflash dflash);
 
   private:
     Dataflash *dflash;

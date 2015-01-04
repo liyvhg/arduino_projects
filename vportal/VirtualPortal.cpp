@@ -131,7 +131,7 @@ void VirtualPortal::printCommand(bool incoming, const uint8_t* command) {
       break;
     case 'Q': //Query / read
     case 'W': //Write
-      interestingBytes = 2;
+      interestingBytes = 8;
       break;
   }
 

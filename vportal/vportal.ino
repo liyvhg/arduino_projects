@@ -36,8 +36,22 @@ void setup()
     Serial.begin(115200);
     delay(3000);  //3 seconds delay for enabling to see the start up comments on the serial board
 
+    Serial.print("SS=");Serial.println(SS);
+    Serial.print("MOSI=");Serial.println(MOSI);
+    Serial.print("MISO=");Serial.println(MISO);
+    Serial.print("SCK=");Serial.println(SCK);
+
     uint8_t status = dflash.init();
     Serial.print("Dataflash status: "); Serial.println(status, BIN);
+
+
+    const int page = 0;
+    char readBuffer[PAGE_SIZE] = {0};
+    Serial.print("READING: ");
+    dflash.Page_To_Buffer(page, PRIMARY_BUFFER);
+    dflash.Buffer_Read_Str(PRIMARY_BUFFER, 0, PAGE_SIZE, (uint8_t*)readBuffer);
+    printString(readBuffer);
+
 
     //nav.init();
 
@@ -62,6 +76,21 @@ void setup()
     blePeripheral.begin();
 
     Serial.println(F("BLE Portal Peripheral"));
+
+
+}
+
+void printString(char* buffer) {
+    Serial.print(strlen(buffer));
+    Serial.print(" ");
+
+    Serial.println(buffer);
+    return;
+    for(int i = 0; i < strlen(buffer); i++) {
+      Serial.print((char)buffer[i]);
+      Serial.print(" ");
+    }
+    Serial.println(" ");
 }
 
 unsigned char len = 0;
@@ -125,7 +154,7 @@ void loop() {
     int incomingByte = Serial.read();
     switch (incomingByte) {
       case 'I': //import
-        Token::import(&dflash);
+        Token::import(dflash);
         break;
       case 'L': //Load
         Serial.println("Loading token 1(hardcoded)");

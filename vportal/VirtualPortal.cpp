@@ -8,6 +8,8 @@ VirtualPortal::VirtualPortal() : lightVal(0), sequence(0) {
 
 int VirtualPortal::respondTo(uint8_t* message, uint8_t* response) {
 
+  printCommand(true, message);
+
   switch(message[0]) {
     case 'A':
       activate(message, response);
@@ -35,6 +37,8 @@ int VirtualPortal::respondTo(uint8_t* message, uint8_t* response) {
       break;
   }
 
+  printCommand(false, response);
+
   return BLE_ATTRIBUTE_MAX_VALUE_LENGTH;
 }
 
@@ -61,11 +65,16 @@ int VirtualPortal::query(uint8_t* message, uint8_t* response) {
     int block = message[2];
     int arrayIndex = index & 0x0f;
 
-    response[0] = message[0]; //'Q'
+    Serial.print("Returning block ");
+    Serial.print(block);
+    Serial.print(" of portal index ");
+    Serial.println(arrayIndex);
+
+    response[0] = 'Q';
     response[1] = arrayIndex;
     response[2] = block;
 
-    //characterToken->read(block, response+3);
+    characterToken->read(block, response+3);
 
     return BLE_ATTRIBUTE_MAX_VALUE_LENGTH;
 }
@@ -108,3 +117,45 @@ int VirtualPortal::light(uint8_t* message) {
 uint8_t VirtualPortal::light() {
   return lightVal;
 }
+
+void VirtualPortal::printCommand(bool incoming, const uint8_t* command) {
+
+  int interestingBytes = 0;
+
+  switch(command[0]) {
+    case 'C':
+      interestingBytes = 3;
+      break;
+    case 'L': //Trap light
+      interestingBytes = 1;
+      break;
+    case 'Q': //Query / read
+    case 'W': //Write
+      interestingBytes = 2;
+      break;
+  }
+
+  if (interestingBytes > 0) {
+    Serial.print(incoming ? "<= " : "=> ");
+    Serial.print((char)command[0]);
+
+    for(int i = 0; i < interestingBytes; i++) {
+      Serial.print(command[i+1], HEX); //+1 to ignore ASCII first byte
+      Serial.print(" ");
+    }
+
+    Serial.println(" ");
+  }
+}
+
+/*
+void VirtualPortal::printHex(String prefix, const unsigned char* buffer, int len, String suffix) {
+    Serial.print(prefix);
+    for(int i = 0; i < len; i++) {
+      Serial.print(buffer[i], HEX);
+      Serial.print(" ");
+    }
+    Serial.println(suffix);
+}
+*/
+

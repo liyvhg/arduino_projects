@@ -34,6 +34,9 @@ class VirtualPortal
     int status(uint8_t* response);
     int write(uint8_t* response);
 
+    void printCommand(bool incoming, const uint8_t* command);
+    //void printHex(String prefix, const unsigned char* buffer, int len, String suffix);
+
 };
 
 #endif

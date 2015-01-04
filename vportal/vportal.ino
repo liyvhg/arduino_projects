@@ -5,9 +5,8 @@
 #include <MemoryFree.h>
 #include <dataflash.h>
 #include <Bounce2.h>
-#include "Photocopier.h"
 #include "VirtualPortal.h"
-#include "NavSwitch.h"
+//#include "NavSwitch.h"
 
 // define pins (varies per shield/board)
 #define BLE_REQ   6
@@ -16,8 +15,8 @@
 
 #define LED_PIN   9
 
-Photocopier pc;
-NavSwitch nav = NavSwitch(8, 5, 3);
+Dataflash dflash;
+//NavSwitch nav = NavSwitch(8, 5, 3);
 
 // create peripheral instance, see pinouts above
 BLEPeripheral blePeripheral = BLEPeripheral(BLE_REQ, BLE_RDY, BLE_RST);
@@ -34,11 +33,13 @@ VirtualPortal vp = VirtualPortal();
 
 void setup()
 {
-    nav.init();
-    pinMode(LED_PIN, OUTPUT);
-
     Serial.begin(115200);
     delay(3000);  //3 seconds delay for enabling to see the start up comments on the serial board
+
+    dflash.init();
+    //nav.init();
+
+    pinMode(LED_PIN, OUTPUT);
 
     blePeripheral.setDeviceName("Skylanders Portal\0");
     blePeripheral.setLocalName("Skylanders Portal\0");
@@ -58,7 +59,6 @@ void setup()
     // begin initialization
     blePeripheral.begin();
 
-    pc.init();
 
     Serial.println(F("BLE Portal Peripheral"));
 }
@@ -76,7 +76,7 @@ char bottomline[BLOCK_SIZE] = {0};
 
 void loop() {
   blePeripheral.poll();
-  int update = nav.update();
+  //int update = nav.update();
   unsigned long currentMillis = millis();
 
 
@@ -86,6 +86,7 @@ void loop() {
 
   }//end subscribed
 
+  /*
   //Look for navigation
   if (update) {
     Serial.println("Nav switch update!");
@@ -105,7 +106,7 @@ void loop() {
         break;
     } //end switch
   }//end update
-
+  */
 
   //Do something every interval
   if(currentMillis - previousMillis > interval) {
@@ -117,6 +118,20 @@ void loop() {
     Serial.println(freeMemory());
     */
 
+  }
+
+  if (Serial.available() > 0) {
+    // read the incoming byte:
+    int incomingByte = Serial.read();
+    switch (incomingByte) {
+      case 'I': //import
+        Token::import(&dflash);
+        break;
+      case 'L': //Load
+        Serial.println("Loading token 1(hardcoded)");
+        vp.loadToken(new Token(1, &dflash));
+        break;
+    }
   }
 }
 
@@ -154,28 +169,16 @@ void writeHandler(BLECentral& central, BLECharacteristic& characteristic)
     const unsigned char *val = characteristic.value();
     uint8_t response[BLE_ATTRIBUTE_MAX_VALUE_LENGTH] = {0};
 
-    Serial.println(" ");
-    printHex("<= ", val, len, " ");
     len = vp.respondTo((uint8_t*)val, response);
-    printHex("=> ", response, len, " ");
 
     //respond if data to respond with
     if (len > 0) {
       bool success = txCharacteristic.setValue(response, BLE_ATTRIBUTE_MAX_VALUE_LENGTH);
       if (success) {
-        Serial.println("Responded successfully");
+        //Serial.println("Responded successfully");
       }
     }
 
-}
-
-void printHex(String prefix, const unsigned char* buffer, int len, String suffix) {
-    Serial.print(prefix);
-    for(int i = 0; i < len; i++) {
-      Serial.print(buffer[i], HEX);
-      Serial.print(" ");
-    }
-    Serial.println(suffix);
 }
 
 

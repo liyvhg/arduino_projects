@@ -36,7 +36,9 @@ void setup()
     Serial.begin(115200);
     delay(3000);  //3 seconds delay for enabling to see the start up comments on the serial board
 
-    dflash.init();
+    uint8_t status = dflash.init();
+    Serial.print("Dataflash status: "); Serial.println(status, BIN);
+
     //nav.init();
 
     pinMode(LED_PIN, OUTPUT);
@@ -59,7 +61,6 @@ void setup()
     // begin initialization
     blePeripheral.begin();
 
-
     Serial.println(F("BLE Portal Peripheral"));
 }
 
@@ -72,7 +73,6 @@ bool subscribed = false;
 int libraryId = 0; //Token being displayed
 char topline[BLOCK_SIZE] = {0};
 char bottomline[BLOCK_SIZE] = {0};
-
 
 void loop() {
   blePeripheral.poll();

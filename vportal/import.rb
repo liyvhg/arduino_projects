@@ -18,17 +18,17 @@ block_1 = [0xe4, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x0
 
 print 'writing I command'
 sp.putc('I')
-puts "Arduino replied: #{sp.gets}"
+print "Arduino replied: #{sp.gets}"
 
 print "writing library id #{libraryId}"
 sp.write(libraryId)
-puts "Arduino replied: #{sp.gets}"
+print "Arduino replied: #{sp.gets}"
 
 print "writing block 0: #{block_0}"
 sp.write(block_0)
-puts "Arduino replied: #{sp.gets}"
+print "Arduino replied: #{sp.gets}"
 
 print "writing block 1: #{block_1}"
 sp.write(block_1)
-puts "Arduino replied: #{sp.gets}"
+print "Arduino replied: #{sp.gets}"
 

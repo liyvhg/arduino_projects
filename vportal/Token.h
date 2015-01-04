@@ -43,8 +43,7 @@ class Token
     Token(int libraryId, Dataflash* dflash);
     int read(int block, uint8_t* buffer);
     int write(int block, uint8_t* data);
-
-    static void display(int libraryId, char* topline, char* bottomline);
+    void display(int libraryId, char* topline, char* bottomline);
 
     static void import(Dataflash* dflash);
 

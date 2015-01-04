@@ -20,7 +20,7 @@ Dataflash::~Dataflash() {
 uint8_t Dataflash::init(void) {
     SPI.setBitOrder(MSBFIRST);
     SPI.setClockDivider(SPI_CLOCK_DIV32); //16MHz div by 16=1MHz
-    SPI.setDataMode(SPI_MODE0);
+    SPI.setDataMode(SPI_MODE3);
     SPI.begin();
 
     CHIP_SELECT
@@ -119,7 +119,6 @@ uint8_t Dataflash::Buffer_Read_Byte (uint8_t BufferNo, unsigned int IntPageAdr)
  ******************************************************************************/
 void Dataflash::Buffer_Read_Str (uint8_t BufferNo, unsigned int IntPageAdr, unsigned int No_of_bytes, uint8_t *BufferPtr)
 {
-    unsigned int i;
     CHIP_DESELECT
     CHIP_SELECT
 
@@ -133,9 +132,10 @@ void Dataflash::Buffer_Read_Str (uint8_t BufferNo, unsigned int IntPageAdr, unsi
     SPI.transfer((uint8_t)(IntPageAdr>>8));//upper part of internal buffer address
     SPI.transfer((uint8_t)(IntPageAdr));	//lower part of internal buffer address
     SPI.transfer(0x00);					//don't cares
+
     for(int i = 0; i < No_of_bytes; i++) {
-        *(BufferPtr) = SPI.transfer(0x00);		//read byte and put it in AVR buffer pointed to by *BufferPtr
-        BufferPtr++;					//point to next element in AVR buffer
+        BufferPtr[i] = SPI.transfer(0x00);
+        //Serial.println((char)BufferPtr[i]);
     }
 
 }

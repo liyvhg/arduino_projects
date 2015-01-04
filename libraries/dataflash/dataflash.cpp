@@ -1,7 +1,7 @@
 
 #include "Dataflash.h"
 
-#define CHIP_SELECT   digitalWrite(SS, LOW);
+#define CHIP_SELECT   digitalWrite(SS, LOW); SPI.setBitOrder(MSBFIRST); SPI.setClockDivider(SPI_CLOCK_DIV32); SPI.setDataMode(SPI_MODE3);
 #define CHIP_DESELECT digitalWrite(SS, HIGH);
 
 //Hard coding for AT45DB041B (sorry!)

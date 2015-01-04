@@ -15,7 +15,6 @@
 
 #define LED_PIN   9
 
-Dataflash dflash;
 //NavSwitch nav = NavSwitch(8, 5, 3);
 
 // create peripheral instance, see pinouts above
@@ -31,31 +30,23 @@ BLECharacteristic rxCharacteristic = BLECharacteristic("533E15433ABEF33FCD00594E
 
 VirtualPortal vp = VirtualPortal();
 
-void setup()
-{
+unsigned char len = 0;
+
+long previousMillis = 0;        // will store last time LED was updated
+long interval = 1000;           // interval at which to blink (milliseconds)
+bool subscribed = false;
+
+int libraryId = 0; //Token being displayed
+char topline[BLOCK_SIZE] = {0};
+char bottomline[BLOCK_SIZE] = {0};
+
+void setup() {
     Serial.begin(115200);
     delay(3000);  //3 seconds delay for enabling to see the start up comments on the serial board
 
-    Serial.print("SS=");Serial.println(SS);
-    Serial.print("MOSI=");Serial.println(MOSI);
-    Serial.print("MISO=");Serial.println(MISO);
-    Serial.print("SCK=");Serial.println(SCK);
-
-    uint8_t status = dflash.init();
-    Serial.print("Dataflash status: "); Serial.println(status, BIN);
-
-
-    const int page = 0;
-    char readBuffer[PAGE_SIZE] = {0};
-    Serial.print("READING: ");
-    dflash.Page_To_Buffer(page, PRIMARY_BUFFER);
-    dflash.Buffer_Read_Str(PRIMARY_BUFFER, 0, PAGE_SIZE, (uint8_t*)readBuffer);
-    printString(readBuffer);
-
+    pinMode(LED_PIN, OUTPUT);
 
     //nav.init();
-
-    pinMode(LED_PIN, OUTPUT);
 
     blePeripheral.setDeviceName("Skylanders Portal\0");
     blePeripheral.setLocalName("Skylanders Portal\0");
@@ -76,37 +67,14 @@ void setup()
     blePeripheral.begin();
 
     Serial.println(F("BLE Portal Peripheral"));
-
-
 }
-
-void printString(char* buffer) {
-    Serial.print(strlen(buffer));
-    Serial.print(" ");
-
-    Serial.println(buffer);
-    return;
-    for(int i = 0; i < strlen(buffer); i++) {
-      Serial.print((char)buffer[i]);
-      Serial.print(" ");
-    }
-    Serial.println(" ");
-}
-
-unsigned char len = 0;
-
-long previousMillis = 0;        // will store last time LED was updated
-long interval = 1000;           // interval at which to blink (milliseconds)
-bool subscribed = false;
-
-int libraryId = 0; //Token being displayed
-char topline[BLOCK_SIZE] = {0};
-char bottomline[BLOCK_SIZE] = {0};
 
 void loop() {
   blePeripheral.poll();
   //int update = nav.update();
   unsigned long currentMillis = millis();
+
+  if(ble_busy()) { return; }
 
 
   if (subscribed) {
@@ -141,12 +109,10 @@ void loop() {
   if(currentMillis - previousMillis > interval) {
     previousMillis = currentMillis;
 
-
     /* //1073 during my last check
     Serial.print("freeMemory()=");
     Serial.println(freeMemory());
     */
-
   }
 
   if (Serial.available() > 0) {
@@ -154,11 +120,11 @@ void loop() {
     int incomingByte = Serial.read();
     switch (incomingByte) {
       case 'I': //import
-        Token::import(dflash);
+        Token::import();
         break;
       case 'L': //Load
         Serial.println("Loading token 1(hardcoded)");
-        vp.loadToken(new Token(1, &dflash));
+        vp.loadToken(new Token(1));
         break;
     }
   }
@@ -195,10 +161,10 @@ void unsubscribeHandler(BLECentral& central, BLECharacteristic& characteristic)
 void writeHandler(BLECentral& central, BLECharacteristic& characteristic)
 {
     unsigned char len = characteristic.valueLength();
-    const unsigned char *val = characteristic.value();
+    uint8_t *val = (uint8_t*)characteristic.value();
     uint8_t response[BLE_ATTRIBUTE_MAX_VALUE_LENGTH] = {0};
 
-    len = vp.respondTo((uint8_t*)val, response);
+    len = vp.respondTo(val, response);
 
     //respond if data to respond with
     if (len > 0) {
@@ -207,7 +173,12 @@ void writeHandler(BLECentral& central, BLECharacteristic& characteristic)
         //Serial.println("Responded successfully");
       }
     }
-
 }
 
-
+unsigned char ble_busy() {
+    if(digitalRead(BLE_REQ) == HIGH) {
+        return 0;
+    } else {
+        return 1;
+    }
+}

@@ -40,15 +40,15 @@ enum Type {
 class Token
 {
   public:
-    Token(int libraryId, Dataflash* dflash);
+    Token(int libraryId);
     int read(int block, uint8_t* buffer);
     int write(int block, uint8_t* data);
     void display(int libraryId, char* topline, char* bottomline);
 
-    static void import(Dataflash dflash);
+    static void import();
 
   private:
-    Dataflash *dflash;
+    Dataflash dflash;
     int libraryId;
     char name[BLOCK_SIZE-1];
     uint8_t elementAndType; //enums

@@ -131,13 +131,14 @@ void VirtualPortal::printCommand(bool incoming, const uint8_t* command) {
       break;
     case 'Q': //Query / read
     case 'W': //Write
-      interestingBytes = 8;
+      interestingBytes = 18;
       break;
   }
 
   if (interestingBytes > 0) {
     Serial.print(incoming ? "<= " : "=> ");
     Serial.print((char)command[0]);
+    Serial.print(" ");
 
     for(int i = 0; i < interestingBytes; i++) {
       Serial.print(command[i+1], HEX); //+1 to ignore ASCII first byte

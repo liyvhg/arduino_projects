@@ -1,12 +1,14 @@
 
 #include "Dataflash.h"
 
-#define CHIP_SELECT   digitalWrite(SS, LOW); SPI.setBitOrder(MSBFIRST); SPI.setClockDivider(SPI_CLOCK_DIV32); SPI.setDataMode(SPI_MODE3);
-#define CHIP_DESELECT digitalWrite(SS, HIGH);
+#define CHIP_SELECT   chipSelect();
+#define CHIP_DESELECT chipDeselect();
 
 //Hard coding for AT45DB041B (sorry!)
 uint8_t PageBits = 11;
 unsigned int PageSize = 256;
+
+SPISettings dflashSettings(1000000, MSBFIRST, SPI_MODE3);
 
 Dataflash::Dataflash() {
     digitalWrite(SS,HIGH); //already declared in SPI.cpp
@@ -18,9 +20,6 @@ Dataflash::~Dataflash() {
 }
 
 uint8_t Dataflash::init(void) {
-    SPI.setBitOrder(MSBFIRST);
-    SPI.setClockDivider(SPI_CLOCK_DIV32); //16MHz div by 16=1MHz
-    SPI.setDataMode(SPI_MODE3);
     SPI.begin();
 
     CHIP_SELECT
@@ -48,7 +47,6 @@ void Dataflash::Page_To_Buffer (unsigned int PageAdr, uint8_t BufferNo) {
     uint8_t mid_byte = PageAdr << (PageBits - 8);
     uint8_t low_byte = 0;
 
-    CHIP_DESELECT
     CHIP_SELECT
     if (1 == BufferNo) {			//transfer flash page to buffer 1
         SPI.transfer(FlashToBuf1Transfer);				//transfer to buffer 1 op-code
@@ -60,9 +58,9 @@ void Dataflash::Page_To_Buffer (unsigned int PageAdr, uint8_t BufferNo) {
     SPI.transfer(mid_byte);
     SPI.transfer(low_byte);
 
-    CHIP_DESELECT
-    CHIP_SELECT
+    commit();
     waitForReady(ONE_SECOND);
+    CHIP_DESELECT
 }
 /*****************************************************************************
  *
@@ -81,7 +79,6 @@ uint8_t Dataflash::Buffer_Read_Byte (uint8_t BufferNo, unsigned int IntPageAdr)
 {
     uint8_t data = '0';
 
-    CHIP_DESELECT
     CHIP_SELECT
 
     if (1 == BufferNo) {			//read byte from buffer 1
@@ -97,6 +94,8 @@ uint8_t Dataflash::Buffer_Read_Byte (uint8_t BufferNo, unsigned int IntPageAdr)
     SPI.transfer(0x00);				//don't cares
 
     data = SPI.transfer(0x00);			//read byte
+
+    CHIP_DESELECT
     return data;							//return the read data byte
 }
 
@@ -119,7 +118,6 @@ uint8_t Dataflash::Buffer_Read_Byte (uint8_t BufferNo, unsigned int IntPageAdr)
  ******************************************************************************/
 void Dataflash::Buffer_Read_Str (uint8_t BufferNo, unsigned int IntPageAdr, unsigned int No_of_bytes, uint8_t *BufferPtr)
 {
-    CHIP_DESELECT
     CHIP_SELECT
 
     if (1 == BufferNo) {					//read byte(s) from buffer 1
@@ -135,8 +133,8 @@ void Dataflash::Buffer_Read_Str (uint8_t BufferNo, unsigned int IntPageAdr, unsi
 
     for(int i = 0; i < No_of_bytes; i++) {
         BufferPtr[i] = SPI.transfer(0x00);
-        //Serial.println((char)BufferPtr[i]);
     }
+    CHIP_DESELECT
 
 }
 
@@ -157,7 +155,6 @@ void Dataflash::Buffer_Read_Str (uint8_t BufferNo, unsigned int IntPageAdr, unsi
  ******************************************************************************/
 void Dataflash::Buffer_Write_Enable (uint8_t BufferNo, unsigned int IntPageAdr)
 {
-    CHIP_DESELECT
     CHIP_SELECT
     if (1 == BufferNo) {			//write enable to buffer 1
         SPI.transfer(Buf1Write);			//buffer 1 write op-code
@@ -168,6 +165,7 @@ void Dataflash::Buffer_Write_Enable (uint8_t BufferNo, unsigned int IntPageAdr)
     SPI.transfer((uint8_t)(IntPageAdr>>8));//upper part of internal buffer address
     SPI.transfer((uint8_t)(IntPageAdr));	//lower part of internal buffer address
 
+    CHIP_DESELECT
 }
 
 /*****************************************************************************
@@ -186,7 +184,6 @@ void Dataflash::Buffer_Write_Enable (uint8_t BufferNo, unsigned int IntPageAdr)
  ******************************************************************************/
 void Dataflash::Buffer_Write_Byte (uint8_t BufferNo, unsigned int IntPageAdr, uint8_t Data)
 {
-    CHIP_DESELECT
     CHIP_SELECT
     if (1 == BufferNo) {			//write byte to buffer 1
         SPI.transfer(Buf1Write);			//buffer 1 write op-code
@@ -199,6 +196,7 @@ void Dataflash::Buffer_Write_Byte (uint8_t BufferNo, unsigned int IntPageAdr, ui
     SPI.transfer((uint8_t)(IntPageAdr));	//lower part of internal buffer address
     SPI.transfer(Data);				//write data byte
 
+    CHIP_DESELECT
 }
 
 /*****************************************************************************
@@ -221,7 +219,6 @@ void Dataflash::Buffer_Write_Byte (uint8_t BufferNo, unsigned int IntPageAdr, ui
  ******************************************************************************/
 void Dataflash::Buffer_Write_Str (uint8_t BufferNo, unsigned int IntPageAdr, unsigned int No_of_bytes, uint8_t *BufferPtr)
 {
-    CHIP_DESELECT
     CHIP_SELECT
     if (1 == BufferNo) {			//write byte(s) to buffer 1
         SPI.transfer(Buf1Write);			//buffer 1 write op-code
@@ -233,9 +230,9 @@ void Dataflash::Buffer_Write_Str (uint8_t BufferNo, unsigned int IntPageAdr, uns
     SPI.transfer((uint8_t)(IntPageAdr));//lower part of internal buffer address
     for(int i = 0; i < No_of_bytes; i++) {
         SPI.transfer(BufferPtr[i]);
-        //Serial.println((char)BufferPtr[i]);
     }
 
+    CHIP_DESELECT
 }
 
 /*****************************************************************************
@@ -254,7 +251,6 @@ void Dataflash::Buffer_Write_Str (uint8_t BufferNo, unsigned int IntPageAdr, uns
  ******************************************************************************/
 void Dataflash::Buffer_To_Page (uint8_t BufferNo, unsigned int PageAdr)
 {
-    CHIP_DESELECT
     CHIP_SELECT
     if (1 == BufferNo) {					//program flash page from buffer 1
         SPI.transfer(Buf1ToFlashWE);					//buffer 1 to flash with erase op-code
@@ -266,10 +262,9 @@ void Dataflash::Buffer_To_Page (uint8_t BufferNo, unsigned int PageAdr)
     SPI.transfer((uint8_t)(PageAdr << (PageBits - 8)));	//lower part of page address
     SPI.transfer(0x00);						//don't cares
 
-    CHIP_DESELECT
-    CHIP_SELECT
-
+    commit();
     waitForReady(ONE_SECOND);
+    CHIP_DESELECT
 
 }
 
@@ -288,7 +283,6 @@ void Dataflash::Buffer_To_Page (uint8_t BufferNo, unsigned int PageAdr)
  *
  ******************************************************************************/
 uint8_t Dataflash::Page_Buffer_Compare(uint8_t BufferNo, unsigned int PageAdr) {
-    CHIP_DESELECT
     CHIP_SELECT
     if (1 == BufferNo) {
         SPI.transfer(FlashToBuf1Compare);
@@ -299,16 +293,13 @@ uint8_t Dataflash::Page_Buffer_Compare(uint8_t BufferNo, unsigned int PageAdr) {
     SPI.transfer((uint8_t)(PageAdr >> (16 - PageBits)));	//upper part of page address
     SPI.transfer((uint8_t)(PageAdr << (PageBits - 8)));	//lower part of page address
 
-    CHIP_DESELECT
-    CHIP_SELECT
     uint8_t status = waitForReady(ONE_SECOND);
+    CHIP_DESELECT
 
     return (status & COMPARE_BIT);
 }
 
 uint8_t Dataflash::readStatus() {
-    CHIP_DESELECT
-    CHIP_SELECT
     SPI.transfer(StatusReg);		//send status register read op-code
     uint8_t result = SPI.transfer(0x00);			//dummy write to get result
     return result;				//return the read status register value
@@ -322,14 +313,35 @@ uint8_t Dataflash::waitForReady(uint32_t timeout) {
   uint32_t startTime = millis();
 
   do {
-    //Serial.println("Start waitForReady loop");
     status = readStatus();
-    if((millis() - startTime) > timeout) { Serial.println("waitForReady timeout"); return false; }
+    if((millis() - startTime) > timeout) {
+      Serial.print("waitForReady timeout; ");
+      Serial.println(timeout);
+      return false;
+    }
   } while(!(status & READY_BIT));
 
   //Serial.print("[DEBUG] Dataflash status: "); Serial.println(status, BIN);
 
   return status;
+}
+
+void Dataflash::chipSelect() {
+  Serial.print("Dataflash beginTransaction - ");
+  SPI.beginTransaction(dflashSettings);
+  digitalWrite(SS, HIGH);
+  digitalWrite(SS, LOW);
+}
+
+void Dataflash::chipDeselect() {
+  digitalWrite(SS, HIGH);
+  SPI.endTransaction();
+  Serial.println("Dataflash endTransaction");
+}
+
+void Dataflash::commit() {
+  digitalWrite(SS, HIGH);
+  digitalWrite(SS, LOW);
 }
 
 // *****************************[ End Of DATAFLASH.C ]*************************

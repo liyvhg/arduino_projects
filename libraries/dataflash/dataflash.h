@@ -68,7 +68,9 @@ public:
 private:
     uint8_t readStatus();
     uint8_t waitForReady(uint32_t timeout);
-
+    void chipSelect();
+    void chipDeselect();
+    void commit();
 
 };
 

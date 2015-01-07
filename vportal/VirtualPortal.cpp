@@ -109,12 +109,14 @@ int VirtualPortal::write(uint8_t* message, uint8_t* response) {
     int block = message[2];
     int arrayIndex = index & 0x0f;
 
+    characterToken->write(block, response+3);
+
+    //Status update with different first 3 bytes
+    status(response);
     response[0] = 'W';
-    response[1] = arrayIndex;
+    response[1] = index;
     response[2] = block;
 
-    characterToken->write(block, response+3);
-    //TODO: set response message.  Its like status but different (consult other code bases)
     return BLE_ATTRIBUTE_MAX_VALUE_LENGTH;
 }
 

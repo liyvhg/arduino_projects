@@ -2,7 +2,7 @@
 #include "VirtualPortal.h"
 
 
-VirtualPortal::VirtualPortal() : lightVal(0), sequence(0) {
+VirtualPortal::VirtualPortal() : lightVal(0), sequence(0), reset_6(0x00), reset_8(0xc2) {
     characterToken = NULL;
 }
 
@@ -120,19 +120,31 @@ int VirtualPortal::write(uint8_t* message, uint8_t* response) {
 
 int VirtualPortal::reset(uint8_t* response) {
 
-  response[0] = 0x52;
+  //52021900 000100aa c2021900
+  //52021900 000201aa c3021900
+  //52021900 000301aa c3021900
+
+  response[0] = 'R';
   response[1] = 0x02;
   response[2] = 0x19;
+  response[3] = 0;
+  response[4] = 0;
   response[5] = sequence++ % 0xFF;
+  response[6] = reset_6;
   response[7] = 0xaa;
-  response[8] = 0x86;
+  response[8] = reset_8;
   response[9] = 0x02;
   response[10] = 0x19;
+
+
+  //If we come into this method again, use different values
+  if (reset_6 == 0) reset_6++;
+  if (reset_8 == 0xc2) reset_8++;
 
 }
 
 int VirtualPortal::status(uint8_t* response) {
-  uint8_t temp[BLE_ATTRIBUTE_MAX_VALUE_LENGTH] = {'S', 0, 0, 0, 0, 0xFF, 1, 0xaa, 0x86, 2, 0x19, 0, 0, 0, 0, 0, 0, 0, 0};
+  uint8_t temp[BLE_ATTRIBUTE_MAX_VALUE_LENGTH] = {'S', 0, 0, 0, 0, 0xFF, 1, 0xaa, 0xc3, 2, 0x19, 0, 0, 0, 0, 0, 0, 0, 0, 0};
   memcpy(response, temp, BLE_ATTRIBUTE_MAX_VALUE_LENGTH);
 
   response[1] = characterToken ? 0x01 : 0x00;
@@ -171,7 +183,10 @@ void VirtualPortal::printCommand(bool incoming, const uint8_t* command) {
     case 'L': //Trap light
       interestingBytes = 1;
       break;
+    case 'A':
     case 'Q': //Query / read
+    case 'S':
+    case 'R':
     case 'W': //Write
       interestingBytes = BLE_ATTRIBUTE_MAX_VALUE_LENGTH - 1;
       break;
@@ -205,3 +220,19 @@ void VirtualPortal::printHex(String prefix, const unsigned char* buffer, int len
 }
 */
 
+
+void VirtualPortal::connect() {
+
+}
+
+void VirtualPortal::disconnect() {
+
+}
+
+void VirtualPortal::subscribe() {
+  sequence = 0;
+}
+
+void VirtualPortal::unsubscribe() {
+
+}

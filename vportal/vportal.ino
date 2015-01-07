@@ -25,8 +25,8 @@ BLEService service = BLEService("533E15303ABEF33FCD00594E8B0A8EA3");
 BLEService shortService = BLEService("1530");
 
 // create one or more characteristics
-BLECharacteristic txCharacteristic = BLECharacteristic("533E15423ABEF33FCD00594E8B0A8EA3", BLERead | BLENotify, BLE_ATTRIBUTE_MAX_VALUE_LENGTH);
-BLECharacteristic rxCharacteristic = BLECharacteristic("533E15433ABEF33FCD00594E8B0A8EA3", BLEWrite, BLE_ATTRIBUTE_MAX_VALUE_LENGTH);
+BLECharacteristic txCharacteristic = BLECharacteristic("533E15423ABEF33FCD00594E8B0A8EA3", BLERead | BLENotify, BLE_ATTRIBUTE_MAX_VALUE_LENGTH, true);
+BLECharacteristic rxCharacteristic = BLECharacteristic("533E15433ABEF33FCD00594E8B0A8EA3", BLEWrite, BLE_ATTRIBUTE_MAX_VALUE_LENGTH, true);
 
 VirtualPortal vp = VirtualPortal();
 
@@ -135,28 +135,28 @@ void loop() {
 // callbacks
 void connectCallback(BLECentral& central)
 {
-    Serial.print(F("Connected event, central: "));
-    Serial.println(central.address());
+    Serial.println(F("Connected event"));
+    vp.connect();
 }
 
 void disconnectCallback(BLECentral& central)
 {
-    Serial.print(F("Disconnected event, central: "));
-    Serial.println(central.address());
+    Serial.println(F("Disconnected event"));
+    vp.connect();
     subscribed = false;
 }
 
 void subscribeHandler(BLECentral& central, BLECharacteristic& characteristic)
 {
-  Serial.print(F("Subscribed to "));
-  Serial.println(characteristic.uuid());
+  Serial.println(F("Subscribed"));
+  vp.subscribe();
   subscribed = true;
 }
 
 void unsubscribeHandler(BLECentral& central, BLECharacteristic& characteristic)
 {
-  Serial.print(F("Unsubscribed to "));
-  Serial.println(characteristic.uuid());
+  Serial.println(F("Unsubscribed"));
+  vp.unsubscribe();
   subscribed = false;
 }
 

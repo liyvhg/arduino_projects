@@ -20,11 +20,16 @@ class VirtualPortal
     int respondTo(uint8_t *message, uint8_t *response);
     bool loadToken(Token *t);
     uint8_t light(); //get current light value
+    void connect();
+    void disconnect();
+    void subscribe();
+    void unsubscribe();
 
   private:
     int sequence;
     uint8_t lightVal;
     Token *characterToken;
+    uint8_t reset_6, reset_8;
 
     int activate(uint8_t* message, uint8_t* response);
     int color(uint8_t* message);

@@ -44,23 +44,6 @@ int VirtualPortal::respondTo(uint8_t* message, uint8_t* response) {
 }
 
 
-int VirtualPortal::activate(uint8_t* message, uint8_t* response) {
-  response[0] = message[0];
-  response[1] = message[1];
-  response[2] = 0x62;
-  response[3] = 0x02;
-  response[4] = 0x19;
-  response[5] = 0xaa;
-  response[6] = 0x01;
-  response[7] = 0x53;
-  response[8] = 0xbc;
-  response[9] = 0x58;
-  response[10] = 0xfc;
-  response[11] = 0x7d;
-  response[12] = 0xf4;
-
-}
-
 int VirtualPortal::query(uint8_t* message, uint8_t* response) {
     int index = message[1];
     int block = message[2];
@@ -126,32 +109,74 @@ int VirtualPortal::reset(uint8_t* response) {
   //52021900 000201aa c3021900
   //52021900 000301aa c3021900
 
+  //52021900 000200aa c2021900
+
   response[0] = 'R';
   response[1] = 0x02;
   response[2] = 0x19;
   response[3] = 0;
   response[4] = 0;
   response[5] = sequence++ % 0xFF;
-  response[6] = reset_6;
+  response[6] = 0;
   response[7] = 0xaa;
-  response[8] = reset_8;
+  response[8] = 0xc2;
   response[9] = 0x02;
   response[10] = 0x19;
 
+}
 
-  //If we come into this method again, use different values
-  if (reset_6 == 0) reset_6++;
-  if (reset_8 == 0xc2) reset_8++;
+int VirtualPortal::activate(uint8_t* message, uint8_t* response) {
+/*
+=> A - <41016202 19aa0153 bc58fc7d f4000000 00000000>
+=> A - <41006202 19aa0153 bc58fc7d f4000000 00000000>
+=> A - <41016202 19aa0153 bc58fc7d f4000000 00000000>
+
+<= R 0  => R 2 19 0 0 DC 0 AA C2 2 19 0 0  
+<= A 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0  => A 1 62 2 19 AA 1 53 BC 58 FC 7D F4 0 0 0 0 0 0 0  
+<= A 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0  => A 0 62 2 19 AA 1 53 BC 58 FC 7D F4 0 0 0 0 0 0 0  
+<= A 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0  => A 1 62 2 19 AA 1 53 BC 58 FC 7D F4 0 0 0 0 0 0 0  
+<= S 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0  => S 1 0 0 0 DD 0 AA C2 2 19 0 0 0 0 0 0 0 0 0  
+<= R 0  => R 2 19 0 0 DE 0 AA C2 2 19 0 0  
+
+=> S - <53000000 000401aa c2021900 00000000 00000000>
+*/
+
+
+
+  response[0] = message[0];
+  response[1] = message[1];
+  response[2] = 0x62;
+  response[3] = 0x02;
+  response[4] = 0x19;
+  response[5] = 0xaa;
+  response[6] = 0x01;
+  response[7] = 0x53;
+  response[8] = 0xbc;
+  response[9] = 0x58;
+  response[10] = 0xfc;
+  response[11] = 0x7d;
+  response[12] = 0xf4;
 
 }
 
+
+
 int VirtualPortal::status(uint8_t* response) {
-  uint8_t temp[BLE_ATTRIBUTE_MAX_VALUE_LENGTH] = {'S', 0, 0, 0, 0, 0xFF, 1, 0xaa, 0xc3, 2, 0x19, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-  memcpy(response, temp, BLE_ATTRIBUTE_MAX_VALUE_LENGTH);
+
+  response[0] = 'S';
 
   response[1] = characterToken ? 0x01 : 0x00;
+  response[2] = false ? 0x01 : 0x00;
+  response[3] = false ? 0x01 : 0x00;
+  response[4] = false ? 0x01 : 0x00;
 
   response[5] = sequence++ % 0xFF;
+
+  response[6] = 1;
+  response[7] = 0xaa;
+  response[8] = 0xc2;
+  response[9] = 0x02;
+  response[10] = 0x19;
 
   return BLE_ATTRIBUTE_MAX_VALUE_LENGTH;
 }
@@ -185,10 +210,14 @@ void VirtualPortal::printCommand(bool incoming, const uint8_t* command) {
     case 'L': //Trap light
       interestingBytes = 1;
       break;
+    case 'R':
+      interestingBytes = incoming ? 1 : 12;
+      break;
     case 'A':
+      interestingBytes = 1;
+      break;
     case 'Q': //Query / read
     case 'S':
-    case 'R':
     case 'W': //Write
       interestingBytes = BLE_ATTRIBUTE_MAX_VALUE_LENGTH - 1;
       break;

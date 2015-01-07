@@ -216,10 +216,12 @@ void VirtualPortal::printCommand(bool incoming, const uint8_t* command) {
     case 'A':
       interestingBytes = 1;
       break;
-    case 'Q': //Query / read
     case 'S':
+      interestingBytes = incoming ? 0 : 5;
+      break;
+    case 'Q': //Query / read
     case 'W': //Write
-      interestingBytes = BLE_ATTRIBUTE_MAX_VALUE_LENGTH - 1;
+      interestingBytes = incoming ? 2 : BLE_ATTRIBUTE_MAX_VALUE_LENGTH - 1;
       break;
   }
 

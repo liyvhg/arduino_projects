@@ -123,7 +123,7 @@ void loop() {
         Token::import();
         break;
       case 'L': //Load
-        Serial.println(F("Loading token 1(hardcoded)"));
+        Serial.println(F("Loading token 1 (hardcoded)"));
         vp.loadToken(new Token(1));
         break;
     }
@@ -161,7 +161,6 @@ void unsubscribeHandler(BLECentral& central, BLECharacteristic& characteristic)
 void writeHandler(BLECentral& central, BLECharacteristic& characteristic)
 {
     unsigned char len = characteristic.valueLength();
-    //Serial.print(F("Received value of size")); Serial.println(len, DEC);
     uint8_t *val = (uint8_t*)characteristic.value();
     uint8_t response[BLE_ATTRIBUTE_MAX_VALUE_LENGTH] = {0};
 
@@ -169,10 +168,7 @@ void writeHandler(BLECentral& central, BLECharacteristic& characteristic)
 
     //respond if data to respond with
     if (len > 0) {
-      bool success = txCharacteristic.setValue(response, BLE_ATTRIBUTE_MAX_VALUE_LENGTH);
-      if (success) {
-        //Serial.println("Responded successfully");
-      }
+      txCharacteristic.setValue(response, BLE_ATTRIBUTE_MAX_VALUE_LENGTH);
     }
 }
 

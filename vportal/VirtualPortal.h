@@ -33,7 +33,7 @@ class VirtualPortal
     int query(uint8_t* message, uint8_t* response);
     int reset(uint8_t* response);
     int status(uint8_t* response);
-    int write(uint8_t* response);
+    int write(uint8_t* message, uint8_t* response);
 
     void printCommand(bool incoming, const uint8_t* command);
     //void printHex(String prefix, const unsigned char* buffer, int len, String suffix);

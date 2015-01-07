@@ -34,6 +34,7 @@ int VirtualPortal::respondTo(uint8_t* message, uint8_t* response) {
       status(response);
       break;
     case 'W': //Write
+      write(message, response);
       break;
   }
 
@@ -66,11 +67,54 @@ int VirtualPortal::query(uint8_t* message, uint8_t* response) {
     int arrayIndex = index & 0x0f;
 
     response[0] = 'Q';
+    response[1] = index;
+    response[2] = block;
+
+    bool debug = false;
+    if (debug) {
+      switch(block) {
+        case 0:
+          response[3] = 0xAF;
+          response[4] = 0xBE;
+          response[5] = 0xE9;
+          response[6] = 0xEF;
+          response[7] = 0x17;
+          response[8] = 0x81;
+          response[9] = 0x01;
+          response[10] = 0x0F;
+          response[11] = 0xC4;
+          response[12] = 0x07;
+          response[18] = 0x14;
+          break;
+        case 1:
+          response[3] = 0xE4;
+          response[4] = 0x01;
+          response[15] = 0x04;
+          response[16] = 0x30;
+          response[17] = 0x31;
+          response[18] = 0xA2;
+          break;
+        default:
+          break;
+      }
+    } else {
+      characterToken->read(block, response+3);
+    }
+
+    return BLE_ATTRIBUTE_MAX_VALUE_LENGTH;
+}
+
+int VirtualPortal::write(uint8_t* message, uint8_t* response) {
+    int index = message[1];
+    int block = message[2];
+    int arrayIndex = index & 0x0f;
+
+    response[0] = 'W';
     response[1] = arrayIndex;
     response[2] = block;
 
-    characterToken->read(block, response+3);
-
+    characterToken->write(block, response+3);
+    //TODO: set response message.  Its like status but different (consult other code bases)
     return BLE_ATTRIBUTE_MAX_VALUE_LENGTH;
 }
 
@@ -129,7 +173,7 @@ void VirtualPortal::printCommand(bool incoming, const uint8_t* command) {
       break;
     case 'Q': //Query / read
     case 'W': //Write
-      interestingBytes = 18;
+      interestingBytes = BLE_ATTRIBUTE_MAX_VALUE_LENGTH - 1;
       break;
   }
 

@@ -8,6 +8,7 @@
 #endif
 
 #define BLE_ATTRIBUTE_MAX_VALUE_LENGTH 20
+#define LCD Serial1
 
 #include "Token.h"
 

@@ -119,8 +119,11 @@ uint8_t VirtualPortal::light() {
 }
 
 void VirtualPortal::printCommand(bool incoming, const uint8_t* command) {
-
   int interestingBytes = 0;
+
+  LCD.write(0xFE); //MoveTo
+  LCD.write(0xCF); //2nd line, Last character
+  LCD.write(command[0]);
 
   switch(command[0]) {
     case 'C':

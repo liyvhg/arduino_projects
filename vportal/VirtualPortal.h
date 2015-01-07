@@ -7,7 +7,7 @@
   #include "WProgram.h"
 #endif
 
-#define BLE_ATTRIBUTE_MAX_VALUE_LENGTH 19
+#define BLE_ATTRIBUTE_MAX_VALUE_LENGTH 20
 
 #include "Token.h"
 

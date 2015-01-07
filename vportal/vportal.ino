@@ -37,15 +37,17 @@ long interval = 1000;           // interval at which to blink (milliseconds)
 bool subscribed = false;
 
 int libraryId = 0; //Token being displayed
-char topline[BLOCK_SIZE] = {0};
-char bottomline[BLOCK_SIZE] = {0};
+//char topline[BLOCK_SIZE] = {0};
+//char bottomline[BLOCK_SIZE] = {0};
 
 void setup() {
+    LCD.begin(9600);
+    LCD.write(0xFE);   //command flag
+    LCD.write(0x01);   //clear command.
+
     Serial.begin(115200);
     delay(3000);  //3 seconds delay for enabling to see the start up comments on the serial board
-
     pinMode(LED_PIN, OUTPUT);
-
     //nav.init();
 
     blePeripheral.setDeviceName("Skylanders Portal\0");

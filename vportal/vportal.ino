@@ -119,9 +119,11 @@ void loop() {
     // read the incoming byte:
     int incomingByte = Serial.read();
     switch (incomingByte) {
+#ifdef TOKEN_IMPORT
       case 'I': //import
         Token::import();
         break;
+#endif
       case 'L': //Load
         Serial.println(F("Loading token 1 (hardcoded)"));
         vp.loadToken(new Token(1));

@@ -53,7 +53,7 @@ void Token::display(int libraryId, char* topline, char* bottomline) {
   Serial1.print((char*)buffer);
 }
 
-
+#ifdef TOKEN_IMPORT
 void Token::import() {
   Dataflash dflash;
   uint8_t status = dflash.init();

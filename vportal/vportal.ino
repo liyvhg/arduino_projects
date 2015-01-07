@@ -66,7 +66,7 @@ void setup() {
     // begin initialization
     blePeripheral.begin();
 
-    Serial.println(F("BLE Portal Peripheral"));
+    //Serial.println(F("BLE Portal Peripheral"));
 }
 
 void loop() {
@@ -123,7 +123,7 @@ void loop() {
         Token::import();
         break;
       case 'L': //Load
-        Serial.println("Loading token 1(hardcoded)");
+        Serial.println(F("Loading token 1(hardcoded)"));
         vp.loadToken(new Token(1));
         break;
     }
@@ -146,14 +146,14 @@ void disconnectCallback(BLECentral& central)
 
 void subscribeHandler(BLECentral& central, BLECharacteristic& characteristic)
 {
-  Serial.print("Subscribed to ");
+  Serial.print(F("Subscribed to "));
   Serial.println(characteristic.uuid());
   subscribed = true;
 }
 
 void unsubscribeHandler(BLECentral& central, BLECharacteristic& characteristic)
 {
-  Serial.print("Unsubscribed to ");
+  Serial.print(F("Unsubscribed to "));
   Serial.println(characteristic.uuid());
   subscribed = false;
 }
@@ -161,6 +161,7 @@ void unsubscribeHandler(BLECentral& central, BLECharacteristic& characteristic)
 void writeHandler(BLECentral& central, BLECharacteristic& characteristic)
 {
     unsigned char len = characteristic.valueLength();
+    //Serial.print(F("Received value of size")); Serial.println(len, DEC);
     uint8_t *val = (uint8_t*)characteristic.value();
     uint8_t response[BLE_ATTRIBUTE_MAX_VALUE_LENGTH] = {0};
 

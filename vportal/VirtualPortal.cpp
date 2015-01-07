@@ -65,11 +65,6 @@ int VirtualPortal::query(uint8_t* message, uint8_t* response) {
     int block = message[2];
     int arrayIndex = index & 0x0f;
 
-    Serial.print("Returning block ");
-    Serial.print(block);
-    Serial.print(" of portal index ");
-    Serial.println(arrayIndex);
-
     response[0] = 'Q';
     response[1] = arrayIndex;
     response[2] = block;
@@ -141,14 +136,17 @@ void VirtualPortal::printCommand(bool incoming, const uint8_t* command) {
   if (interestingBytes > 0) {
     Serial.print(incoming ? "<= " : "=> ");
     Serial.print((char)command[0]);
-    Serial.print(" ");
+    Serial.print(F(" "));
 
     for(int i = 0; i < interestingBytes; i++) {
       Serial.print(command[i+1], HEX); //+1 to ignore ASCII first byte
-      Serial.print(" ");
+      Serial.print(F(" "));
     }
-
-    Serial.println(" ");
+    if (incoming) {
+      Serial.print(F(" "));
+    } else {
+      Serial.println(F(" "));
+    }
   }
 }
 

@@ -2,11 +2,11 @@
 // Import libraries (BLEPeripheral depends on SPI)
 #include <SPI.h>
 #include <BLEPeripheral.h>
-#include <MemoryFree.h>
 #include <dataflash.h>
 #include <Bounce2.h>
 #include "VirtualPortal.h"
 //#include "NavSwitch.h"
+//#include <MemoryFree.h>
 
 // define pins (varies per shield/board)
 #define BLE_REQ   6

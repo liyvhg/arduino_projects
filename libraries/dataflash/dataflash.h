@@ -7,12 +7,12 @@
 #define ChkBit(x,y)		(x  & (y))
 
 //Dataflash opcodes
-#define FlashPageRead			0x52	// Main memory page read
+#define FlashPageRead			0xD2	// Main memory page read
 #define FlashToBuf1Transfer 		0x53	// Main memory page to buffer 1 transfer
-#define Buf1Read			0x54	// Buffer 1 read
+#define Buf1Read			0xD4	// Buffer 1 read
 #define FlashToBuf2Transfer 		0x55	// Main memory page to buffer 2 transfer
-#define Buf2Read			0x56	// Buffer 2 read
-#define StatusReg			0x57	// Status register
+#define Buf2Read			0xD6	// Buffer 2 read
+#define StatusReg			0xD7	// Status register
 #define AutoPageReWrBuf1		0x58	// Auto page rewrite through buffer 1
 #define AutoPageReWrBuf2		0x59	// Auto page rewrite through buffer 2
 #define FlashToBuf1Compare    		0x60	// Main memory page to buffer 1 compare
@@ -57,12 +57,11 @@ public:
     void Page_To_Buffer (unsigned int PageAdr, uint8_t BufferNo);
     uint8_t Buffer_Read_Byte (uint8_t BufferNo, unsigned int IntPageAdr);
     void Buffer_Read_Str (uint8_t BufferNo, unsigned int IntPageAdr, unsigned int No_of_bytes, uint8_t *BufferPtr);
+    void Page_Read_Str (uint8_t Page, unsigned int IntPageAdr, unsigned int No_of_bytes, uint8_t *BufferPtr);
     void Buffer_Write_Enable (uint8_t BufferNo, unsigned int IntPageAdr);
     void Buffer_Write_Byte (uint8_t BufferNo, unsigned int IntPageAdr, uint8_t Data);
     void Buffer_Write_Str (uint8_t BufferNo, unsigned int IntPageAdr, unsigned int No_of_bytes, uint8_t *BufferPtr);
     void Buffer_To_Page (uint8_t BufferNo, unsigned int PageAdr);
-    void Cont_Flash_Read_Enable (unsigned int PageAdr, unsigned int IntPageAdr);
-    void Page_Erase (unsigned int PageAdr); // added by mthomas
     uint8_t Page_Buffer_Compare(uint8_t BufferNo, unsigned int PageAdr); // added by mthomas
 
 private:
@@ -70,7 +69,7 @@ private:
     uint8_t waitForReady(uint32_t timeout);
     void chipSelect();
     void chipDeselect();
-    void commit();
+    void strobe();
 
 };
 

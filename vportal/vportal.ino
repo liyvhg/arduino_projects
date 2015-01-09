@@ -6,7 +6,7 @@
 #include <Bounce2.h>
 #include "VirtualPortal.h"
 //#include "NavSwitch.h"
-//#include <MemoryFree.h>
+#include <MemoryFree.h>
 
 // define pins (varies per shield/board)
 #define BLE_REQ   6
@@ -14,6 +14,7 @@
 #define BLE_RST   4
 
 #define LED_PIN   9
+#define SPI_TRANSACTION_MISMATCH_LED 10
 
 //NavSwitch nav = NavSwitch(8, 5, 3);
 
@@ -111,10 +112,10 @@ void loop() {
   if(currentMillis - previousMillis > interval) {
     previousMillis = currentMillis;
 
-    /* //1073 during my last check
-    Serial.print("freeMemory()=");
-    Serial.println(freeMemory());
-    */
+
+    //1073 during my last check
+    //Serial.print("freeMemory()="); Serial.println(freeMemory());
+
   }
 
   if (Serial.available() > 0) {
@@ -167,8 +168,10 @@ void writeHandler(BLECentral& central, BLECharacteristic& characteristic)
     unsigned char len = characteristic.valueLength();
     uint8_t *val = (uint8_t*)characteristic.value();
     uint8_t response[BLE_ATTRIBUTE_MAX_VALUE_LENGTH] = {0};
-
+    unsigned long start = millis();
     len = vp.respondTo(val, response);
+
+    Serial.print("respondTo took (ms): "); Serial.println(millis() - start);
 
     //respond if data to respond with
     if (len > 0) {
@@ -177,9 +180,5 @@ void writeHandler(BLECentral& central, BLECharacteristic& characteristic)
 }
 
 unsigned char ble_busy() {
-    if(digitalRead(BLE_REQ) == HIGH) {
-        return 0;
-    } else {
-        return 1;
-    }
+    return (digitalRead(BLE_REQ) == LOW);
 }

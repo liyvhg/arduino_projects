@@ -7,6 +7,7 @@
   #include "WProgram.h"
 #endif
 
+#define TOKEN_IMPORT
 #include <dataflash.h>
 #define PRIMARY_BUFFER 1
 

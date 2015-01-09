@@ -24,11 +24,23 @@ int Token::write(int block, uint8_t* buffer) {
 
 void Token::readFlash(int block, uint8_t* buffer) {
   int chapter = TOC_SIZE + (libraryId * CHAPTER_SIZE);
-  int page_offset = block / PAGE_SIZE; //Which page in chapter [0,3]
-  int block_offset = (block % PAGE_SIZE) * BLOCK_SIZE;
+  int page_offset = block / BLOCKS_PER_PAGE; //Which page in chapter [0,3]
+  int block_offset = (block % BLOCKS_PER_PAGE) * BLOCK_SIZE;
 
-  dflash.Page_To_Buffer(chapter + page_offset, PRIMARY_BUFFER);
-  dflash.Buffer_Read_Str(PRIMARY_BUFFER, block_offset, BLOCK_SIZE, buffer);
+  bool direct = true;
+  if (direct) {
+
+    Serial.print(block, DEC);
+    Serial.print(":");
+    Serial.print(chapter + page_offset, DEC);
+    Serial.print(":");
+    Serial.print(block_offset, DEC);
+    Serial.print(" ");
+    dflash.Page_Read_Str(chapter + page_offset, block_offset, BLOCK_SIZE, buffer);
+  } else {
+    dflash.Page_To_Buffer(chapter + page_offset, PRIMARY_BUFFER);
+    dflash.Buffer_Read_Str(PRIMARY_BUFFER, block_offset, BLOCK_SIZE, buffer);
+  }
 }
 
 void Token::writeFlash(int block, uint8_t* buffer) {
@@ -87,19 +99,22 @@ void Token::import() {
   for (int i = 2; i < BLOCK_COUNT; i++) {
     //Transition to next page; save previous, load next.
     if (i % BLOCKS_PER_PAGE == 0) {
+      Serial.println(" ");
       dflash.Buffer_To_Page(PRIMARY_BUFFER, page);
       page++;
-      Serial.print(F("|"));
       dflash.Page_To_Buffer(page, PRIMARY_BUFFER);
     }
 
-    Serial.print(F("."));
+    int offset = (i % BLOCKS_PER_PAGE) * BLOCK_SIZE;
     if (i == 3) {
-      dflash.Buffer_Write_Str(PRIMARY_BUFFER, i * BLOCK_SIZE, BLOCK_SIZE, ro);
-    } else if (i % 4 == 0) {
-      dflash.Buffer_Write_Str(PRIMARY_BUFFER, i * BLOCK_SIZE, BLOCK_SIZE, rw);
+      Serial.print(F("r"));
+      dflash.Buffer_Write_Str(PRIMARY_BUFFER, offset, BLOCK_SIZE, ro);
+    } else if (i % 4 == 3) {
+      Serial.print(F("w"));
+      dflash.Buffer_Write_Str(PRIMARY_BUFFER, offset, BLOCK_SIZE, rw);
     } else {
-      dflash.Buffer_Write_Str(PRIMARY_BUFFER, i * BLOCK_SIZE, BLOCK_SIZE, zeros);
+      Serial.print(F("0"));
+      dflash.Buffer_Write_Str(PRIMARY_BUFFER, offset, BLOCK_SIZE, zeros);
     }
   }
   dflash.Buffer_To_Page(PRIMARY_BUFFER, page); //Final page save

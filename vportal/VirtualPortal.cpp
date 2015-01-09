@@ -55,6 +55,15 @@ int VirtualPortal::query(uint8_t* message, uint8_t* response) {
 
     bool debug = false;
     if (debug) {
+
+      SPISettings dflashSettings(1000000, MSBFIRST, SPI_MODE3);
+      //Fake the delay and experience of reading from flash
+      SPI.beginTransaction(dflashSettings);
+      digitalWrite(SS, LOW);
+      delay(500);
+      digitalWrite(SS, HIGH);
+      SPI.endTransaction();
+
       switch(block) {
         case 0:
           response[3] = 0xAF;

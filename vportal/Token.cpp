@@ -29,13 +29,6 @@ void Token::readFlash(int block, uint8_t* buffer) {
 
   bool direct = true;
   if (direct) {
-
-    Serial.print(block, DEC);
-    Serial.print(":");
-    Serial.print(chapter + page_offset, DEC);
-    Serial.print(":");
-    Serial.print(block_offset, DEC);
-    Serial.print(" ");
     dflash.Page_Read_Str(chapter + page_offset, block_offset, BLOCK_SIZE, buffer);
   } else {
     dflash.Page_To_Buffer(chapter + page_offset, PRIMARY_BUFFER);
@@ -44,17 +37,18 @@ void Token::readFlash(int block, uint8_t* buffer) {
 }
 
 void Token::writeFlash(int block, uint8_t* buffer) {
-  int page = TOC_SIZE + (libraryId * CHAPTER_SIZE);
-  int block_offset = (block % PAGE_SIZE) * BLOCK_SIZE;
+  int chapter = TOC_SIZE + (libraryId * CHAPTER_SIZE);
+  int page_offset = block / BLOCKS_PER_PAGE; //Which page in chapter [0,3]
+  int block_offset = (block % BLOCKS_PER_PAGE) * BLOCK_SIZE;
 
-  dflash.Page_To_Buffer(page, PRIMARY_BUFFER);
+  dflash.Page_To_Buffer(chapter + page_offset, PRIMARY_BUFFER);
   dflash.Buffer_Write_Str(PRIMARY_BUFFER, block_offset, BLOCK_SIZE, buffer);
-  dflash.Buffer_To_Page(PRIMARY_BUFFER, page);
+  dflash.Buffer_To_Page(PRIMARY_BUFFER, chapter + page_offset);
 }
 
 void Token::display(int libraryId, char* topline, char* bottomline) {
-  int page_offset = libraryId / PAGE_SIZE;
-  int block_offset = (libraryId % PAGE_SIZE) * BLOCK_SIZE;
+  int page_offset = libraryId / BLOCKS_PER_PAGE;
+  int block_offset = (libraryId % BLOCKS_PER_PAGE) * BLOCK_SIZE;
   uint8_t buffer[BLOCK_SIZE];
 
   dflash.Page_To_Buffer(page_offset, PRIMARY_BUFFER);

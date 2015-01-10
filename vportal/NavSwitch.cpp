@@ -2,11 +2,15 @@
 #include "NavSwitch.h"
 
 
-NavSwitch::NavSwitch(int pinOne, int pinTwo, int pinTee) : pinOne (pinOne), pinTwo(pinTwo), pinTee(pinTee), oneBounce(), twoBounce(), teeBounce() {
+NavSwitch::NavSwitch(int pinC, int pinOne, int pinTwo, int pinTee) : pinC(pinC), pinOne (pinOne), pinTwo(pinTwo), pinTee(pinTee), oneBounce(), twoBounce(), teeBounce() {
 
 }
 
 void NavSwitch::init() {
+  //Cheating and using pinC as a ground
+  pinMode(pinC, OUTPUT);
+  digitalWrite(pinC, LOW);
+
   pinMode(pinOne, INPUT_PULLUP);
   oneBounce.attach(pinOne);
   oneBounce.interval(5);

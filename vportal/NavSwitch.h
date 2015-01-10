@@ -14,13 +14,13 @@ class NavSwitch
   public:
     enum NavDir { NONE, ONE, TWO, TEE };
 
-    NavSwitch(int pinTwo, int pinTee, int pinOne);
+    NavSwitch(int pinC, int pinTwo, int pinTee, int pinOne);
     void init();
     int update();
     NavSwitch::NavDir read();
 
   private:
-    int pinOne, pinTwo, pinTee;
+    int pinC, pinOne, pinTwo, pinTee;
     Bounce oneBounce, twoBounce, teeBounce;
 
 };

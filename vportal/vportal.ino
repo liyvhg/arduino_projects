@@ -15,7 +15,7 @@
 
 
 //Should trap led be a real led, or LCD backlight?
-bool trap_led = false;
+bool trap_led = true;
 
 #define TRAP_LED_PIN   13
 
@@ -47,13 +47,12 @@ bool subscribed = false;
 
 int libraryId = 0; //Token being displayed
 
-//Debugging, TODO: delete later
-  Dataflash dflash;
-
 void setup() {
     LCD.begin(9600);
     LCD.write(0xFE);   //command flag
     LCD.write(0x01);   //clear command.
+    LCD.write(BACKLIGHT_CMD);
+    LCD.write(BACKLIGHT_BASE + BACKLIGHT_LEVELS - 1);
 
     Serial.begin(115200);
     delay(3000);  //3 seconds delay for enabling to see the start up comments on the serial board
@@ -78,7 +77,7 @@ void setup() {
     // begin initialization
     blePeripheral.begin();
 
-    Serial.println(F("BLE Portal Peripheral"));
+    //Serial.println(F("BLE Portal Peripheral"));
 }
 
 void loop() {
@@ -153,11 +152,8 @@ void loop() {
   if(currentMillis - previousMillis > interval) {
     previousMillis = currentMillis;
 
-    uint8_t status = dflash.init();
-    Serial.print(F("Dataflash status: ")); Serial.println(status, BIN);
-
     //1073 during my last check
-    Serial.print("freeMemory()="); Serial.println(freeMemory());
+    //Serial.print("freeMemory()="); Serial.println(freeMemory());
   }
 
 }
@@ -165,7 +161,7 @@ void loop() {
 // callbacks
 void connectCallback(BLECentral& central)
 {
-    Serial.println(F("Connected event"));
+    Serial.println(F("Connected"));
     vp.connect();
 }
 
@@ -196,7 +192,7 @@ void writeHandler(BLECentral& central, BLECharacteristic& characteristic)
     unsigned long start = millis();
     len = vp.respondTo(val, response);
 
-    Serial.print("respondTo took (ms): "); Serial.println(millis() - start);
+    //Serial.print("respondTo took (ms): "); Serial.println(millis() - start);
 
     //respond if data to respond with
     if (len > 0) {

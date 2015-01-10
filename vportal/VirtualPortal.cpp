@@ -113,13 +113,6 @@ int VirtualPortal::write(uint8_t* message, uint8_t* response) {
 }
 
 int VirtualPortal::reset(uint8_t* response) {
-
-  //52021900 000100aa c2021900
-  //52021900 000201aa c3021900
-  //52021900 000301aa c3021900
-
-  //52021900 000200aa c2021900
-
   response[0] = 'R';
   response[1] = 0x02;
   response[2] = 0x19;
@@ -135,23 +128,6 @@ int VirtualPortal::reset(uint8_t* response) {
 }
 
 int VirtualPortal::activate(uint8_t* message, uint8_t* response) {
-/*
-=> A - <41016202 19aa0153 bc58fc7d f4000000 00000000>
-=> A - <41006202 19aa0153 bc58fc7d f4000000 00000000>
-=> A - <41016202 19aa0153 bc58fc7d f4000000 00000000>
-
-<= R 0  => R 2 19 0 0 DC 0 AA C2 2 19 0 0  
-<= A 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0  => A 1 62 2 19 AA 1 53 BC 58 FC 7D F4 0 0 0 0 0 0 0  
-<= A 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0  => A 0 62 2 19 AA 1 53 BC 58 FC 7D F4 0 0 0 0 0 0 0  
-<= A 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0  => A 1 62 2 19 AA 1 53 BC 58 FC 7D F4 0 0 0 0 0 0 0  
-<= S 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0  => S 1 0 0 0 DD 0 AA C2 2 19 0 0 0 0 0 0 0 0 0  
-<= R 0  => R 2 19 0 0 DE 0 AA C2 2 19 0 0  
-
-=> S - <53000000 000401aa c2021900 00000000 00000000>
-*/
-
-
-
   response[0] = message[0];
   response[1] = message[1];
   response[2] = 0x62;
@@ -171,9 +147,7 @@ int VirtualPortal::activate(uint8_t* message, uint8_t* response) {
 
 
 int VirtualPortal::status(uint8_t* response) {
-
   response[0] = 'S';
-
   response[1] = characterToken ? 0x01 : 0x00;
   response[2] = false ? 0x01 : 0x00;
   response[3] = false ? 0x01 : 0x00;
@@ -191,10 +165,20 @@ int VirtualPortal::status(uint8_t* response) {
 }
 
 bool VirtualPortal::loadToken(Token *t) {
+  switch(t->type()) {
+    case TRAP:
+      break;
+    case MAGIC_ITEM:
+      break;
+    case LOCATION:
+      break;
+    case TRAP_MASTER:
+    case MINI:
+    case REGULAR:
+      characterToken = t;
+      break;
+  }
 
-  //Switch on Token type to set to right var
-  //If a token is being replaced, destruct previous
-  characterToken = t;
 }
 
 int VirtualPortal::light(uint8_t* message) {
@@ -250,18 +234,6 @@ void VirtualPortal::printCommand(bool incoming, const uint8_t* command) {
     }
   }
 }
-
-/*
-void VirtualPortal::printHex(String prefix, const unsigned char* buffer, int len, String suffix) {
-    Serial.print(prefix);
-    for(int i = 0; i < len; i++) {
-      Serial.print(buffer[i], HEX);
-      Serial.print(" ");
-    }
-    Serial.println(suffix);
-}
-*/
-
 
 void VirtualPortal::connect() {
 

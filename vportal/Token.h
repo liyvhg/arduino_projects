@@ -8,8 +8,12 @@
 #endif
 
 #define TOKEN_IMPORT
+
 #include <dataflash.h>
 #define PRIMARY_BUFFER 1
+#define SECONDARY_BUFFER 2
+
+#define LCD Serial1
 
 #define BLOCK_SIZE 16
 #define BLOCK_COUNT 64
@@ -44,7 +48,7 @@ class Token
     Token(int libraryId);
     int read(int block, uint8_t* buffer);
     int write(int block, uint8_t* data);
-    void display(int libraryId, char* topline, char* bottomline);
+    void display();
 
 #ifdef TOKEN_IMPORT
     static void import();
@@ -53,7 +57,7 @@ class Token
   private:
     Dataflash dflash;
     int libraryId;
-    char name[BLOCK_SIZE-1];
+    char name[BLOCK_SIZE];
     uint8_t elementAndType; //enums
     void readFlash(int block, uint8_t* buffer);
     void writeFlash(int block, uint8_t* buffer);

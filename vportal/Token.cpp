@@ -27,13 +27,7 @@ void Token::readFlash(int block, uint8_t* buffer) {
   int page_offset = block / BLOCKS_PER_PAGE; //Which page in chapter [0,3]
   int block_offset = (block % BLOCKS_PER_PAGE) * BLOCK_SIZE;
 
-  bool direct = true;
-  if (direct) {
-    dflash.Page_Read_Str(chapter + page_offset, block_offset, BLOCK_SIZE, buffer);
-  } else {
-    dflash.Page_To_Buffer(chapter + page_offset, PRIMARY_BUFFER);
-    dflash.Buffer_Read_Str(PRIMARY_BUFFER, block_offset, BLOCK_SIZE, buffer);
-  }
+  dflash.Page_Read_Str(chapter + page_offset, block_offset, BLOCK_SIZE, buffer);
 }
 
 void Token::writeFlash(int block, uint8_t* buffer) {
@@ -41,22 +35,69 @@ void Token::writeFlash(int block, uint8_t* buffer) {
   int page_offset = block / BLOCKS_PER_PAGE; //Which page in chapter [0,3]
   int block_offset = (block % BLOCKS_PER_PAGE) * BLOCK_SIZE;
 
-  dflash.Page_To_Buffer(chapter + page_offset, PRIMARY_BUFFER);
-  dflash.Buffer_Write_Str(PRIMARY_BUFFER, block_offset, BLOCK_SIZE, buffer);
-  dflash.Buffer_To_Page(PRIMARY_BUFFER, chapter + page_offset);
+  uint8_t dflash_buffer;
+
+  switch(elementAndType & TYPE_MASK) {
+    case TRAP_MASTER:
+    case MINI:
+    case REGULAR:
+      dflash_buffer = PRIMARY_BUFFER;
+      break;
+    case TRAP:
+      dflash_buffer = SECONDARY_BUFFER;
+      break;
+  }
+
+  dflash.Page_To_Buffer(chapter + page_offset, dflash_buffer);
+  dflash.Buffer_Write_Str(dflash_buffer, block_offset, BLOCK_SIZE, buffer);
+  dflash.Buffer_To_Page(dflash_buffer, chapter + page_offset);
 }
 
-void Token::display(int libraryId, char* topline, char* bottomline) {
+void Token::display() {
   int page_offset = libraryId / BLOCKS_PER_PAGE;
   int block_offset = (libraryId % BLOCKS_PER_PAGE) * BLOCK_SIZE;
-  uint8_t buffer[BLOCK_SIZE];
 
-  dflash.Page_To_Buffer(page_offset, PRIMARY_BUFFER);
-  dflash.Buffer_Read_Str(PRIMARY_BUFFER, block_offset, BLOCK_SIZE, buffer);
+  dflash.Page_Read_Str(page_offset, block_offset, BLOCK_SIZE-1, (uint8_t*)name);
+  dflash.Page_Read_Str(page_offset, block_offset, 1, &elementAndType);
 
   //Topline Character name
+  LCD.write(0xFE); //MoveTo
+  LCD.write(0xC0); //2nd line
+  LCD.print(name);
+
   //Bottomline: Element, type
-  Serial1.print((char*)buffer);
+  LCD.write(0xFE); //MoveTo
+  LCD.write(0xC0); //2nd line
+
+  switch(elementAndType & ELEMENT_MASK) {
+    case MAGIC:
+    case EARTH:
+    case WATER:
+    case FIRE:
+    case TECH:
+    case UNDEAD:
+    case LIFE:
+    case AIR:
+    case DARK:
+    case LIGHT:
+      LCD.print("Element");
+      break;
+  }
+
+  LCD.write(0xFE); //MoveTo
+  LCD.write(0xC8); //2nd line, half way across
+
+  switch(elementAndType & TYPE_MASK) {
+    case TRAP_MASTER:
+    case TRAP:
+    case MAGIC_ITEM:
+    case LOCATION:
+    case MINI:
+    case REGULAR:
+      LCD.print("Type");
+      break;
+  }
+
 }
 
 #ifdef TOKEN_IMPORT

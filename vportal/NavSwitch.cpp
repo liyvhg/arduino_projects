@@ -2,7 +2,14 @@
 #include "NavSwitch.h"
 
 
-NavSwitch::NavSwitch(int pinC, int pinOne, int pinTwo, int pinTee) : pinC(pinC), pinOne (pinOne), pinTwo(pinTwo), pinTee(pinTee), oneBounce(), twoBounce(), teeBounce() {
+NavSwitch::NavSwitch(int pinC, int pinTwo, int pinTee, int pinOne) : 
+  pinC(pinC), 
+  pinOne (pinOne), 
+  pinTwo(pinTwo), 
+  pinTee(pinTee), 
+  oneBounce(), 
+  twoBounce(), 
+  teeBounce() {
 
 }
 
@@ -30,11 +37,13 @@ int NavSwitch::update() {
 }
 
 NavSwitch::NavDir NavSwitch::read() {
-  if (oneBounce.read()) {
+  if (oneBounce.read() == HIGH) {
     return ONE;
-  } else if (twoBounce.read()) {
+  }
+  if (twoBounce.read() == HIGH) {
     return TWO;
-  } else if (teeBounce.read()) {
+  }
+  if (teeBounce.read() == HIGH) {
     return TEE;
   }
   return NONE;

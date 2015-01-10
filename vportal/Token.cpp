@@ -69,7 +69,7 @@ void Token::display() {
   LCD.write(0xFE); //MoveTo
   LCD.write(0xC0); //2nd line
 
-  switch(elementAndType & ELEMENT_MASK) {
+  switch(element()) {
     case MAGIC:
     case EARTH:
     case WATER:
@@ -87,7 +87,7 @@ void Token::display() {
   LCD.write(0xFE); //MoveTo
   LCD.write(0xC8); //2nd line, half way across
 
-  switch(elementAndType & TYPE_MASK) {
+  switch(type()) {
     case TRAP_MASTER:
     case TRAP:
     case MAGIC_ITEM:
@@ -99,6 +99,15 @@ void Token::display() {
   }
 
 }
+
+uint8_t Token::type() {
+  return (elementAndType & TYPE_MASK);
+}
+
+uint8_t Token::element() {
+  return (elementAndType & ELEMENT_MASK);
+}
+
 
 #ifdef TOKEN_IMPORT
 void Token::import() {

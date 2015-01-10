@@ -49,6 +49,8 @@ class Token
     int read(int block, uint8_t* buffer);
     int write(int block, uint8_t* data);
     void display();
+    uint8_t type();
+    uint8_t element();
 
 #ifdef TOKEN_IMPORT
     static void import();

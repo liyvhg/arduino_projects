@@ -5,7 +5,7 @@
 #include <dataflash.h>
 #include <Bounce2.h>
 #include "VirtualPortal.h"
-//#include "NavSwitch.h"
+#include "NavSwitch.h"
 #include <MemoryFree.h>
 
 // define pins (varies per shield/board)
@@ -13,10 +13,18 @@
 #define BLE_RDY   7
 #define BLE_RST   4
 
-#define LED_PIN   9
-#define SPI_TRANSACTION_MISMATCH_LED 10
 
-//NavSwitch nav = NavSwitch(8, 5, 3);
+//Should trap led be a real led, or LCD backlight?
+bool trap_led = false;
+
+#define TRAP_LED_PIN   13
+
+//serLCD
+#define BACKLIGHT_CMD 0x7C
+#define BACKLIGHT_BASE 0x80
+#define BACKLIGHT_LEVELS 30
+
+NavSwitch nav = NavSwitch(12, 11, 10, 9);
 
 // create peripheral instance, see pinouts above
 BLEPeripheral blePeripheral = BLEPeripheral(BLE_REQ, BLE_RDY, BLE_RST);
@@ -38,8 +46,9 @@ long interval = 1000;           // interval at which to blink (milliseconds)
 bool subscribed = false;
 
 int libraryId = 0; //Token being displayed
-//char topline[BLOCK_SIZE] = {0};
-//char bottomline[BLOCK_SIZE] = {0};
+
+//Debugging, TODO: delete later
+  Dataflash dflash;
 
 void setup() {
     LCD.begin(9600);
@@ -48,8 +57,8 @@ void setup() {
 
     Serial.begin(115200);
     delay(3000);  //3 seconds delay for enabling to see the start up comments on the serial board
-    pinMode(LED_PIN, OUTPUT);
-    //nav.init();
+    pinMode(TRAP_LED_PIN, OUTPUT);
+    nav.init();
 
     blePeripheral.setDeviceName("Skylanders Portal\0");
     blePeripheral.setLocalName("Skylanders Portal\0");
@@ -69,70 +78,88 @@ void setup() {
     // begin initialization
     blePeripheral.begin();
 
-    //Serial.println(F("BLE Portal Peripheral"));
+    Serial.println(F("BLE Portal Peripheral"));
 }
 
 void loop() {
   blePeripheral.poll();
-  //int update = nav.update();
+  int update = nav.update();
   unsigned long currentMillis = millis();
 
   if(ble_busy()) { return; }
 
 
   if (subscribed) {
-    //Maybe limit this to $interval if its taking too many cycles
-    analogWrite(LED_PIN, vp.light());
 
+    if (trap_led) {
+      analogWrite(TRAP_LED_PIN, vp.light());
+    } else {
+      uint8_t level = vp.light() / (255 * BACKLIGHT_LEVELS);
+      LCD.write(BACKLIGHT_CMD);
+      LCD.write(BACKLIGHT_BASE + (BACKLIGHT_BASE - level));
+    }
   }//end subscribed
 
-  /*
-  //Look for navigation
-  if (update) {
-    Serial.println("Nav switch update!");
-    NavSwitch::NavDir direction = nav.read();
-    switch (direction) {
-      case NavSwitch::ONE: //up?  down?
-        //Token::display(libraryId, topline, bottomline);
-        Serial.println("Activated nav switch one");
-        break;
-      case NavSwitch::TWO:
-        Serial.println("Activated nav switch two");
-        //Token::display(libraryId, topline, bottomline);
-        break;
-      case NavSwitch::TEE: //Select
-        Serial.println("Activated nav switch select");
-        //vp.loadToken(new Token(libraryId));
-        break;
-    } //end switch
-  }//end update
-  */
 
-  //Do something every interval
-  if(currentMillis - previousMillis > interval) {
-    previousMillis = currentMillis;
-
-
-    //1073 during my last check
-    //Serial.print("freeMemory()="); Serial.println(freeMemory());
-
-  }
-
+  //Serial navigation
   if (Serial.available() > 0) {
     // read the incoming byte:
     int incomingByte = Serial.read();
     switch (incomingByte) {
+      case '1':
+        libraryId++;
+        break;
+      case '2':
+        libraryId--;
+        break;
+      case 'T':
+        //set some sort of load flag
+        break;
 #ifdef TOKEN_IMPORT
       case 'I': //import
         Token::import();
         break;
 #endif
-      case 'L': //Load
-        Serial.println(F("Loading token 1 (hardcoded)"));
-        vp.loadToken(new Token(1));
-        break;
+
     }
   }
+
+  //Look for navigation
+  if (update) {
+    NavSwitch::NavDir direction = nav.read();
+    switch (direction) {
+      case NavSwitch::ONE: //up?  down?
+        //Token::display();
+        Serial.println("\t\t\t\t\t\t\t\tone");
+        break;
+      case NavSwitch::TWO:
+        Serial.println("\t\t\t\t\t\ttwo");
+        //Token::display();
+        break;
+      case NavSwitch::TEE: //Select
+        Serial.println("\t\t\t\t\t\t\tTee");
+        //vp.loadToken(new Token(libraryId));
+        break;
+    } //end switch
+  }//end update
+
+  //If load flag, remove old token, set LCD text, add new one next second
+  //vp.loadToken(new Token(libraryId));
+  //else display
+  //Token preview(libraryId);
+  //preview.display();
+
+  //Do something every interval
+  if(currentMillis - previousMillis > interval) {
+    previousMillis = currentMillis;
+
+    uint8_t status = dflash.init();
+    Serial.print(F("Dataflash status: ")); Serial.println(status, BIN);
+
+    //1073 during my last check
+    Serial.print("freeMemory()="); Serial.println(freeMemory());
+  }
+
 }
 
 // callbacks
@@ -144,7 +171,6 @@ void connectCallback(BLECentral& central)
 
 void disconnectCallback(BLECentral& central)
 {
-    Serial.println(F("Disconnected event"));
     vp.connect();
     subscribed = false;
 }
@@ -158,7 +184,6 @@ void subscribeHandler(BLECentral& central, BLECharacteristic& characteristic)
 
 void unsubscribeHandler(BLECentral& central, BLECharacteristic& characteristic)
 {
-  Serial.println(F("Unsubscribed"));
   vp.unsubscribe();
   subscribed = false;
 }

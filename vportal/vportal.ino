@@ -46,6 +46,7 @@ long interval = 1000;           // interval at which to blink (milliseconds)
 bool subscribed = false;
 
 int libraryId = 0; //Token being displayed
+int previousId = 0;
 
 void setup() {
     LCD.begin(9600);
@@ -87,41 +88,15 @@ void loop() {
 
   if(ble_busy()) { return; }
 
-
-  if (subscribed) {
-
-    if (trap_led) {
-      analogWrite(TRAP_LED_PIN, vp.light());
-    } else {
-      uint8_t level = vp.light() / (255 * BACKLIGHT_LEVELS);
-      LCD.write(BACKLIGHT_CMD);
-      LCD.write(BACKLIGHT_BASE + (BACKLIGHT_BASE - level));
-    }
-  }//end subscribed
-
-
-  //Serial navigation
-  if (Serial.available() > 0) {
-    // read the incoming byte:
-    int incomingByte = Serial.read();
-    switch (incomingByte) {
-      case '1':
-        libraryId++;
-        break;
-      case '2':
-        libraryId--;
-        break;
-      case 'T':
-        //set some sort of load flag
-        break;
 #ifdef TOKEN_IMPORT
-      case 'I': //import
-        Token::import();
-        break;
-#endif
-
+  if (Serial.available() > 0) {
+    int incomingByte = Serial.read();
+    if (incomingByte == 'I') { //import
+      Token::import();
     }
   }
+#endif
+
 
   //Look for navigation
   if (update) {
@@ -145,8 +120,24 @@ void loop() {
   //If load flag, remove old token, set LCD text, add new one next second
   //vp.loadToken(new Token(libraryId));
   //else display
-  //Token preview(libraryId);
-  //preview.display();
+  if (libraryId != previousId) {
+    previousId = libraryId;
+    Token preview(libraryId);
+    preview.display();
+  }
+
+
+
+  if (subscribed) {
+
+    if (trap_led) {
+      analogWrite(TRAP_LED_PIN, vp.light());
+    } else {
+      uint8_t level = vp.light() / (255 * BACKLIGHT_LEVELS);
+      LCD.write(BACKLIGHT_CMD);
+      LCD.write(BACKLIGHT_BASE + (BACKLIGHT_BASE - level));
+    }
+  }//end subscribed
 
   //Do something every interval
   if(currentMillis - previousMillis > interval) {

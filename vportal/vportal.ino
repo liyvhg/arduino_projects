@@ -101,7 +101,6 @@ void loop() {
 
     if (next) {
       vp.loadToken(next);
-      next->display();
       next = NULL;
     }
 
@@ -127,10 +126,7 @@ void loop() {
   }//end update
 
   if (next) {
-    LCD.write(0xFE);   //command flag
-    LCD.write(0x01);   //clear command.
-    LCD.print(F("Loading..."));
-
+    next->display();
     vp.removeType(next->type());
   } else if (libraryId != previousId) {
     previousId = libraryId;
@@ -180,7 +176,7 @@ void writeHandler(BLECentral& central, BLECharacteristic& characteristic)
     unsigned long start = millis();
     len = vp.respondTo(val, response);
 
-    Serial.print("respondTo took (ms): "); Serial.println(millis() - start);
+    //Serial.print("respondTo took (ms): "); Serial.println(millis() - start);
 
     //respond if data to respond with
     if (len > 0) {

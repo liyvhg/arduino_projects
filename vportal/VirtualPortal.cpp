@@ -71,16 +71,16 @@ int VirtualPortal::write(uint8_t* message, uint8_t* response) {
 
     switch(arrayIndex) {
       case 0:
-        characterToken->write(block, response+3);
+        characterToken->write(block, message+3);
         break;
       case 4:
-        trapToken->write(block, response+3);
+        trapToken->write(block, message+3);
         break;
       case 8:
-        locationToken->write(block, response+3);
+        locationToken->write(block, message+3);
         break;
       case 12:
-        itemToken->write(block, response+3);
+        itemToken->write(block, message+3);
         break;
     }
 
@@ -144,6 +144,7 @@ int VirtualPortal::status(uint8_t* response) {
 }
 
 bool VirtualPortal::loadToken(Token *t) {
+  Serial.print("Loading token type "); Serial.println(t->type(), HEX);
   switch(t->type()) {
     case TRAP:
       trapToken = t;
@@ -164,6 +165,7 @@ bool VirtualPortal::loadToken(Token *t) {
 }
 
 bool VirtualPortal::removeType(uint8_t type) {
+  Serial.print("Removing token type "); Serial.println(type, HEX);
   switch(type) {
     case TRAP:
       delete trapToken;

@@ -4,8 +4,9 @@
 Token::Token(int libraryId) : libraryId(libraryId), dflash() {
     uint8_t status = dflash.init();
     if (status != 0x9C) {//Known value
-      //Serial.print(F("[ERROR]: Dataflash status: ")); Serial.println(status, BIN);
+      Serial.print(F("[ERROR]: Dataflash status: ")); Serial.println(status, BIN);
     }
+
 }
 
 int Token::read(int block, uint8_t* buffer) {
@@ -48,20 +49,8 @@ void Token::writeFlash(int block, uint8_t* buffer) {
       dflash_buffer = SECONDARY_BUFFER;
       break;
     default:
-      Serial.print(F("[ERROR] write for type ")); Serial.println(type());
+      Serial.print(F("[ERROR] write for type ")); Serial.println(type(), HEX);
   }
-
-  Serial.print("libraryId:block:chapter:page_offset:block_offset ");
-  Serial.print(libraryId);
-  Serial.print(":");
-  Serial.print(block);
-  Serial.print(":");
-  Serial.print(chapter);
-  Serial.print(":");
-  Serial.print(page_offset);
-  Serial.print(":");
-  Serial.print(block_offset);
-  Serial.println(" ");
 
   if (dflash_buffer == 0) return; //invalid value, indicating it wasn't set properly
   dflash.Page_To_Buffer(chapter + page_offset, dflash_buffer);

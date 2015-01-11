@@ -44,6 +44,7 @@ def importTokens(sp, max_tokens)
 
       puts "writing library id #{libraryId}"
       sp.write(libraryId)
+      sleep 1
 
       block_0 = bin.slice(0, BLOCK_SIZE)
       puts "writing block 0: #{block_0.unpack('H*')}"
@@ -106,8 +107,8 @@ def main
   max_tokens = 256
   max_tokens = ARGV[0].to_i unless ARGV.empty?
 
-  importTokens(sp, max_tokens)
   importNames(sp, max_tokens)
+  importTokens(sp, max_tokens)
 
   sp.close
 end

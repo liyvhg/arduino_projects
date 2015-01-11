@@ -56,6 +56,7 @@ void loop() {
 }
 
 void import() {
+  Serial.println("Import token data");
   Dataflash dflash;
   uint8_t status = dflash.init();
 
@@ -71,14 +72,21 @@ void import() {
   libraryId = Serial.parseInt();
   if (libraryId < 0) return;
 
+  Serial.print("libraryid: "); Serial.print(libraryId);
+
   // First of 4 pages of this token
   int page = TOC_SIZE + (libraryId * CHAPTER_SIZE);
   dflash.Page_To_Buffer(page, PRIMARY_BUFFER);
+  Serial.print(" ["); Serial.print(page);
+
+  while (Serial.available() < 1);
 
   //Get 2 blocks of data
   Serial.readBytes((char*)buffer, BLOCK_SIZE);
   dflash.Buffer_Write_Str(PRIMARY_BUFFER, 0 * BLOCK_SIZE, BLOCK_SIZE, buffer);
   LCD.print("*");
+
+  while (Serial.available() < 1);
 
   Serial.readBytes((char*)buffer, BLOCK_SIZE);
   dflash.Buffer_Write_Str(PRIMARY_BUFFER, 1 * BLOCK_SIZE, BLOCK_SIZE, buffer);
@@ -109,10 +117,14 @@ void import() {
   dflash.Buffer_To_Page(PRIMARY_BUFFER, page); //Final page save
 
   LCD.print(" ");
+  Serial.print(",");
+  Serial.print(page);
+  Serial.println("]");
 }
 
 
 void importNames() {
+  Serial.println("Import names");
   uint8_t buffer[BLOCK_SIZE] = {0};
   int count = 0;
   Dataflash dflash;
@@ -125,6 +137,8 @@ void importNames() {
   // First of 16 pages of Table of contents
   int page = 0;
   dflash.Page_To_Buffer(page, PRIMARY_BUFFER);
+  Serial.print("[");
+  Serial.print(page);
 
   for (int i = 0; i < count; i++) {
     int offset = (i % BLOCKS_PER_PAGE) * BLOCK_SIZE;
@@ -137,10 +151,10 @@ void importNames() {
     LCD.print(i+1);
     LCD.print("/");
     LCD.print(count);
+    Serial.print("-");
 
     //Transition to next page; save previous, load next.
     if (i % BLOCKS_PER_PAGE == 0 && i > 0) {
-
       dflash.Buffer_To_Page(PRIMARY_BUFFER, page);
       page++;
       if (page > TOC_SIZE) {
@@ -148,11 +162,13 @@ void importNames() {
         return;
       }
       dflash.Page_To_Buffer(page, PRIMARY_BUFFER);
+      Serial.print("|");
     }
     LCD.print(" (");
     LCD.print(page);
     LCD.print(")");
 
+    while (Serial.available() < 1);
     int len = Serial.readBytes((char*)buffer, BLOCK_SIZE);
     dflash.Buffer_Write_Str(PRIMARY_BUFFER, offset, BLOCK_SIZE, buffer);
 
@@ -164,4 +180,6 @@ void importNames() {
   }
   dflash.Buffer_To_Page(PRIMARY_BUFFER, page); //Final page save
 
+  Serial.print(page);
+  Serial.println("]");
 }

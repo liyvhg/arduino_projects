@@ -200,7 +200,7 @@ void VirtualPortal::printCommand(bool incoming, const uint8_t* command) {
   int interestingBytes = 0;
 
   LCD.write(LCD_MOVE); //MoveTo
-  LCD.write(LCD_BOTTOM + 0x0E); //2nd line, Last character
+  LCD.write(LCD_TOP + 0x0F); //top + Last character
   LCD.write(command[0]);
 
   switch(command[0]) {

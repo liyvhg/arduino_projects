@@ -3,6 +3,7 @@ require 'serialport'
 require 'json'
 require 'digest/crc16_ccitt'
 require 'securerandom'
+require 'active_support/core_ext/string/inflections'
 
 class Array
   def chr
@@ -71,7 +72,7 @@ def importNames(sp, max_tokens)
       token = OpenStruct.new(token)
       eat = elementAndType(token)
       #Trim if overlong
-      name = token.name.slice(0, MAX_NAME_LEN)
+      name = token.name.titleize.slice(0, MAX_NAME_LEN)
       #pad if undersized
       pad_name = name.bytes.fill(0, name.length..14)
       bin = (pad_name + [eat]).pack('c16')

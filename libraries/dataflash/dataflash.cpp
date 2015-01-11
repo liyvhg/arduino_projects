@@ -243,7 +243,7 @@ uint8_t Dataflash::waitForReady(uint32_t timeout) {
   do {
     status = readStatus();
     if((millis() - startTime) > timeout) {
-      Serial.print("waitForReady timeout; "); Serial.println(timeout);
+      //Serial.print("waitForReady timeout; "); Serial.println(timeout);
       return false;
     }
   } while(!(status & READY_BIT));
@@ -255,23 +255,12 @@ uint8_t Dataflash::waitForReady(uint32_t timeout) {
 
 void Dataflash::chipSelect() {
   SPI.beginTransaction(dflashSettings);
-
-/*
-  Serial.print("Dataflash");
-  Serial.print(" MOSI=");
-  Serial.print(digitalRead(MOSI));
-  Serial.print(" MISO=");
-  Serial.print(digitalRead(MISO));
-  Serial.print(" SCK=");
-  Serial.println(digitalRead(SCK));
-*/
-
-  //Serial.print("[Dataflash -");
   if (digitalRead(SS) == LOW) {
-    Serial.print(F("Dataflash: SS was already low, an error state"));
+    //Serial.print(F("Dataflash: SS was already low, an error state"));
     digitalWrite(SS, HIGH);
   }
 
+  //Super hacky; shut off BLE chip select
   digitalWrite(6, HIGH);
   digitalWrite(SS, LOW);
 }
@@ -279,7 +268,6 @@ void Dataflash::chipSelect() {
 void Dataflash::chipDeselect() {
   digitalWrite(SS, HIGH);
   SPI.endTransaction();
-  //Serial.println(F(" Dataflash]"));
 }
 
 void Dataflash::strobe() {

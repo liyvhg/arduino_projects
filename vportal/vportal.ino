@@ -17,7 +17,7 @@
 //Should trap led be a real led, or LCD backlight?
 bool trap_led = true; //TODO: store in EEPROM/flash
 
-#define TRAP_LED_PIN   13
+#define TRAP_LED_PIN   A1
 
 //serLCD
 #define BACKLIGHT_CMD 0x7C

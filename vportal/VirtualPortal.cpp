@@ -18,6 +18,7 @@ int VirtualPortal::respondTo(uint8_t* message, uint8_t* response) {
       break;
     case 'L': //Trap light
       light(message);
+      Serial.println(" ");
       return 0; //No response
       break;
     case 'Q': //Query / read
@@ -195,7 +196,7 @@ int VirtualPortal::light(uint8_t* message) {
 }
 
 uint8_t VirtualPortal::light() {
-  return lightVal;
+  return lightVal * 0x80;
 }
 
 void VirtualPortal::printCommand(bool incoming, const uint8_t* command) {

@@ -88,7 +88,7 @@ def elementAndType(token)
 
   type_enum = types.find_index(token.type).to_i * 0x10
   element_enum = elements.find_index(token.element).to_i
-  puts "#{token.type} + #{token.element} = #{type_enum} + #{element_enum}"
+  puts "#{token.type} + #{token.element} = #{type_enum.to_s(16)} + #{element_enum.to_s(16)}"
   type_enum + element_enum
 end
 

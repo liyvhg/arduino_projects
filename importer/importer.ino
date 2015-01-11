@@ -129,9 +129,18 @@ void importNames() {
   for (int i = 0; i < count; i++) {
     int offset = (i % BLOCKS_PER_PAGE) * BLOCK_SIZE;
     memset(buffer, 0, BLOCK_SIZE);
+    LCD.write(LCD_MOVE);
+    LCD.write(LCD_CLEAR);
+
+    LCD.write(LCD_MOVE);
+    LCD.write(LCD_TOP);
+    LCD.print(i+1);
+    LCD.print("/");
+    LCD.print(count);
 
     //Transition to next page; save previous, load next.
     if (i % BLOCKS_PER_PAGE == 0 && i > 0) {
+
       dflash.Buffer_To_Page(PRIMARY_BUFFER, page);
       page++;
       if (page > TOC_SIZE) {
@@ -140,25 +149,18 @@ void importNames() {
       }
       dflash.Page_To_Buffer(page, PRIMARY_BUFFER);
     }
-
-    Serial.readBytes((char*)buffer, BLOCK_SIZE);
-    LCD.write(LCD_MOVE);
-    LCD.write(LCD_CLEAR);
-
-    LCD.write(LCD_MOVE);
-    LCD.write(LCD_TOP);
-    LCD.print(i);
-    LCD.print("/");
-    LCD.print(count);
     LCD.print(" (");
     LCD.print(page);
     LCD.print(")");
 
+    int len = Serial.readBytes((char*)buffer, BLOCK_SIZE);
+    dflash.Buffer_Write_Str(PRIMARY_BUFFER, offset, BLOCK_SIZE, buffer);
+
     LCD.write(LCD_MOVE);
     LCD.write(LCD_BOTTOM);
-    LCD.print((char*)buffer);
-
-    dflash.Buffer_Write_Str(PRIMARY_BUFFER, offset, BLOCK_SIZE, buffer);
+    LCD.print(len);
+    LCD.print(":");
+    LCD.write((char*)buffer, strlen((char*)buffer));
   }
   dflash.Buffer_To_Page(PRIMARY_BUFFER, page); //Final page save
 

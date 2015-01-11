@@ -52,7 +52,6 @@ def importTokens(sp, max_tokens)
       puts "writing block 1: #{block_1.unpack('H*')}"
       sp.write(block_1)
 
-      sleep 1
     end
   end
 end
@@ -70,14 +69,14 @@ def importNames(sp, max_tokens)
     tokens.each.with_index do |token, libraryId|
       break if libraryId >= max_tokens
       token = OpenStruct.new(token)
-      name = token.name.slice(0, MAX_NAME_LEN)
       eat = elementAndType(token)
-      pad_name = name.bytes.fill(0, name.length..15)
-      bin = (pad_name + [eat]).pack('c*')
-      puts "writing: #{name} #{eat}"
-      p bin
+      #Trim if overlong
+      name = token.name.slice(0, MAX_NAME_LEN)
+      #pad if undersized
+      pad_name = name.bytes.fill(0, name.length..14)
+      bin = (pad_name + [eat]).pack('c16')
+      puts "writing: #{name} #{eat.to_s(16)}"
       sp.write(bin)
-      sleep 1
     end
   end
 end
@@ -87,9 +86,10 @@ def elementAndType(token)
   types = ["none", "trapmaster", "trap", "item", "location", "mini", "regular"]
   elements = ["none", "magic", "earth", "water", "fire", "tech", "undead", "life", "air", "dark", "light"]
 
-  eat = (types.find_index(token.type).to_i * 0x10) + (elements.find_index(token.element).to_i)
-  puts "#{token.type} + #{token.element} = #{eat}"
-  eat
+  type_enum = types.find_index(token.type).to_i * 0x10
+  element_enum = elements.find_index(token.element).to_i
+  puts "#{token.type} + #{token.element} = #{type_enum} + #{element_enum}"
+  type_enum + element_enum
 end
 
 def main

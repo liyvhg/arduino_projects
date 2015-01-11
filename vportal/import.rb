@@ -2,7 +2,7 @@ require 'rubygems'
 require 'serialport'
 require 'json'
 require 'digest/crc16_ccitt'
-
+require 'securerandom'
 
 class Array
   def chr
@@ -10,77 +10,15 @@ class Array
   end
 end
 
-#Send tokens in a fixed order, then send name/type/element afterwards
+ID_LEN = 8
+CRC_LEN = 4
+HEADER_LEN = 64
+MAX_NAME_LEN = 14 # + null character + elementAndType byte go into a single 16 byte block
+BLOCK_SIZE = 16
 
-def send_token(libraryId, blocks)
 
-  #Assign random tag id to first 4 bytes of block [0]
-  #Calculate crc of blocks and write to last 2 bytes of block[1]
+name_map = {}
 
-  puts 'writing I command'
-  sp.putc('I')
-
-  puts "writing library id #{libraryId}"
-  sp.write(libraryId)
-
-  puts "writing block 0: #{blocks[0]}"
-  sp.write(blocks[0].chr.join)
-
-  puts "writing block 1: #{blocks[1]}"
-  sp.write(blocks[1].chr.join)
-end
-
-def message(message)
-  ar = Array.new()
-  message.each do |val|
-    ar.push(swapbits(val))
-  end
-  nval = ar.pack("c*")
-
-  crc = Digest::CRC16CCITT.new
-  crc.update(nval)
-  crc.finish
-
-  a = crc.hexdigest[2..3].to_i(16)
-  b = crc.hexdigest[0..1].to_i(16)
-
-  message << a
-  message << b
-
-  # send the message to the serial port
-  @port.write(message.flatten.pack('C*'))
-
-  return message
-end
-
-File.open("backup.json", "r") do |f|
-  tokens = JSON.parse(f.read)
-  tokens.each do |token|
-    token = OpenStruct.new(token)
-    data = [token.data.slice(0, 60)].pack('H*')
-    checksum = token.data.slice(60, 4)
-
-    crc = Digest::CRC16CCITT.new
-    crc.update(data)
-    crc.finish
-
-    a = crc.hexdigest[2..3].to_i(16)
-    b = crc.hexdigest[0..1].to_i(16)
-
-    a1 = checksum[0..1].to_i(16)
-    b1 = checksum[2..3].to_i(16)
-
-    if (a == a1 && b == b1)
-      puts token.name
-    else
-      data << a
-      data << b
-    end
-
-  end
-end
-
-exit
 
 #params for serial port
 port_str = "/dev/tty.usbmodem1411"  #may be different for you
@@ -92,21 +30,46 @@ parity = SerialPort::NONE
 
 sp = SerialPort.new(port_str, baud_rate, data_bits, stop_bits, parity)
 
-#serial stuff
+
+File.open("backup.json", "r") do |f|
+  tokens = JSON.parse(f.read)
+  tokens.each.with_index do |token, libraryId|
+    token = OpenStruct.new(token)
+    data = token.data.slice(ID_LEN, HEADER_LEN - ID_LEN - CRC_LEN)
+    name_map[libraryId] = token.name.slice(0, MAX_NAME_LEN)
+
+    #Replace ID
+    id = SecureRandom.hex.slice(0, ID_LEN)
+    data = id + data
+
+    #Write CRC
+    bin = [data.slice(0, HEADER_LEN - CRC_LEN)].pack('H*')
+    crc = Digest::CRC16CCITT.new
+    crc.update(bin)
+    crc.finish
+
+    bin << crc.hexdigest[2..3].to_i(16)
+    bin << crc.hexdigest[0..1].to_i(16)
+
+    puts 'writing I command'
+    sp.putc('I')
+
+    puts "writing library id #{libraryId}"
+    sp.write(libraryId)
+
+    block_0 = bin.slice(0, BLOCK_SIZE)
+    puts "writing block 0: #{block_0.unpack('H*')}"
+    sp.write(block_0)
+
+    block_1 = bin.slice(BLOCK_SIZE, BLOCK_SIZE)
+    puts "writing block 1: #{block_1.unpack('H*')}"
+    sp.write(block_1)
+
+    sleep 1
+  end
+end
+
+
 
 sp.close
-
-
-
-libraryId = 1
-
-#Knight M
-block_0 = [0xaf, 0xbe, 0xe9, 0xef, 0x17, 0x81, 0x01, 0x0f, 0xc4, 0x07, 0x00, 0x00, 0x00, 0x00, 0x00, 0x14]
-block_1 = [0xe4, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x30, 0x31, 0xa2]
-
-#NKK
-#block_0 = [0xdf ,0x0a ,0x11 ,0x1a ,0xde ,0x81 ,0x01 ,0x0f ,0xc4 ,0x09 ,0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,0x14]
-#block_1 = [0xde ,0x01 ,0x00 ,0x00 ,0x41 ,0xfc ,0xf2 ,0xaf ,0x4b ,0x2f ,0x00 ,0x00 ,0x02 ,0x34 ,0xdd ,0x80]
-
-
 

@@ -48,6 +48,8 @@ bool subscribed = false;
 int libraryId = 0; //Token being displayed
 int previousId = 0;
 
+Token *next = NULL;
+
 void setup() {
     LCD.begin(9600);
     LCD.write(0xFE);   //command flag
@@ -81,6 +83,13 @@ void setup() {
     //Serial.println(F("BLE Portal Peripheral"));
 }
 
+/* The general order is
+ * 1. BLE
+ * 2. updates based on interval
+ * 3. updates based on user
+ * 4. updates to UI
+**/
+
 void loop() {
   blePeripheral.poll();
   int update = nav.update();
@@ -97,54 +106,54 @@ void loop() {
   }
 #endif
 
+  //Do something every interval
+  if(currentMillis - previousMillis > interval) {
+    previousMillis = currentMillis;
+
+    if (next) {
+      vp.loadToken(next);
+      next = null;
+    }
+
+    //1073 during my last check
+    //Serial.print("freeMemory()="); Serial.println(freeMemory());
+  }
 
   //Look for navigation
   if (update) {
     NavSwitch::NavDir direction = nav.read();
     switch (direction) {
       case NavSwitch::ONE: //up?  down?
-        //Token::display();
-        Serial.println("\t\t\t\t\t\t\t\tone");
+        libraryId++;
         break;
       case NavSwitch::TWO:
-        Serial.println("\t\t\t\t\t\ttwo");
-        //Token::display();
+        libraryId--;
         break;
       case NavSwitch::TEE: //Select
-        Serial.println("\t\t\t\t\t\t\tTee");
-        //vp.loadToken(new Token(libraryId));
+        next = new Token(libraryId);
         break;
     } //end switch
   }//end update
 
   //If load flag, remove old token, set LCD text, add new one next second
-  //vp.loadToken(new Token(libraryId));
-  //else display
-  if (libraryId != previousId) {
+  if (next) {
+    LCD.write(0xFE);   //command flag
+    LCD.write(0x01);   //clear command.
+    LCD.print(F("Loading..."));
+
+    vp.removeType(next->type());
+  } else if (libraryId != previousId) {
     previousId = libraryId;
     Token preview(libraryId);
     preview.display();
   }
 
-
-
-  if (subscribed) {
-
-    if (trap_led) {
-      analogWrite(TRAP_LED_PIN, vp.light());
-    } else {
-      uint8_t level = vp.light() / (255 * BACKLIGHT_LEVELS);
-      LCD.write(BACKLIGHT_CMD);
-      LCD.write(BACKLIGHT_BASE + (BACKLIGHT_BASE - level));
-    }
-  }//end subscribed
-
-  //Do something every interval
-  if(currentMillis - previousMillis > interval) {
-    previousMillis = currentMillis;
-
-    //1073 during my last check
-    //Serial.print("freeMemory()="); Serial.println(freeMemory());
+  if (trap_led) {
+    analogWrite(TRAP_LED_PIN, vp.light());
+  } else {
+    uint8_t level = vp.light() / (255 * BACKLIGHT_LEVELS);
+    LCD.write(BACKLIGHT_CMD);
+    LCD.write(BACKLIGHT_BASE + (BACKLIGHT_BASE - level));
   }
 
 }

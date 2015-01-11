@@ -53,44 +53,19 @@ int VirtualPortal::query(uint8_t* message, uint8_t* response) {
     response[1] = index;
     response[2] = block;
 
-    bool debug = false;
-    if (debug) {
-
-      SPISettings dflashSettings(1000000, MSBFIRST, SPI_MODE3);
-      //Fake the delay and experience of reading from flash
-      SPI.beginTransaction(dflashSettings);
-      digitalWrite(SS, LOW);
-      delay(500);
-      digitalWrite(SS, HIGH);
-      SPI.endTransaction();
-
-      switch(block) {
-        case 0:
-          response[3] = 0xAF;
-          response[4] = 0xBE;
-          response[5] = 0xE9;
-          response[6] = 0xEF;
-          response[7] = 0x17;
-          response[8] = 0x81;
-          response[9] = 0x01;
-          response[10] = 0x0F;
-          response[11] = 0xC4;
-          response[12] = 0x07;
-          response[18] = 0x14;
-          break;
-        case 1:
-          response[3] = 0xE4;
-          response[4] = 0x01;
-          response[15] = 0x04;
-          response[16] = 0x30;
-          response[17] = 0x31;
-          response[18] = 0xA2;
-          break;
-        default:
-          break;
-      }
-    } else {
-      characterToken->read(block, response+3);
+    switch(arrayIndex) {
+      case 0:
+        characterToken->read(block, response+3);
+        break;
+      case 4:
+        trapToken->read(block, response+3);
+        break;
+      case 8:
+        locationToken->read(block, response+3);
+        break;
+      case 12:
+        itemToken->read(block, response+3);
+        break;
     }
 
     return BLE_ATTRIBUTE_MAX_VALUE_LENGTH;
@@ -101,7 +76,20 @@ int VirtualPortal::write(uint8_t* message, uint8_t* response) {
     int block = message[2];
     int arrayIndex = index & 0x0f;
 
-    characterToken->write(block, response+3);
+    switch(arrayIndex) {
+      case 0:
+        characterToken->write(block, response+3);
+        break;
+      case 4:
+        trapToken->write(block, response+3);
+        break;
+      case 8:
+        locationToken->write(block, response+3);
+        break;
+      case 12:
+        itemToken->write(block, response+3);
+        break;
+    }
 
     //Status update with different first 3 bytes
     status(response);
@@ -144,14 +132,12 @@ int VirtualPortal::activate(uint8_t* message, uint8_t* response) {
 
 }
 
-
-
 int VirtualPortal::status(uint8_t* response) {
   response[0] = 'S';
   response[1] = characterToken ? 0x01 : 0x00;
-  response[2] = false ? 0x01 : 0x00;
-  response[3] = false ? 0x01 : 0x00;
-  response[4] = false ? 0x01 : 0x00;
+  response[2] = trapToken ? 0x01 : 0x00;
+  response[3] = locationToken ? 0x01 : 0x00;
+  response[4] = itemToken ? 0x01 : 0x00;
 
   response[5] = sequence++ % 0xFF;
 
@@ -167,10 +153,13 @@ int VirtualPortal::status(uint8_t* response) {
 bool VirtualPortal::loadToken(Token *t) {
   switch(t->type()) {
     case TRAP:
+      trapToken = t;
       break;
     case MAGIC_ITEM:
+      itemToken = t;
       break;
     case LOCATION:
+      locationToken = t;
       break;
     case TRAP_MASTER:
     case MINI:
@@ -178,11 +167,36 @@ bool VirtualPortal::loadToken(Token *t) {
       characterToken = t;
       break;
   }
+  return true;
+}
 
+bool VirtualPortal::removeType(uint8_t type) {
+  switch(type) {
+    case TRAP:
+      delete trapToken;
+      trapToken = NULL;
+      break;
+    case MAGIC_ITEM:
+      delete itemToken;
+      itemToken = NULL;
+      break;
+    case LOCATION:
+      delete locationToken;
+      locationToken = NULL;
+      break;
+    case TRAP_MASTER:
+    case MINI:
+    case REGULAR:
+      delete characterToken;
+      characterToken = NULL;
+      break;
+  }
+  return true;
 }
 
 int VirtualPortal::light(uint8_t* message) {
   lightVal = message[1];
+  return lightVal;
 }
 
 uint8_t VirtualPortal::light() {

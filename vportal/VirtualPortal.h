@@ -24,11 +24,12 @@ class VirtualPortal
     void disconnect();
     void subscribe();
     void unsubscribe();
+    bool removeType(uint8_t);
 
   private:
     int sequence;
     uint8_t lightVal;
-    Token *characterToken;
+    Token *characterToken, *trapToken, *locationToken, *itemToken;
     uint8_t reset_6, reset_8;
 
     int activate(uint8_t* message, uint8_t* response);

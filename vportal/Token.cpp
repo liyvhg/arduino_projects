@@ -3,7 +3,9 @@
 
 Token::Token(int libraryId) : libraryId(libraryId), dflash() {
     uint8_t status = dflash.init();
-    Serial.print(F("Dataflash status: ")); Serial.println(status, BIN);
+    if (status != 0x9C) {//Known value
+      //Serial.print(F("[ERROR]: Dataflash status: ")); Serial.println(status, BIN);
+    }
 }
 
 int Token::read(int block, uint8_t* buffer) {
@@ -63,7 +65,12 @@ void Token::display() {
   //Topline Character name
   LCD.write(LCD_MOVE);
   LCD.write(LCD_TOP);
-  LCD.print(name);
+  if (strlen(name) > 1) {
+    LCD.print(name);
+  } else {
+    LCD.print(libraryId, DEC);
+    LCD.print(F("."));
+  }
 
   //Bottomline: Element, type
   LCD.write(LCD_MOVE);
@@ -124,7 +131,7 @@ void Token::import() {
 
   //get the libraryid
   libraryId = Serial.parseInt();
-  if (libraryId == 0) return;
+  if (libraryId < 0) return;
 
   // First of 4 pages of this token
   int page = TOC_SIZE + (libraryId * CHAPTER_SIZE);
@@ -133,17 +140,17 @@ void Token::import() {
   //Get 2 blocks of data
   Serial.readBytes((char*)buffer, BLOCK_SIZE);
   dflash.Buffer_Write_Str(PRIMARY_BUFFER, 0 * BLOCK_SIZE, BLOCK_SIZE, buffer);
-  Serial.print(F("*"));
+  //Serial.print(F("*"));
 
   Serial.readBytes((char*)buffer, BLOCK_SIZE);
   dflash.Buffer_Write_Str(PRIMARY_BUFFER, 1 * BLOCK_SIZE, BLOCK_SIZE, buffer);
-  Serial.print(F("*"));
+  //Serial.print(F("*"));
 
   //Fill in remainder of token programatically
   for (int i = 2; i < BLOCK_COUNT; i++) {
     //Transition to next page; save previous, load next.
     if (i % BLOCKS_PER_PAGE == 0) {
-      Serial.println(" ");
+      //Serial.println(" ");
       dflash.Buffer_To_Page(PRIMARY_BUFFER, page);
       page++;
       dflash.Page_To_Buffer(page, PRIMARY_BUFFER);
@@ -151,19 +158,63 @@ void Token::import() {
 
     int offset = (i % BLOCKS_PER_PAGE) * BLOCK_SIZE;
     if (i == 3) {
-      Serial.print(F("r"));
+      //Serial.print(F("r"));
       dflash.Buffer_Write_Str(PRIMARY_BUFFER, offset, BLOCK_SIZE, ro);
     } else if (i % 4 == 3) {
-      Serial.print(F("w"));
+      //Serial.print(F("w"));
       dflash.Buffer_Write_Str(PRIMARY_BUFFER, offset, BLOCK_SIZE, rw);
     } else {
-      Serial.print(F("0"));
+      //Serial.print(F("0"));
       dflash.Buffer_Write_Str(PRIMARY_BUFFER, offset, BLOCK_SIZE, zeros);
     }
   }
   dflash.Buffer_To_Page(PRIMARY_BUFFER, page); //Final page save
 
-  Serial.println(F(" "));
+  //Serial.println(F(" "));
+}
+
+
+void Token::importNames() {
+  Dataflash dflash;
+  uint8_t status = dflash.init();
+  int count = 0;
+
+  //get the count
+  count = Serial.parseInt();
+  if (count < 1) return;
+
+  //Serial.print("import "); Serial.println(count, DEC);
+
+  // First of 16 pages of Table of contents
+  int page = 0;
+  dflash.Page_To_Buffer(page, PRIMARY_BUFFER);
+
+  for (int i = 0; i < count; i++) {
+    uint8_t buffer[BLOCK_SIZE] = {0};
+    int offset = (i % BLOCKS_PER_PAGE) * BLOCK_SIZE;
+
+    //Transition to next page; save previous, load next.
+    if (i % BLOCKS_PER_PAGE == 0 && i > 0) {
+      dflash.Buffer_To_Page(PRIMARY_BUFFER, page);
+      page++;
+      /*
+      if (page > TOC_SIZE) {
+        Serial.print("[ERROR] writing to write to page outside TOC");
+        return;
+      }
+      */
+      dflash.Page_To_Buffer(page, PRIMARY_BUFFER);
+    }
+
+    Serial.readBytesUntil('\0', (char*)buffer, BLOCK_SIZE);
+    Serial.println((char*)buffer);
+
+    dflash.Buffer_Write_Str(PRIMARY_BUFFER, offset, BLOCK_SIZE, buffer);
+  }
+  dflash.Buffer_To_Page(PRIMARY_BUFFER, page); //Final page save
+
+  //Serial.println("End");
 
 }
+
 #endif

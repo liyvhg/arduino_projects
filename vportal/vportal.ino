@@ -15,7 +15,7 @@
 
 
 //Should trap led be a real led, or LCD backlight?
-bool trap_led = true;
+bool trap_led = true; //TODO: store in EEPROM/flash
 
 #define TRAP_LED_PIN   13
 
@@ -79,8 +79,6 @@ void setup() {
 
     // begin initialization
     blePeripheral.begin();
-
-    //Serial.println(F("BLE Portal Peripheral"));
 }
 
 /* The general order is
@@ -100,8 +98,11 @@ void loop() {
 #ifdef TOKEN_IMPORT
   if (Serial.available() > 0) {
     int incomingByte = Serial.read();
-    if (incomingByte == 'I') { //import
+    if (incomingByte == 'I') { //import tokens
       Token::import();
+    }
+    if (incomingByte == 'N') { //import names
+      Token::importNames();
     }
   }
 #endif
@@ -112,7 +113,8 @@ void loop() {
 
     if (next) {
       vp.loadToken(next);
-      next = null;
+      next->display();
+      next = NULL;
     }
 
     //1073 during my last check
@@ -123,19 +125,19 @@ void loop() {
   if (update) {
     NavSwitch::NavDir direction = nav.read();
     switch (direction) {
-      case NavSwitch::ONE: //up?  down?
-        libraryId++;
+      case NavSwitch::ONE:
+        libraryId = libraryId++;
         break;
       case NavSwitch::TWO:
-        libraryId--;
+        libraryId = libraryId--;
         break;
       case NavSwitch::TEE: //Select
         next = new Token(libraryId);
         break;
     } //end switch
+    libraryId = positive_modulo(libraryId, TOC_SIZE * BLOCKS_PER_PAGE);
   }//end update
 
-  //If load flag, remove old token, set LCD text, add new one next second
   if (next) {
     LCD.write(0xFE);   //command flag
     LCD.write(0x01);   //clear command.
@@ -155,13 +157,11 @@ void loop() {
     LCD.write(BACKLIGHT_CMD);
     LCD.write(BACKLIGHT_BASE + (BACKLIGHT_BASE - level));
   }
-
 }
 
 // callbacks
-void connectCallback(BLECentral& central)
-{
-    Serial.println(F("Connected"));
+void connectCallback(BLECentral& central) {
+    //Serial.println(F("Connected"));
     vp.connect();
 }
 
@@ -173,7 +173,7 @@ void disconnectCallback(BLECentral& central)
 
 void subscribeHandler(BLECentral& central, BLECharacteristic& characteristic)
 {
-  Serial.println(F("Subscribed"));
+  //Serial.println(F("Subscribed"));
   vp.subscribe();
   subscribed = true;
 }
@@ -203,3 +203,8 @@ void writeHandler(BLECentral& central, BLECharacteristic& characteristic)
 unsigned char ble_busy() {
     return (digitalRead(BLE_REQ) == LOW);
 }
+
+inline int positive_modulo(int i, int n) {
+  return (i % n + n) % n;
+}
+

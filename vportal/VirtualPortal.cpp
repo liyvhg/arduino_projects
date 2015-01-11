@@ -1,15 +1,11 @@
-
 #include "VirtualPortal.h"
-
 
 VirtualPortal::VirtualPortal() : lightVal(0), sequence(0), reset_6(0x00), reset_8(0xc2) {
     characterToken = NULL;
 }
 
 int VirtualPortal::respondTo(uint8_t* message, uint8_t* response) {
-
   printCommand(true, message);
-
   switch(message[0]) {
     case 'A':
       activate(message, response);
@@ -37,12 +33,9 @@ int VirtualPortal::respondTo(uint8_t* message, uint8_t* response) {
       write(message, response);
       break;
   }
-
   printCommand(false, response);
-
   return BLE_ATTRIBUTE_MAX_VALUE_LENGTH;
 }
-
 
 int VirtualPortal::query(uint8_t* message, uint8_t* response) {
     int index = message[1];
@@ -206,8 +199,8 @@ uint8_t VirtualPortal::light() {
 void VirtualPortal::printCommand(bool incoming, const uint8_t* command) {
   int interestingBytes = 0;
 
-  LCD.write(0xFE); //MoveTo
-  LCD.write(0xCF); //2nd line, Last character
+  LCD.write(LCD_MOVE); //MoveTo
+  LCD.write(LCD_BOTTOM + 0x0E); //2nd line, Last character
   LCD.write(command[0]);
 
   switch(command[0]) {
@@ -250,11 +243,9 @@ void VirtualPortal::printCommand(bool incoming, const uint8_t* command) {
 }
 
 void VirtualPortal::connect() {
-
 }
 
 void VirtualPortal::disconnect() {
-
 }
 
 void VirtualPortal::subscribe() {
@@ -262,5 +253,4 @@ void VirtualPortal::subscribe() {
 }
 
 void VirtualPortal::unsubscribe() {
-
 }

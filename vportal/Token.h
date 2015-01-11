@@ -7,8 +7,6 @@
   #include "WProgram.h"
 #endif
 
-#define TOKEN_IMPORT
-
 #include <dataflash.h>
 #define PRIMARY_BUFFER 1
 #define SECONDARY_BUFFER 2
@@ -57,6 +55,7 @@ class Token
 
 #ifdef TOKEN_IMPORT
     static void import();
+    static void importNames();
 #endif
 
   private:
@@ -66,7 +65,6 @@ class Token
     uint8_t elementAndType; //enums
     void readFlash(int block, uint8_t* buffer);
     void writeFlash(int block, uint8_t* buffer);
-
 };
 
 

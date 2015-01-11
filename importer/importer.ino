@@ -156,7 +156,7 @@ void importNames() {
 
     LCD.write(LCD_MOVE);
     LCD.write(LCD_BOTTOM);
-    LCD.write((char*)buffer, strlen((char*)buffer));
+    LCD.print((char*)buffer);
 
     dflash.Buffer_Write_Str(PRIMARY_BUFFER, offset, BLOCK_SIZE, buffer);
   }

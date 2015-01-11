@@ -70,11 +70,13 @@ def importNames(sp, max_tokens)
     tokens.each.with_index do |token, libraryId|
       break if libraryId >= max_tokens
       token = OpenStruct.new(token)
-      name = token.name.slice(0, MAX_NAME_LEN).ljust(BLOCK_SIZE, '\0')
-      name[15] = elementAndType(token).chr
-      puts "writing: #{name}"
-      sp.write(name)
-
+      name = token.name.slice(0, MAX_NAME_LEN)
+      eat = elementAndType(token)
+      pad_name = name.bytes.fill(0, name.length..15)
+      bin = (pad_name + [eat]).pack('c*')
+      puts "writing: #{name} #{eat}"
+      p bin
+      sp.write(bin)
       sleep 1
     end
   end
@@ -85,7 +87,9 @@ def elementAndType(token)
   types = ["none", "trapmaster", "trap", "item", "location", "mini", "regular"]
   elements = ["none", "magic", "earth", "water", "fire", "tech", "undead", "life", "air", "dark", "light"]
 
-  (types.find_index(token.type).to_i * 0x10) + (elements.find_index(token.element).to_i)
+  eat = (types.find_index(token.type).to_i * 0x10) + (elements.find_index(token.element).to_i)
+  puts "#{token.type} + #{token.element} = #{eat}"
+  eat
 end
 
 def main

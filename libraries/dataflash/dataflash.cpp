@@ -132,36 +132,6 @@ void Dataflash::Page_Read_Str (uint8_t PageAdr, unsigned int IntPageAdr, unsigne
 /*****************************************************************************
  *
  *
- *	Function name : Buffer_Write_Enable
- *
- *	Returns :		None
- *
- *	Parameters :	IntPageAdr	->	Internal page address to start writing from
- *			BufferAdr	->	Decides usage of either buffer 1 or 2
- *
- *	Purpose :	Enables continous write functionality to one of the Dataflash buffers
- *			buffers. NOTE : User must ensure that CS goes high to terminate
- *			this mode before accessing other Dataflash functionalities
- *
- ******************************************************************************/
-void Dataflash::Buffer_Write_Enable (uint8_t BufferNo, unsigned int IntPageAdr)
-{
-    CHIP_SELECT
-    if (1 == BufferNo) {			//write enable to buffer 1
-        SPI.transfer(Buf1Write);			//buffer 1 write op-code
-    } else if (2 == BufferNo) {			//write enable to buffer 2
-        SPI.transfer(Buf2Write);			//buffer 2 write op-code
-    }
-    SPI.transfer(0x00);				//don't cares
-    SPI.transfer((uint8_t)(IntPageAdr>>8));//upper part of internal buffer address
-    SPI.transfer((uint8_t)(IntPageAdr));	//lower part of internal buffer address
-
-    CHIP_DESELECT
-}
-
-/*****************************************************************************
- *
- *
  *	Function name : Buffer_Write_Str
  *
  *	Returns :		None
@@ -243,7 +213,7 @@ uint8_t Dataflash::waitForReady(uint32_t timeout) {
   do {
     status = readStatus();
     if((millis() - startTime) > timeout) {
-      //Serial.print("waitForReady timeout; "); Serial.println(timeout);
+      Serial.print("waitForReady timeout; "); Serial.println(timeout);
       return false;
     }
   } while(!(status & READY_BIT));

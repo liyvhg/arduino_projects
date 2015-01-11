@@ -33,17 +33,21 @@ void NavSwitch::init() {
 }
 
 int NavSwitch::update() {
-  return oneBounce.update() || twoBounce.update() || teeBounce.update();
+  uint8_t one = oneBounce.update();
+  uint8_t two = twoBounce.update();
+  uint8_t tee = teeBounce.update();
+  //update() calls need to be made outside of ||'ing to prevent short circuiting
+  return one || two || tee;
 }
 
 NavSwitch::NavDir NavSwitch::read() {
-  if (oneBounce.read() == HIGH) {
+  if (oneBounce.read() == LOW) {
     return ONE;
   }
-  if (twoBounce.read() == HIGH) {
+  if (twoBounce.read() == LOW) {
     return TWO;
   }
-  if (teeBounce.read() == HIGH) {
+  if (teeBounce.read() == LOW) {
     return TEE;
   }
   return NONE;

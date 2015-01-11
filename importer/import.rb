@@ -17,10 +17,11 @@ MAX_NAME_LEN = 14 # + null character + elementAndType byte go into a single 16 b
 BLOCK_SIZE = 16
 
 
-def importTokens(sp)
+def importTokens(sp, max_tokens)
   File.open("backup.json", "r") do |f|
     tokens = JSON.parse(f.read)
     tokens.each.with_index do |token, libraryId|
+      break if libraryId >= max_tokens
       token = OpenStruct.new(token)
       data = token.data.slice(ID_LEN, HEADER_LEN - ID_LEN - CRC_LEN)
 
@@ -56,24 +57,35 @@ def importTokens(sp)
   end
 end
 
-def importNames(sp)
+def importNames(sp, max_tokens)
   File.open("backup.json", "r") do |f|
     tokens = JSON.parse(f.read)
     puts 'writing N command'
     sp.putc('N')
 
-    puts "write #{tokens.count} names"
-    sp.write(tokens.count)
+    count = [tokens.count, max_tokens].min
+    puts "write #{count} names"
+    sp.write(count)
 
     tokens.each.with_index do |token, libraryId|
+      break if libraryId >= max_tokens
       token = OpenStruct.new(token)
-      name = token.name.slice(0, 15)
+      name = token.name.slice(0, MAX_NAME_LEN).ljust(BLOCK_SIZE, '\0')
+      name[15] = elementAndType(token).chr
       puts "writing: #{name}"
       sp.write(name)
 
       sleep 1
     end
   end
+end
+
+#This needs to be kept in sync with the real code
+def elementAndType(token)
+  types = ["none", "trapmaster", "trap", "item", "location", "mini", "regular"]
+  elements = ["none", "magic", "earth", "water", "fire", "tech", "undead", "life", "air", "dark", "light"]
+
+  (types.find_index(token.type).to_i * 0x10) + (elements.find_index(token.element).to_i)
 end
 
 def main
@@ -86,8 +98,11 @@ def main
 
   sp = SerialPort.new(port_str, baud_rate, data_bits, stop_bits, parity)
 
-  importTokens(sp)
-  importNames(sp)
+  max_tokens = 256
+  max_tokens = ARGV[0].to_i unless ARGV.empty?
+
+  importTokens(sp, max_tokens)
+  importNames(sp, max_tokens)
 
   sp.close
 end

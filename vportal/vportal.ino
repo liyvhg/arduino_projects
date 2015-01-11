@@ -95,18 +95,6 @@ void loop() {
 
   if(ble_busy()) { return; }
 
-#ifdef TOKEN_IMPORT
-  if (Serial.available() > 0) {
-    int incomingByte = Serial.read();
-    if (incomingByte == 'I') { //import tokens
-      Token::import();
-    }
-    if (incomingByte == 'N') { //import names
-      Token::importNames();
-    }
-  }
-#endif
-
   //Do something every interval
   if(currentMillis - previousMillis > interval) {
     previousMillis = currentMillis;
@@ -161,8 +149,8 @@ void loop() {
 
 // callbacks
 void connectCallback(BLECentral& central) {
-    //Serial.println(F("Connected"));
-    vp.connect();
+  Serial.println(F("Connected"));
+  vp.connect();
 }
 
 void disconnectCallback(BLECentral& central)
@@ -173,7 +161,7 @@ void disconnectCallback(BLECentral& central)
 
 void subscribeHandler(BLECentral& central, BLECharacteristic& characteristic)
 {
-  //Serial.println(F("Subscribed"));
+  Serial.println(F("Subscribed"));
   vp.subscribe();
   subscribed = true;
 }
@@ -192,7 +180,7 @@ void writeHandler(BLECentral& central, BLECharacteristic& characteristic)
     unsigned long start = millis();
     len = vp.respondTo(val, response);
 
-    //Serial.print("respondTo took (ms): "); Serial.println(millis() - start);
+    Serial.print("respondTo took (ms): "); Serial.println(millis() - start);
 
     //respond if data to respond with
     if (len > 0) {

@@ -28,10 +28,11 @@
 #define TOC_SIZE 16 //Pages
 #define CHAPTER_SIZE 4 //pages in a chapter/token
 
-enum Element { MAGIC, EARTH, WATER, FIRE, TECH, UNDEAD, LIFE, AIR, DARK, LIGHT};
+enum Element { NONE, MAGIC, EARTH, WATER, FIRE, TECH, UNDEAD, LIFE, AIR, DARK, LIGHT};
 
 //All greater than 0x0F so they can be stored in high order bits
 enum Type {
+  //NONE = 0x00,
   TRAP_MASTER = 0x10,
   TRAP = 0x20,
   MAGIC_ITEM = 0x30,
@@ -52,11 +53,6 @@ class Token
     void display();
     uint8_t type();
     uint8_t element();
-
-#ifdef TOKEN_IMPORT
-    static void import();
-    static void importNames();
-#endif
 
   private:
     Dataflash dflash;

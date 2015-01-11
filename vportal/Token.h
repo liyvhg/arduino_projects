@@ -15,6 +15,7 @@
 #define LCD_MOVE 0xFE
 #define LCD_TOP 0x80
 #define LCD_BOTTOM 0xC0
+#define LCD_CLEAR 0x01
 
 #define BLOCK_SIZE 16
 #define BLOCK_COUNT 64
@@ -28,8 +29,7 @@
 #define TOC_SIZE 16 //Pages
 #define CHAPTER_SIZE 4 //pages in a chapter/token
 
-enum Element { NONE, MAGIC, EARTH, WATER, FIRE, TECH, UNDEAD, LIFE, AIR, DARK, LIGHT};
-
+#define TYPE_MASK 0xF0
 //All greater than 0x0F so they can be stored in high order bits
 enum Type {
   //NONE = 0x00,
@@ -41,8 +41,8 @@ enum Type {
   REGULAR = 0x60
 };
 
-#define TYPE_MASK 0xF0
 #define ELEMENT_MASK 0x0F
+enum Element { NONE, MAGIC, EARTH, WATER, FIRE, TECH, UNDEAD, LIFE, AIR, DARK, LIGHT};
 
 class Token
 {

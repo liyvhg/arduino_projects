@@ -36,10 +36,9 @@ void Token::writeFlash(int block, uint8_t* buffer) {
   int chapter = TOC_SIZE + (libraryId * CHAPTER_SIZE);
   int page_offset = block / BLOCKS_PER_PAGE; //Which page in chapter [0,3]
   int block_offset = (block % BLOCKS_PER_PAGE) * BLOCK_SIZE;
+  uint8_t dflash_buffer = 0;
 
-  uint8_t dflash_buffer;
-
-  switch(elementAndType & TYPE_MASK) {
+  switch(type()) {
     case TRAP_MASTER:
     case MINI:
     case REGULAR:
@@ -48,8 +47,23 @@ void Token::writeFlash(int block, uint8_t* buffer) {
     case TRAP:
       dflash_buffer = SECONDARY_BUFFER;
       break;
+    default:
+      Serial.print(F("[ERROR] write for type ")); Serial.println(type());
   }
 
+  Serial.print("libraryId:block:chapter:page_offset:block_offset ");
+  Serial.print(libraryId);
+  Serial.print(":");
+  Serial.print(block);
+  Serial.print(":");
+  Serial.print(chapter);
+  Serial.print(":");
+  Serial.print(page_offset);
+  Serial.print(":");
+  Serial.print(block_offset);
+  Serial.println(" ");
+
+  if (dflash_buffer == 0) return; //invalid value, indicating it wasn't set properly
   dflash.Page_To_Buffer(chapter + page_offset, dflash_buffer);
   dflash.Buffer_Write_Str(dflash_buffer, block_offset, BLOCK_SIZE, buffer);
   dflash.Buffer_To_Page(dflash_buffer, chapter + page_offset);
@@ -58,18 +72,20 @@ void Token::writeFlash(int block, uint8_t* buffer) {
 void Token::display() {
   int page_offset = libraryId / BLOCKS_PER_PAGE;
   int block_offset = (libraryId % BLOCKS_PER_PAGE) * BLOCK_SIZE;
-
-  dflash.Page_Read_Str(page_offset, block_offset, BLOCK_SIZE-1, (uint8_t*)name);
-  dflash.Page_Read_Str(page_offset, block_offset, 1, &elementAndType);
+  uint8_t name_len = BLOCK_SIZE - 1;
+  dflash.Page_Read_Str(page_offset, block_offset, name_len, (uint8_t*)name);
+  dflash.Page_Read_Str(page_offset, block_offset + name_len, 1, &elementAndType);
 
   //Topline Character name
   LCD.write(LCD_MOVE);
+  LCD.write(LCD_CLEAR);
+  LCD.write(LCD_MOVE);
   LCD.write(LCD_TOP);
-  if (strlen(name) > 1) {
-    LCD.print(name);
+  if (strlen(name) > 0) {
+    LCD.write(name, strlen(name));
   } else {
+    LCD.print(F("#"));
     LCD.print(libraryId, DEC);
-    LCD.print(F("."));
   }
 
   //Bottomline: Element, type
@@ -78,16 +94,37 @@ void Token::display() {
 
   switch(element()) {
     case MAGIC:
+      LCD.print("Magic");
+      break;
     case EARTH:
+      LCD.print("Earth");
+      break;
     case WATER:
+      LCD.print("Water");
+      break;
     case FIRE:
+      LCD.print("Fire");
+      break;
     case TECH:
+      LCD.print("Tech");
+      break;
     case UNDEAD:
+      LCD.print("Undead");
+      break;
     case LIFE:
+      LCD.print("Life");
+      break;
     case AIR:
+      LCD.print("Air");
+      break;
     case DARK:
+      LCD.print("Dark");
+      break;
     case LIGHT:
-      LCD.print("Element");
+      LCD.print("Light");
+      break;
+    default:
+      LCD.print(element());
       break;
   }
 
@@ -96,12 +133,25 @@ void Token::display() {
 
   switch(type()) {
     case TRAP_MASTER:
+      LCD.print("T.Master");
+      break;
     case TRAP:
+      LCD.print("Trap");
+      break;
     case MAGIC_ITEM:
+      LCD.print("Item");
+      break;
     case LOCATION:
+      LCD.print("Location");
+      break;
     case MINI:
+      LCD.print("Mini");
+      break;
     case REGULAR:
-      LCD.print("Type");
+      LCD.print("Regular");
+      break;
+    default:
+      LCD.print(type());
       break;
   }
 

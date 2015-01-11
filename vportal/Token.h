@@ -14,6 +14,9 @@
 #define SECONDARY_BUFFER 2
 
 #define LCD Serial1
+#define LCD_MOVE 0xFE
+#define LCD_TOP 0x80
+#define LCD_BOTTOM 0xC0
 
 #define BLOCK_SIZE 16
 #define BLOCK_COUNT 64

@@ -61,13 +61,13 @@ void Token::display() {
   dflash.Page_Read_Str(page_offset, block_offset, 1, &elementAndType);
 
   //Topline Character name
-  LCD.write(0xFE); //MoveTo
-  LCD.write(0xC0); //2nd line
+  LCD.write(LCD_MOVE);
+  LCD.write(LCD_TOP);
   LCD.print(name);
 
   //Bottomline: Element, type
-  LCD.write(0xFE); //MoveTo
-  LCD.write(0xC0); //2nd line
+  LCD.write(LCD_MOVE);
+  LCD.write(LCD_BOTTOM);
 
   switch(element()) {
     case MAGIC:
@@ -84,8 +84,8 @@ void Token::display() {
       break;
   }
 
-  LCD.write(0xFE); //MoveTo
-  LCD.write(0xC8); //2nd line, half way across
+  LCD.write(LCD_MOVE);
+  LCD.write(LCD_BOTTOM + 8); //2nd line, half way across
 
   switch(type()) {
     case TRAP_MASTER:

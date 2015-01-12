@@ -100,7 +100,7 @@ void Dataflash::Buffer_Read_Str (uint8_t BufferNo, unsigned int IntPageAdr, unsi
 
 }
 
-void Dataflash::Page_Read_Str (uint8_t PageAdr, unsigned int IntPageAdr, unsigned int No_of_bytes, uint8_t *BufferPtr)
+void Dataflash::Page_Read_Str (unsigned int PageAdr, unsigned int IntPageAdr, unsigned int No_of_bytes, uint8_t *BufferPtr)
 {
     uint8_t high_byte = PageAdr >> (16 - PageBits);
     uint8_t mid_byte = PageAdr << (PageBits - 8) | (uint8_t)(IntPageAdr >> 8);

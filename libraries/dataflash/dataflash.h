@@ -57,7 +57,7 @@ public:
     void Page_To_Buffer (unsigned int PageAdr, uint8_t BufferNo);
     uint8_t Buffer_Read_Byte (uint8_t BufferNo, unsigned int IntPageAdr);
     void Buffer_Read_Str (uint8_t BufferNo, unsigned int IntPageAdr, unsigned int No_of_bytes, uint8_t *BufferPtr);
-    void Page_Read_Str (uint8_t Page, unsigned int IntPageAdr, unsigned int No_of_bytes, uint8_t *BufferPtr);
+    void Page_Read_Str (unsigned int Page, unsigned int IntPageAdr, unsigned int No_of_bytes, uint8_t *BufferPtr);
     void Buffer_Write_Str (uint8_t BufferNo, unsigned int IntPageAdr, unsigned int No_of_bytes, uint8_t *BufferPtr);
     void Buffer_To_Page (uint8_t BufferNo, unsigned int PageAdr);
 

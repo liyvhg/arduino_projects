@@ -18,7 +18,6 @@ int VirtualPortal::respondTo(uint8_t* message, uint8_t* response) {
       break;
     case 'L': //Trap light
       light(message);
-      Serial.println(" ");
       return 0; //No response
       break;
     case 'Q': //Query / read
@@ -145,20 +144,24 @@ int VirtualPortal::status(uint8_t* response) {
 }
 
 bool VirtualPortal::loadToken(Token *t) {
-  Serial.print("Loading token type "); Serial.println(t->type(), HEX);
+  //Serial.print("Loading token type "); Serial.println(t->type(), HEX);
   switch(t->type()) {
     case TRAP:
+      Serial.println("Load trap");
       trapToken = t;
       break;
     case MAGIC_ITEM:
+      Serial.println("Load item");
       itemToken = t;
       break;
     case LOCATION:
+      Serial.println("Load location");
       locationToken = t;
       break;
     case TRAP_MASTER:
     case MINI:
     case REGULAR:
+      Serial.println("Load character");
       characterToken = t;
       break;
   }
@@ -166,25 +169,37 @@ bool VirtualPortal::loadToken(Token *t) {
 }
 
 bool VirtualPortal::removeType(uint8_t type) {
-  Serial.print("Removing token type "); Serial.println(type, HEX);
+  //Serial.print("Removing token type "); Serial.println(type, HEX);
   switch(type) {
     case TRAP:
-      delete trapToken;
-      trapToken = NULL;
+      if (trapToken) {
+        Serial.println("Unload trap");
+        delete trapToken;
+        trapToken = NULL;
+      }
       break;
     case MAGIC_ITEM:
-      delete itemToken;
-      itemToken = NULL;
+      if (itemToken) {
+        Serial.println("Unload item");
+        delete itemToken;
+        itemToken = NULL;
+      }
       break;
     case LOCATION:
-      delete locationToken;
-      locationToken = NULL;
+      if (locationToken) {
+        Serial.println("Unload location");
+        delete locationToken;
+        locationToken = NULL;
+      }
       break;
     case TRAP_MASTER:
     case MINI:
     case REGULAR:
-      delete characterToken;
-      characterToken = NULL;
+      if (characterToken) {
+        Serial.println("Unload character");
+        delete characterToken;
+        characterToken = NULL;
+      }
       break;
   }
   return true;
@@ -208,23 +223,25 @@ void VirtualPortal::printCommand(bool incoming, const uint8_t* command) {
 
   switch(command[0]) {
     case 'C':
-      interestingBytes = 3;
+      //interestingBytes = 3;
       break;
     case 'L': //Trap light
-      interestingBytes = 1;
+      //interestingBytes = 1;
       break;
     case 'R':
-      interestingBytes = incoming ? 1 : 12;
+      //interestingBytes = incoming ? 1 : 12;
       break;
     case 'A':
-      interestingBytes = 1;
+      //interestingBytes = 1;
       break;
     case 'S':
-      interestingBytes = incoming ? 0 : 5;
+      //interestingBytes = incoming ? 0 : 5;
       break;
     case 'Q': //Query / read
     case 'W': //Write
-      interestingBytes = incoming ? 2 : BLE_ATTRIBUTE_MAX_VALUE_LENGTH - 1;
+      if (command[2] == 1) {
+        interestingBytes = incoming ? 2 : 18;
+      }
       break;
   }
 

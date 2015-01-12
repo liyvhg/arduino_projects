@@ -53,6 +53,7 @@ class Token
     void display();
     uint8_t type();
     uint8_t element();
+    uint16_t typeId();
 
   private:
     Dataflash dflash;

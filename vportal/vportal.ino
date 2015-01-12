@@ -13,7 +13,6 @@
 #define BLE_RDY   7
 #define BLE_RST   4
 
-
 //Should trap led be a real led, or LCD backlight?
 bool trap_led = true; //TODO: store in EEPROM/flash
 
@@ -49,6 +48,7 @@ int libraryId = 0; //Token being displayed
 int previousId = 0;
 
 Token *next = NULL;
+unsigned int token_count = 123;
 
 void setup() {
     LCD.begin(9600);
@@ -122,7 +122,7 @@ void loop() {
         next = new Token(libraryId);
         break;
     } //end switch
-    libraryId = positive_modulo(libraryId, TOC_SIZE * BLOCKS_PER_PAGE);
+    libraryId = positive_modulo(libraryId, token_count);
   }//end update
 
   if (next) {
@@ -132,6 +132,7 @@ void loop() {
     previousId = libraryId;
     Token preview(libraryId);
     preview.display();
+    Serial.print("LibraryId: "); Serial.println(libraryId, DEC);
   }
 
   if (trap_led) {
@@ -151,7 +152,7 @@ void connectCallback(BLECentral& central) {
 
 void disconnectCallback(BLECentral& central)
 {
-    vp.connect();
+    vp.disconnect();
     subscribed = false;
 }
 

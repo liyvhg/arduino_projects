@@ -68,6 +68,7 @@ void import() {
   uint8_t buffer[BLOCK_SIZE] = {0};
   int libraryId = 0;
 
+  while (Serial.available() < 1);
   //get the libraryid
   libraryId = Serial.parseInt();
   if (libraryId < 0) return;
@@ -116,7 +117,6 @@ void import() {
   }
   dflash.Buffer_To_Page(PRIMARY_BUFFER, page); //Final page save
 
-  LCD.print(" ");
   Serial.print(",");
   Serial.print(page);
   Serial.println("]");

@@ -24,6 +24,7 @@ def parseJson
   File.open("backup.json", "r") do |f|
     tokens = JSON.parse(f.read)
   end
+  tokens.each {|token| token['name'] = token['name'].titleize}
   tokens.collect{|token| OpenStruct.new(token) }
 end
 
@@ -44,19 +45,19 @@ def importTokens(tokens, sp)
     bin << crc.hexdigest[2..3].to_i(16)
     bin << crc.hexdigest[0..1].to_i(16)
 
-    puts 'writing I command'
+    #puts 'writing I command'
     sp.putc('I')
 
-    puts "writing library id #{libraryId}"
+    puts "writing #{libraryId}. #{token.name}"
     sp.write(libraryId)
     sleep 1
 
     block_0 = bin.slice(0, BLOCK_SIZE)
-    puts "writing block 0: #{block_0.unpack('H*')}"
+    #puts "writing block 0: #{block_0.unpack('H*')}"
     sp.write(block_0)
 
     block_1 = bin.slice(BLOCK_SIZE, BLOCK_SIZE)
-    puts "writing block 1: #{block_1.unpack('H*')}"
+    #puts "writing block 1: #{block_1.unpack('H*')}"
     sp.write(block_1)
 
   end
@@ -88,7 +89,7 @@ def elementAndType(token)
 
   type_enum = types.find_index(token.type).to_i * 0x10
   element_enum = elements.find_index(token.element).to_i
-  puts "#{token.type} + #{token.element} = #{type_enum.to_s(16)} + #{element_enum.to_s(16)}"
+  #puts "#{token.type} + #{token.element} = #{type_enum.to_s(16)} + #{element_enum.to_s(16)}"
   type_enum + element_enum
 end
 
@@ -102,9 +103,9 @@ def main
 
   sp = SerialPort.new(port_str, baud_rate, data_bits, stop_bits, parity)
   tokens = parseJson
+  tokens.sort_by!(&:name)
 
   tokens = tokens.take(ARGV[0].to_i) unless ARGV.empty?
-  tokens.sort_by!(&:name)
 
   importNames(tokens, sp)
   importTokens(tokens, sp)

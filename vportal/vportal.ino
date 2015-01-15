@@ -19,7 +19,8 @@ bool trap_led = true; //TODO: store in EEPROM/flash
 #define TRAP_LED_PIN   A1
 
 //serLCD
-#define BACKLIGHT_CMD 0x7C
+#define LCD_CMD_1 0xFE
+#define LCD_CMD_2 0x7C
 #define BACKLIGHT_BASE 0x80
 #define BACKLIGHT_LEVELS 30
 
@@ -45,20 +46,22 @@ long interval = 1000;           // interval at which to blink (milliseconds)
 bool subscribed = false;
 
 int libraryId = 0; //Token being displayed
-int previousId = 0;
+int previousId = -1; //track changes without constant redrawing, -1 to cause LCD draw on first load
 
 Token *next = NULL;
 unsigned int token_count = 123;
 
 void setup() {
-    LCD.begin(9600);
-    LCD.write(0xFE);   //command flag
-    LCD.write(0x01);   //clear command.
-    LCD.write(BACKLIGHT_CMD);
-    LCD.write(BACKLIGHT_BASE + BACKLIGHT_LEVELS - 1);
-
     Serial.begin(115200);
     delay(3000);  //3 seconds delay for enabling to see the start up comments on the serial board
+
+    LCD.begin(9600);
+    LCD.write(LCD_CMD_1);   //command flag
+    LCD.write(0x01);   //clear command.
+    //TODO: Turn the LCD down x seconds after last user interaction
+    LCD.write(LCD_CMD_2);
+    LCD.write(BACKLIGHT_BASE + BACKLIGHT_LEVELS / 2);
+
     pinMode(TRAP_LED_PIN, OUTPUT);
     nav.init();
 
@@ -79,6 +82,7 @@ void setup() {
 
     // begin initialization
     blePeripheral.begin();
+
 }
 
 /* The general order is
@@ -139,7 +143,7 @@ void loop() {
     analogWrite(TRAP_LED_PIN, vp.light());
   } else {
     uint8_t level = vp.light() / (255 * BACKLIGHT_LEVELS);
-    LCD.write(BACKLIGHT_CMD);
+    LCD.write(LCD_CMD_2);
     LCD.write(BACKLIGHT_BASE + (BACKLIGHT_BASE - level));
   }
 }
@@ -193,3 +197,9 @@ inline int positive_modulo(int i, int n) {
   return (i % n + n) % n;
 }
 
+void setSplash() {
+  //Splash screen: send special code '123' followed by <control> j to set
+  LCD.print("   Noah Betts     Magic Portal  ");
+  LCD.write(LCD_CMD_2);
+  LCD.write(0x0A);
+}

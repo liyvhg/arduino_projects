@@ -79,6 +79,7 @@ def importNames(tokens, sp)
     bin = (pad_name + [eat]).pack('c16')
     puts "writing: #{name} #{eat.to_s(16)}"
     sp.write(bin)
+    sleep 0.5
   end
 end
 

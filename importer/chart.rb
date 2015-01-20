@@ -29,7 +29,7 @@ def main
   tokens = parseJson
   tokens.sort_by!(&:id)
   tokens.each do |token|
-    puts "#{token.id}\t\t#{token.element}\t\t#{token.type}\t\t#{token.name}"
+    puts token.id.ljust(10) + token.element.to_s.ljust(15) + token.type.to_s.ljust(15) + token.name
   end
 end
 

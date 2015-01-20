@@ -1,4 +1,3 @@
-#include <Keypad.h>
 #include <Bounce2.h>
 #include <Audio.h>
 #include <Wire.h>
@@ -8,8 +7,10 @@
 #define CLIP_COUNT 12
 #define UNCONNECTED_PIN 20
 #define HOOK_PIN 0
+#define RING_PIN 1
 #define DTMF_VOLUME 0.5
-#define OUTPUT_VOLUME 0.6
+#define OUTPUT_VOLUME 0.7
+#define RING_VOLUME 1.0
 
 //In "Homer the Smithers", Mr. Burns attempting to reach Smithers, accidentally dials the telephone number for Moe's Tavern. The number is revealed as 7648-4377 which spells out (S-M-I-T-H-E-R-S).
 #define SMITHERS "76484377"
@@ -22,19 +23,8 @@
 // Audio Shield for Teensy 3.0: pin 10
 const int chipSelect = 10;
 
-const byte ROWS = 4; //four rows
-const byte COLS = 3; //three columns
-char keys[ROWS][COLS] = {
-  {'1','2','3'},
-  {'4','5','6'},
-  {'7','8','9'},
-  {'*','0','#'}
-};
-byte rowPins[ROWS] = {1, 2, 3, 4}; //connect to the row pinouts of the keypad
-byte colPins[COLS] = {5, 8, 16}; //connect to the column pinouts of the keypad
-
-Keypad keypad = Keypad( makeKeymap(keys), rowPins, colPins, ROWS, COLS );
 Bounce hook = Bounce();
+Bounce ringer = Bounce();
 
 // Create the Audio components.  These should be created in the
 // order data flows, inputs/sources -> processing -> outputs
@@ -60,7 +50,6 @@ AudioConnection c13(mixer, 0, audioOut, 1);
 // Create an object to control the audio shield.
 AudioControlSGTL5000 audioShield;
 
-bool debug = true;
 unsigned int i = 0;
 
 String s(int state) {
@@ -78,6 +67,9 @@ void setup(){
   hook.attach(HOOK_PIN);
   hook.interval(5);
   randomSeed(analogRead(UNCONNECTED_PIN));
+  pinMode(RING_PIN, INPUT); //Held low by Simple RF M4 receiver
+  ringer.attach(RING_PIN);
+  ringer.interval(5);
 
   // Audio connections require memory to work.  For more
   // detailed information, see the MemoryAndCpuUsage example
@@ -92,7 +84,7 @@ void setup(){
   SPI.setSCK(14);
   if (SD.begin(chipSelect)) {
     wav.play("ring.wav");//1 min clip of phone ringing
-    delay(3000);//play through one ring
+    delay(1000);//play through one ring
     wav.stop();
   } else {
     Serial.println("SD.begin() failure");
@@ -102,37 +94,28 @@ void setup(){
 }
 
 void loop(){
-  boolean stateChanged = hook.update();
-  int state = hook.read();
-  char key = keypad.getKey();
+  boolean hookChanged = hook.update();
+  int hookState = hook.read();
+  boolean ringerChanged = ringer.update();
+  int ringState = ringer.read();
   boolean isPlaying = wav.isPlaying();
 
-  if (debug) {
-    char s = Serial.read();
-    if (s == 'x') {
-      stateChanged = true;
-      state = LOW;
-    } else if (s == 'X') {
-      stateChanged = true;
-      state = HIGH;
-    } else if (s >= '0' && s <= '9') {
-      play_key(key);
-    } else if (s == 's') {
-      dialtone(1000);
-      dial(SMITHERS);
-      wav.play("smithers.wav");
+  if (hookChanged) {
+    Serial.println("New state: " + s(hookState));
+  }
+
+  if (ringerChanged) {
+    Serial.println("New ringer state: " + s(ringState));
+    if (ringState == HIGH && hookState == HIGH && !isPlaying) { //ringer keyfob clicked
+      audioShield.volume(RING_VOLUME);
+      wav.play("ring.wav");//1 min clip of phone ringing
+      delay(3000);//play through one ring
+      wav.stop();
+      audioShield.volume(OUTPUT_VOLUME);
     }
   }
 
-  if (key) {
-    Serial.println("Keypad: " + String(key));
-  }
-
-  if (stateChanged) {
-    Serial.println("New state: " + s(state));
-  }
-
-  if ( stateChanged && state == LOW && !isPlaying) { //Picking up handset
+  if ( hookChanged && hookState == LOW && !isPlaying) { //Picking up handset
     dialtone(1000);
     dial(MOES);
 
@@ -143,9 +126,7 @@ void loop(){
     Serial.println("wav.play(" + String(filename) + ")");
     wav.play(filename);
     print_stats();
-  } else if (key && state == LOW && !isPlaying) { //key pressed, Off hook, not playing
-    play_key(key); //DTMF for key
-  } else if (stateChanged && state == HIGH) {
+  } else if (hookChanged && hookState == HIGH) {
     Serial.println("wav.stop()");
     wav.stop();
   }

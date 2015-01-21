@@ -20,7 +20,7 @@ def parseJson
   tokens.each do |token|
     token['name'] = token['name'].titleize
     token['hexId'] = token['data'][34..35] + token['data'][32..33]
-    token['id'] = 255 * token['data'][34..35].to_i(16) + token['data'][32..33].to_i(16)
+    token['id'] = 0x100 * token['data'][34..35].to_i(16) + token['data'][32..33].to_i(16)
   end
 
   tokens.collect{|token| OpenStruct.new(token) }

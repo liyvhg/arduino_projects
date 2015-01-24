@@ -2,32 +2,7 @@
 // Import libraries (BLEPeripheral depends on SPI)
 #include <SPI.h>
 #include <dataflash.h>
-
-//serLCD
-#define LCD Serial1
-#define BACKLIGHT_CMD 0x7C
-#define BACKLIGHT_BASE 0x80
-#define BACKLIGHT_LEVELS 30
-
-#define LCD_MOVE 0xFE
-#define LCD_TOP 0x80
-#define LCD_BOTTOM 0xC0
-#define LCD_CLEAR 0x01
-
-#define PRIMARY_BUFFER 1
-#define SECONDARY_BUFFER 2
-
-#define BLOCK_SIZE 16
-#define BLOCK_COUNT 64
-
-#define PAGE_SIZE 256 //bytes
-#define PAGE_COUNT 2048 //4Mbit chip
-
-#define BLOCKS_PER_PAGE 16
-
-#define TOC_CHAPTER 0
-#define TOC_SIZE 16 //Pages
-#define CHAPTER_SIZE 4 //pages in a chapter/token
+#include "Token.h"
 
 void setup() {
     LCD.begin(9600);

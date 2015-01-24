@@ -1,11 +1,302 @@
 [
+
+  {
+    "data": "afbee9ef1781010fc407000000000014d500000000000000000000000430ffff",
+    "name": "Spirit Sphere",
+    "element": "undead",
+    "type": "trap"
+  },
+  {
+    "data": "afbee9ef1781010fc407000000000014d500000000000000000000000830ffff",
+    "name": "Spectral Skull",
+    "element": "undead",
+    "type": "trap"
+  },
+  {
+    "data": "afbee9ef1781010fc407000000000014d500000000000000000000000b30ffff",
+    "name": "Haunted Hatchet",
+    "element": "undead",
+    "type": "trap"
+  },
+  {
+    "data": "afbee9ef1781010fc407000000000014d500000000000000000000000c30ffff",
+    "name": "Grim Gripper",
+    "element": "undead",
+    "type": "trap"
+  },
+  {
+    "data": "afbee9ef1781010fc407000000000014d500000000000000000000001030ffff",
+    "name": "Spooky Snake",
+    "element": "undead",
+    "type": "trap"
+  },
+  {
+    "data": "afbee9ef1781010fc407000000000014d500000000000000000000001730ffff",
+    "name": "Dream Piercer",
+    "element": "undead",
+    "type": "trap"
+  },
+
+
+  {
+    "data": "afbee9ef1781010fc407000000000014d200000000000000000000000230ffff",
+    "name": "Biter's Bane",
+    "element": "magic",
+    "type": "trap"
+  },
+  {
+    "data": "afbee9ef1781010fc407000000000014d200000000000000000000000830ffff",
+    "name": "Sorcerous Skull",
+    "element": "magic",
+    "type": "trap"
+  },
+  {
+    "data": "afbee9ef1781010fc407000000000014d200000000000000000000000b30ffff",
+    "name": "Axe of Illusion",
+    "element": "magic",
+    "type": "trap"
+  },
+  {
+    "data": "afbee9ef1781010fc407000000000014d200000000000000000000000e30ffff",
+    "name": "Arcane Hourglass",
+    "element": "magic",
+    "type": "trap"
+  },
+  {
+    "data": "afbee9ef1781010fc407000000000014d200000000000000000000001230ffff",
+    "name": "Spell Slapper",
+    "element": "magic",
+    "type": "trap"
+  },
+  {
+    "data": "afbee9ef1781010fc407000000000014d200000000000000000000001430ffff",
+    "name": "Rune Rocket",
+    "element": "magic",
+    "type": "trap"
+  },
+
+  {
+    "data": "afbee9ef1781010fc407000000000014d600000000000000000000000030ffff",
+    "name": "Tech Totem",
+    "element": "tech",
+    "type": "trap"
+  },
+  {
+    "data": "afbee9ef1781010fc407000000000014d600000000000000000000000730ffff",
+    "name": "Automatic Angel",
+    "element": "tech",
+    "type": "trap"
+  },
+  {
+    "data": "afbee9ef1781010fc407000000000014d600000000000000000000000930ffff",
+    "name": "Factory Flower",
+    "element": "tech",
+    "type": "trap"
+  },
+  {
+    "data": "afbee9ef1781010fc407000000000014d600000000000000000000000c30ffff",
+    "name": "Grabbing Gadget",
+    "element": "tech",
+    "type": "trap"
+  },
+  {
+    "data": "afbee9ef1781010fc407000000000014d600000000000000000000001630ffff",
+    "name": "Makers Mana",
+    "element": "tech",
+    "type": "trap"
+  },
+  {
+    "data": "afbee9ef1781010fc407000000000014d600000000000000000000001a30ffff",
+    "name": "Topsy Techy",
+    "element": "tech",
+    "type": "trap"
+  },
+  {
+    "data": "afbee9ef1781010fc407000000000014d400000000000000000000000330ffff",
+    "name": "Breezy Bird",
+    "element": "air",
+    "type": "trap"
+  },
+  {
+    "data": "afbee9ef1781010fc407000000000014d400000000000000000000000630ffff",
+    "name": "Drafty Decanter",
+    "element": "air",
+    "type": "trap"
+  },
+  {
+    "data": "afbee9ef1781010fc407000000000014d400000000000000000000000d30ffff",
+    "name": "Tempest Timer",
+    "element": "air",
+    "type": "trap"
+  },
+  {
+    "data": "afbee9ef1781010fc407000000000014d400000000000000000000001030ffff",
+    "name": "Cloudy Cobra",
+    "element": "air",
+    "type": "trap"
+  },
+  {
+    "data": "afbee9ef1781010fc407000000000014d400000000000000000000001130ffff",
+    "name": "Storm Warning",
+    "element": "air",
+    "type": "trap"
+  },
+  {
+    "data": "afbee9ef1781010fc407000000000014d400000000000000000000001830ffff",
+    "name": "Cycone Saber",
+    "element": "air",
+    "type": "trap"
+  },
+  {
+    "data": "4f5be6d72581010fc406000000000014d300000000000000000000000230cc90",
+    "name": "Wet Walter",
+    "element": "water",
+    "type": "trap"
+  },
+  {
+    "data": "4f5be6d72581010fc406000000000014d300000000000000000000000630cc90",
+    "name": "Flood Flask",
+    "element": "water",
+    "type": "trap"
+  },
+  {
+    "data": "4f5be6d72581010fc406000000000014d300000000000000000000000730cc90",
+    "name": "Soaking Staff",
+    "element": "water",
+    "type": "trap"
+  },
+  {
+    "data": "4f5be6d72581010fc406000000000014d300000000000000000000000b30cc90",
+    "name": "Aqua Axe",
+    "element": "water",
+    "type": "trap"
+  },
+  {
+    "data": "4f5be6d72581010fc406000000000014d300000000000000000000001630cc90",
+    "name": "Frost Helm",
+    "element": "water",
+    "type": "trap"
+  },
+  {
+    "data": "6fc74fe10681010fc407000000000014d90000000000000000000000033057e5",
+    "name": "Oak Eagle",
+    "type": "trap",
+    "element": "life"
+  },
+  {
+    "data": "6fc74fe10681010fc407000000000014d90000000000000000000000053057e5",
+    "name": "Emerald Energy",
+    "type": "trap",
+    "element": "life"
+  },
+  {
+    "data": "6fc74fe10681010fc407000000000014d90000000000000000000000103057e5",
+    "name": "Seed Serpent",
+    "type": "trap",
+    "element": "life"
+  },
+  {
+    "data": "6fc74fe10681010fc407000000000014d90000000000000000000000183057e5",
+    "name": "Jade Blade",
+    "type": "trap",
+    "element": "life"
+  },
+  {
+    "data": "6fc74fe10681010fc407000000000014d900000000000000000000001b3057e5",
+    "name": "Shrub Shrieker",
+    "type": "trap",
+    "element": "life"
+  },
+  {
+    "data": "afbee9ef1781010fc407000000000014da00000000000000000000001430ffff",
+    "name": "Shadow Spider",
+    "element": "dark",
+    "type": "trap"
+  },
+  {
+    "data": "afbee9ef1781010fc407000000000014da00000000000000000000001a30ffff",
+    "name": "Ghastly Grimace",
+    "element": "dark",
+    "type": "trap"
+  },
+  {
+    "data": "afbee9ef1781010fc407000000000014db00000000000000000000000f30ffff",
+    "name": "Heavenly Hawk",
+    "type": "trap",
+    "element": "light"
+  },
+  {
+    "data": "afbee9ef1781010fc407000000000014db00000000000000000000001b30ffff",
+    "name": "Beam Scream",
+    "type": "trap",
+    "element": "light"
+  },
+  {
+    "data": "afbee9ef1781010fc407000000000014d7000000000000000000000005305c39",
+    "type": "trap",
+    "name": "Eternal Flame",
+    "element": "fire"
+  },
+  {
+    "data": "afbee9ef1781010fc407000000000014d7000000000000000000000011305c39",
+    "type": "trap",
+    "name": "Scorching Stopper",
+    "element": "fire"
+  },
+  {
+    "data": "afbee9ef1781010fc407000000000014d7000000000000000000000012305c39",
+    "type": "trap",
+    "name": "Searing Spinner",
+    "element": "fire"
+  },
+  {
+    "data": "afbee9ef1781010fc407000000000014d7000000000000000000000017305c39",
+    "type": "trap",
+    "name": "Spark Spear",
+    "element": "fire"
+  },
+  {
+    "data": "afbee9ef1781010fc407000000000014d700000000000000000000001b305c39",
+    "type": "trap",
+    "name": "Blazing Belch",
+    "element": "fire"
+  },
+  {
+    "data": "afbee9ef1781010fc407000000000014d800000000000000000000000330ffff",
+    "name": "Rock Hawk",
+    "element": "earth",
+    "type": "trap"
+  },
+  {
+    "data": "afbee9ef1781010fc407000000000014d800000000000000000000000a30ffff",
+    "name": "Slag Hammer",
+    "element": "earth",
+    "type": "trap"
+  },
+  {
+    "data": "afbee9ef1781010fc407000000000014d800000000000000000000000e30ffff",
+    "name": "Dust of Time",
+    "element": "earth",
+    "type": "trap"
+  },
+  {
+    "data": "afbee9ef1781010fc407000000000014d800000000000000000000001330ffff",
+    "name": "Spinning Sandstorm",
+    "element": "earth",
+    "type": "trap"
+  },
+  {
+    "data": "afbee9ef1781010fc407000000000014d800000000000000000000001a30ffff",
+    "name": "Rubble Trouble",
+    "element": "earth",
+    "type": "trap"
+  },
   {
     "data": "00000000c581010fc4350000000000136400000078130c8bc01d000000300c54",
     "name": "Jet-Vac",
     "type": "giants",
     "element": "air"
   },
-
   {
     "data": "00000000c581010fc4350000000000136500000078130c8bc01d000000300c54",
     "name": "Swarm",
@@ -201,7 +492,7 @@
     "type": "trap"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014d7000000000000000000000004305c39",
+    "data": "afbee9ef1781010fc407000000000014d7000000000000000000000009305c39",
     "type": "trap",
     "name": "Fire Flower",
     "element": "fire"
@@ -307,12 +598,6 @@
     "name": "Tidal Tiki",
     "element": "water",
     "type": "trap"
-  },
-  {
-    "data": "afbee9ef1781010fc407000000000014d400000000000000000000000030ffff",
-    "element": "air",
-    "type": "trap",
-    "name": "Drafty Decanter"
   },
   {
     "data": "afbee9ef1781010fc4070000000000141c02000000000000000000000030ffff",
@@ -627,12 +912,6 @@
     "type": "trapmaster"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014d200000000000000000000000030ffff",
-    "element": "magic",
-    "type": "trap",
-    "name": "Sorcerous Skull"
-  },
-  {
     "data": "afbee9ef1781010fc4070000000000143401000000000000000000000030ffff",
     "type": "location",
     "element": "none",
@@ -795,12 +1074,6 @@
     "name": "Sunscraper spire"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014d600000000000000000000000030ffff",
-    "element": "tech",
-    "type": "trap",
-    "name": "Automatic Angel"
-  },
-  {
     "data": "afbee9ef1781010fc407000000000014f901000000000000000000000030ffff",
     "element": "earth",
     "name": "Terrabite",
@@ -926,4 +1199,5 @@
     "name": "Zook",
     "type": "regular"
   }
+
 ]

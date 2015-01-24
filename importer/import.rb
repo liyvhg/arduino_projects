@@ -16,7 +16,7 @@ end
 ID_LEN = 8
 CRC_LEN = 4
 HEADER_LEN = 64
-MAX_NAME_LEN = 14 # + null character + elementAndType byte go into a single 16 byte block
+MAX_NAME_LEN = 15 # elementAndType byte to go aftewards
 BLOCK_SIZE = 16
 
 def parseJson

@@ -21,6 +21,8 @@ def parseJson
     token['name'] = token['name'].titleize
     token['hexId'] = token['data'][34..35] + token['data'][32..33]
     token['id'] = 0x100 * token['data'][34..35].to_i(16) + token['data'][32..33].to_i(16)
+    token['variant'] = token['data'][56..57].to_i(16)
+    token['subvariant'] = token['data'][58..59].to_i(16)
   end
 
   tokens.collect{|token| OpenStruct.new(token) }
@@ -30,7 +32,7 @@ def main
   tokens = parseJson
   tokens.sort_by!(&:id)
   tokens.each do |token|
-    puts "#{token.id}(#{token.hexId})".ljust(16) + token.element.to_s.ljust(15) + token.type.to_s.ljust(15) + token.name
+    puts "#{token.id}(#{token.hexId})".ljust(16) + token.element.to_s.ljust(15) + token.type.to_s.ljust(15)  + token.variant.to_s.ljust(4) + token.subvariant.to_s.ljust(4) + token.name
   end
 end
 

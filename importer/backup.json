@@ -195,7 +195,7 @@
     "element": "air"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014d80000000000000000000000043031a2",
+    "data": "afbee9ef1781010fc407000000000014d800000000000000000000000030ffff",
     "name": "Banded Boulder",
     "element": "earth",
     "type": "trap"
@@ -285,7 +285,7 @@
     "type": "mini"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014100000000000000000000000043031a2",
+    "data": "afbee9ef1781010fc4070000000000141000000000000000000000000030ffff",
     "element": "magic",
     "name": "Spyro",
     "type": "regular"
@@ -309,619 +309,619 @@
     "type": "trap"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014d40000000000000000000000043031a2",
+    "data": "afbee9ef1781010fc407000000000014d400000000000000000000000030ffff",
     "element": "air",
     "type": "trap",
     "name": "Drafty Decanter"
   },
   {
-    "data": "afbee9ef1781010fc4070000000000141c0200000000000000000000043031a2",
+    "data": "afbee9ef1781010fc4070000000000141c02000000000000000000000030ffff",
     "element": "life",
     "name": "Barkley",
     "type": "mini"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014040000000000000000000000043031a2",
+    "data": "afbee9ef1781010fc4070000000000140400000000000000000000000030ffff",
     "element": "earth",
     "name": "Bash",
     "type": "regular"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014e00100000000000000000000043031a2",
+    "data": "afbee9ef1781010fc407000000000014e001000000000000000000000030ffff",
     "element": "undead",
     "name": "Bat spin",
     "type": "regular"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014e50100000000000000000000043031a2",
+    "data": "afbee9ef1781010fc407000000000014e501000000000000000000000030ffff",
     "element": "dark",
     "name": "Blackout",
     "type": "regular"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014d20100000000000000000000043031a2",
+    "data": "afbee9ef1781010fc407000000000014d201000000000000000000000030ffff",
     "element": "magic",
     "name": "Blastermind",
     "type": "trapmaster"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014160000000000000000000000043031a2",
+    "data": "afbee9ef1781010fc4070000000000141600000000000000000000000030ffff",
     "element": "tech",
     "name": "Boomer",
     "type": "regular"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014f60100000000000000000000043031a2",
+    "data": "afbee9ef1781010fc407000000000014f601000000000000000000000030ffff",
     "element": "earth",
     "name": "Bop",
     "type": "mini"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014fa0100000000000000000000043031a2",
+    "data": "afbee9ef1781010fc407000000000014fa01000000000000000000000030ffff",
     "element": "air",
     "name": "Breeze",
     "type": "mini"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014be0b00000000000000000000043031a2",
+    "data": "afbee9ef1781010fc407000000000014be0b000000000000000000000030ffff",
     "element": "life",
     "name": "Bumble blast",
     "type": "regular"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014da0100000000000000000000043031a2",
+    "data": "afbee9ef1781010fc407000000000014da01000000000000000000000030ffff",
     "element": "life",
     "name": "Bushwhack",
     "type": "trapmaster"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014180000000000000000000000043031a2",
+    "data": "afbee9ef1781010fc4070000000000141800000000000000000000000030ffff",
     "element": "life",
     "name": "Camo",
     "type": "regular"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014d00000000000000000000000043031a2",
+    "data": "afbee9ef1781010fc407000000000014d000000000000000000000000030ffff",
     "type": "item",
     "element": "none",
     "name": "Cannon"
   },
   {
-    "data": "afbee9ef1781010fc4070000000000141e0000000000000000000000043031a2",
+    "data": "afbee9ef1781010fc4070000000000141e00000000000000000000000030ffff",
     "element": "undead",
     "name": "Chop chop",
     "type": "regular"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014d80100000000000000000000043031a2",
+    "data": "afbee9ef1781010fc407000000000014d801000000000000000000000030ffff",
     "element": "tech",
     "type": "regular",
     "name": "Chopper"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014c20b00000000000000000000043031a2",
+    "data": "afbee9ef1781010fc407000000000014c20b000000000000000000000030ffff",
     "element": "tech",
     "name": "Countdown",
     "type": "regular"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014200000000000000000000000043031a2",
+    "data": "afbee9ef1781010fc4070000000000142000000000000000000000000030ffff",
     "element": "undead",
     "name": "Cynder",
     "type": "regular"
   },
   {
-    "data": "afbee9ef1781010fc4070000000000141c0000000000000000000000043031a2",
+    "data": "afbee9ef1781010fc4070000000000141c00000000000000000000000030ffff",
     "element": "magic",
     "name": "Dark spyro",
     "type": "regular"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014da0000000000000000000000043031a2",
+    "data": "afbee9ef1781010fc407000000000014da00000000000000000000000030ffff",
     "element": "dark",
     "type": "trap",
     "name": "Dark Dagger"
   },
   {
-    "data": "afbee9ef1781010fc4070000000000142f0100000000000000000000043031a2",
+    "data": "afbee9ef1781010fc4070000000000142f01000000000000000000000030ffff",
     "element": "none",
     "type": "location",
     "name": "Darklight crypt"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014d40100000000000000000000043031a2",
+    "data": "afbee9ef1781010fc407000000000014d401000000000000000000000030ffff",
     "element": "magic",
     "type": "regular",
     "name": "Deja vu"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014060000000000000000000000043031a2",
+    "data": "afbee9ef1781010fc4070000000000140600000000000000000000000030ffff",
     "element": "earth",
     "name": "Dino-rang",
     "type": "regular"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014120000000000000000000000043031a2",
+    "data": "afbee9ef1781010fc4070000000000141200000000000000000000000030ffff",
     "element": "magic",
     "name": "Double trouble",
     "type": "regular"
   },
   {
-    "data": "afbee9ef1781010fc4070000000000142c0100000000000000000000043031a2",
+    "data": "afbee9ef1781010fc4070000000000142c01000000000000000000000030ffff",
     "type": "location",
     "element": "none",
     "name": "Dragons peak"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014150000000000000000000000043031a2",
+    "data": "afbee9ef1781010fc4070000000000141500000000000000000000000030ffff",
     "element": "tech",
     "name": "Drill sergeant",
     "type": "regular"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014fe0100000000000000000000043031a2",
+    "data": "afbee9ef1781010fc407000000000014fe01000000000000000000000030ffff",
     "element": "tech",
     "name": "Drobit",
     "type": "mini"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014140000000000000000000000043031a2",
+    "data": "afbee9ef1781010fc4070000000000141400000000000000000000000030ffff",
     "element": "tech",
     "name": "Drobot",
     "type": "regular"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014c00b00000000000000000000043031a2",
+    "data": "afbee9ef1781010fc407000000000014c00b000000000000000000000030ffff",
     "element": "magic",
     "name": "Dune bug",
     "type": "regular"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014d10100000000000000000000043031a2",
+    "data": "afbee9ef1781010fc407000000000014d101000000000000000000000030ffff",
     "element": "water",
     "name": "Echo",
     "type": "regular"
   },
   {
-    "data": "afbee9ef1781010fc4070000000000142d0100000000000000000000043031a2",
+    "data": "afbee9ef1781010fc4070000000000142d01000000000000000000000030ffff",
     "type": "location",
     "element": "none",
     "name": "Empire of ice"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014d30100000000000000000000043031a2",
+    "data": "afbee9ef1781010fc407000000000014d301000000000000000000000030ffff",
     "element": "magic",
     "type": "trapmaster",
     "name": "Enigma"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014090000000000000000000000043031a2",
+    "data": "afbee9ef1781010fc4070000000000140900000000000000000000000030ffff",
     "element": "fire",
     "name": "Eruptor",
     "type": "regular"
   },
   {
-    "data": "afbee9ef1781010fc4070000000000141f0200000000000000000000043031a2",
+    "data": "afbee9ef1781010fc4070000000000141f02000000000000000000000030ffff",
     "element": "undead",
     "name": "Eye-small",
     "type": "mini"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014c80100000000000000000000043031a2",
+    "data": "afbee9ef1781010fc407000000000014c801000000000000000000000030ffff",
     "element": "earth",
     "name": "Fist bump",
     "type": "regular"
   },
   {
-    "data": "afbee9ef1781010fc4070000000000140b0000000000000000000000043031a2",
+    "data": "afbee9ef1781010fc4070000000000140b00000000000000000000000030ffff",
     "element": "fire",
     "name": "Flameslinger",
     "type": "regular"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014c40100000000000000000000043031a2",
+    "data": "afbee9ef1781010fc407000000000014c401000000000000000000000030ffff",
     "element": "air",
     "name": "Fling kong",
     "type": "regular"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014d00100000000000000000000043031a2",
+    "data": "afbee9ef1781010fc407000000000014d001000000000000000000000030ffff",
     "element": "water",
     "name": "Flip wreck",
     "type": "regular"
   },
   {
-    "data": "afbee9ef1781010fc4070000000000141f0000000000000000000000043031a2",
+    "data": "afbee9ef1781010fc4070000000000141f00000000000000000000000030ffff",
     "element": "undead",
     "name": "Ghost roaster",
     "type": "regular"
   },
   {
-    "data": "afbee9ef1781010fc4070000000000140e0000000000000000000000043031a2",
+    "data": "afbee9ef1781010fc4070000000000140e00000000000000000000000030ffff",
     "element": "water",
     "name": "Gill grunt",
     "type": "regular"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014c50b00000000000000000000043031a2",
+    "data": "afbee9ef1781010fc407000000000014c50b000000000000000000000030ffff",
     "element": "undead",
     "name": "Grim creeper",
     "type": "regular"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014e60000000000000000000000043031a2",
+    "data": "afbee9ef1781010fc407000000000014e600000000000000000000000030ffff",
     "type": "item",
     "element": "none",
     "name": "Hand of Fate"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014c70100000000000000000000043031a2",
+    "data": "afbee9ef1781010fc407000000000014c701000000000000000000000030ffff",
     "element": "earth",
     "name": "Head rush",
     "type": "trapmaster"
   },
   {
-    "data": "afbee9ef1781010fc4070000000000141d0000000000000000000000043031a2",
+    "data": "afbee9ef1781010fc4070000000000141d00000000000000000000000030ffff",
     "element": "undead",
     "name": "Hex",
     "type": "regular"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014dd0100000000000000000000043031a2",
+    "data": "afbee9ef1781010fc407000000000014dd01000000000000000000000030ffff",
     "element": "life",
     "name": "High five",
     "type": "regular"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014f80100000000000000000000043031a2",
+    "data": "afbee9ef1781010fc407000000000014f801000000000000000000000030ffff",
     "element": "undead",
     "name": "Hijinx",
     "type": "mini"
   },
   {
-    "data": "afbee9ef1781010fc4070000000000140a0000000000000000000000043031a2",
+    "data": "afbee9ef1781010fc4070000000000140a00000000000000000000000030ffff",
     "element": "fire",
     "name": "Ignitor",
     "type": "regular"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014cb0100000000000000000000043031a2",
+    "data": "afbee9ef1781010fc407000000000014cb01000000000000000000000030ffff",
     "element": "fire",
     "name": "Ka-boom",
     "type": "trapmaster"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014dc0000000000000000000000043031a2",
+    "data": "afbee9ef1781010fc407000000000014dc00000000000000000000000030ffff",
     "type": "trap",
     "element": "none",
     "name": "KAOS TRAP!"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014e20100000000000000000000043031a2",
+    "data": "afbee9ef1781010fc407000000000014e201000000000000000000000030ffff",
     "element": "light",
     "name": "Knight light",
     "type": "trapmaster"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014e40100000000000000000000043031a2",
+    "data": "afbee9ef1781010fc407000000000014e401000000000000000000000030ffff",
     "element": "dark",
     "name": "Knight mare",
     "type": "trapmaster"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014db0000000000000000000000043031a2",
+    "data": "afbee9ef1781010fc407000000000014db00000000000000000000000030ffff",
     "type": "trap",
     "element": "light",
     "name": "Shining Ship"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014030000000000000000000000043031a2",
+    "data": "afbee9ef1781010fc4070000000000140300000000000000000000000030ffff",
     "element": "air",
     "name": "Lightning rod",
     "type": "regular"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014cf0100000000000000000000043031a2",
+    "data": "afbee9ef1781010fc407000000000014cf01000000000000000000000030ffff",
     "element": "water",
     "name": "Lob-star",
     "type": "trapmaster"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014d20000000000000000000000043031a2",
+    "data": "afbee9ef1781010fc407000000000014d200000000000000000000000030ffff",
     "element": "magic",
     "type": "trap",
     "name": "Sorcerous Skull"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014340100000000000000000000043031a2",
+    "data": "afbee9ef1781010fc4070000000000143401000000000000000000000030ffff",
     "type": "location",
     "element": "none",
     "name": "Midnight museum"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014310100000000000000000000043031a2",
+    "data": "afbee9ef1781010fc4070000000000143101000000000000000000000030ffff",
     "type": "location",
     "element": "none",
     "name": "Mirror of mystery"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014fc0100000000000000000000043031a2",
+    "data": "afbee9ef1781010fc407000000000014fc01000000000000000000000030ffff",
     "element": "air",
     "name": "Pet vac",
     "type": "mini"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014e70000000000000000000000043031a2",
+    "data": "afbee9ef1781010fc407000000000014e700000000000000000000000030ffff",
     "type": "item",
     "element": "none",
     "name": "Piggy bank"
   },
   {
-    "data": "afbee9ef1781010fc4070000000000142e0100000000000000000000043031a2",
+    "data": "afbee9ef1781010fc4070000000000142e01000000000000000000000030ffff",
     "type": "location",
     "element": "none",
     "name": "Pirate seas"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014b90b00000000000000000000043031a2",
+    "data": "afbee9ef1781010fc407000000000014b90b000000000000000000000030ffff",
     "element": "air",
     "name": "Pop thorn",
     "type": "regular"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014070000000000000000000000043031a2",
+    "data": "afbee9ef1781010fc4070000000000140700000000000000000000000030ffff",
     "element": "earth",
     "name": "Prism break",
     "type": "regular"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014c70b00000000000000000000043031a2",
+    "data": "afbee9ef1781010fc407000000000014c70b000000000000000000000030ffff",
     "element": "water",
     "name": "Punk shock",
     "type": "regular"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014c60b00000000000000000000043031a2",
+    "data": "afbee9ef1781010fc407000000000014c60b000000000000000000000030ffff",
     "element": "water",
     "name": "Rip tide",
     "type": "regular"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014e80000000000000000000000043031a2",
+    "data": "afbee9ef1781010fc407000000000014e800000000000000000000000030ffff",
     "type": "item",
     "element": "none",
     "name": "Rocket ram"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014c90100000000000000000000043031a2",
+    "data": "afbee9ef1781010fc407000000000014c901000000000000000000000030ffff",
     "element": "earth",
     "name": "Rocky roll",
     "type": "regular"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014c40b00000000000000000000043031a2",
+    "data": "afbee9ef1781010fc407000000000014c40b000000000000000000000030ffff",
     "element": "undead",
     "name": "Roller brawl",
     "type": "regular"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014bb0b00000000000000000000043031a2",
+    "data": "afbee9ef1781010fc407000000000014bb0b000000000000000000000030ffff",
     "element": "earth",
     "name": "Scorp",
     "type": "regular"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014d10000000000000000000000043031a2",
+    "data": "afbee9ef1781010fc407000000000014d100000000000000000000000030ffff",
     "type": "item",
     "element": "none",
     "name": "Scorpion striker"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014b80b00000000000000000000043031a2",
+    "data": "afbee9ef1781010fc407000000000014b80b000000000000000000000030ffff",
     "element": "air",
     "name": "Scratch",
     "type": "regular"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014df0100000000000000000000043031a2",
+    "data": "afbee9ef1781010fc407000000000014df01000000000000000000000030ffff",
     "element": "undead",
     "name": "Short cut",
     "type": "trapmaster"
   },
   {
-    "data": "afbee9ef1781010fc4070000000000140f0000000000000000000000043031a2",
+    "data": "afbee9ef1781010fc4070000000000140f00000000000000000000000030ffff",
     "element": "water",
     "name": "Slam bam",
     "type": "regular"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014ba0b00000000000000000000043031a2",
+    "data": "afbee9ef1781010fc407000000000014ba0b000000000000000000000030ffff",
     "element": "earth",
     "name": "Slobber tooth",
     "type": "regular"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014fd0100000000000000000000043031a2",
+    "data": "afbee9ef1781010fc407000000000014fd01000000000000000000000030ffff",
     "element": "fire",
     "name": "Small fry",
     "type": "mini"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014bd0b00000000000000000000043031a2",
+    "data": "afbee9ef1781010fc407000000000014bd0b000000000000000000000030ffff",
     "element": "fire",
     "name": "Smolderdash",
     "type": "regular"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014010000000000000000000000043031a2",
+    "data": "afbee9ef1781010fc4070000000000140100000000000000000000000030ffff",
     "element": "air",
     "name": "Sonic boom",
     "type": "regular"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014e30100000000000000000000043031a2",
+    "data": "afbee9ef1781010fc407000000000014e301000000000000000000000030ffff",
     "element": "light",
     "name": "Spotlight",
     "type": "regular"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014c10b00000000000000000000043031a2",
+    "data": "afbee9ef1781010fc407000000000014c10b000000000000000000000030ffff",
     "element": "magic",
     "name": "Star strike",
     "type": "regular"
   },
   {
-    "data": "afbee9ef1781010fc4070000000000141a0000000000000000000000043031a2",
+    "data": "afbee9ef1781010fc4070000000000141a00000000000000000000000030ffff",
     "element": "life",
     "name": "Stealth elf",
     "type": "regular"
   },
   {
-    "data": "afbee9ef1781010fc4070000000000141b0000000000000000000000043031a2",
+    "data": "afbee9ef1781010fc4070000000000141b00000000000000000000000030ffff",
     "element": "life",
     "name": "Stump smash",
     "type": "regular"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014080000000000000000000000043031a2",
+    "data": "afbee9ef1781010fc4070000000000140800000000000000000000000030ffff",
     "element": "fire",
     "name": "Sunburn",
     "type": "regular"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014330100000000000000000000043031a2",
+    "data": "afbee9ef1781010fc4070000000000143301000000000000000000000030ffff",
     "type": "location",
     "element": "none",
     "name": "Sunscraper spire"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014d60000000000000000000000043031a2",
+    "data": "afbee9ef1781010fc407000000000014d600000000000000000000000030ffff",
     "element": "tech",
     "type": "trap",
     "name": "Automatic Angel"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014f90100000000000000000000043031a2",
+    "data": "afbee9ef1781010fc407000000000014f901000000000000000000000030ffff",
     "element": "earth",
     "name": "Terrabite",
     "type": "mini"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014050000000000000000000000043031a2",
+    "data": "afbee9ef1781010fc4070000000000140500000000000000000000000030ffff",
     "element": "earth",
     "name": "Terrafin",
     "type": "regular"
   },
   {
-    "data": "afbee9ef1781010fc4070000000000141d0200000000000000000000043031a2",
+    "data": "afbee9ef1781010fc4070000000000141d02000000000000000000000030ffff",
     "element": "water",
     "name": "Thumpling",
     "type": "mini"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014c30100000000000000000000043031a2",
+    "data": "afbee9ef1781010fc407000000000014c301000000000000000000000030ffff",
     "element": "air",
     "name": "Thunderbolt",
     "type": "trapmaster"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014cd0100000000000000000000043031a2",
+    "data": "afbee9ef1781010fc407000000000014cd01000000000000000000000030ffff",
     "element": "fire",
     "name": "Torch",
     "type": "regular"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014cc0100000000000000000000043031a2",
+    "data": "afbee9ef1781010fc407000000000014cc01000000000000000000000030ffff",
     "element": "fire",
     "name": "Trail blazer",
     "type": "regular"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014130000000000000000000000043031a2",
+    "data": "afbee9ef1781010fc4070000000000141300000000000000000000000030ffff",
     "element": "tech",
     "name": "Trigger happy",
     "type": "regular"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014db0100000000000000000000043031a2",
+    "data": "afbee9ef1781010fc407000000000014db01000000000000000000000030ffff",
     "element": "life",
     "name": "Tuff luck",
     "type": "trapmaster"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014300100000000000000000000043031a2",
+    "data": "afbee9ef1781010fc4070000000000143001000000000000000000000030ffff",
     "type": "location",
     "element": "none",
     "name": "Volcanic vault"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014110000000000000000000000043031a2",
+    "data": "afbee9ef1781010fc4070000000000141100000000000000000000000030ffff",
     "element": "magic",
     "name": "Voodood",
     "type": "regular"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014c60100000000000000000000043031a2",
+    "data": "afbee9ef1781010fc407000000000014c601000000000000000000000030ffff",
     "element": "earth",
     "name": "Wallop",
     "type": "trapmaster"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014020000000000000000000000043031a2",
+    "data": "afbee9ef1781010fc4070000000000140200000000000000000000000030ffff",
     "element": "air",
     "name": "Warnado",
     "type": "regular"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014fb0100000000000000000000043031a2",
+    "data": "afbee9ef1781010fc407000000000014fb01000000000000000000000030ffff",
     "element": "fire",
     "name": "Weeruptor",
     "type": "mini"
   },
   {
-    "data": "afbee9ef1781010fc4070000000000140d0000000000000000000000043031a2",
+    "data": "afbee9ef1781010fc4070000000000140d00000000000000000000000030ffff",
     "element": "water",
     "name": "Wham-shell",
     "type": "regular"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014000000000000000000000000043031a2",
+    "data": "afbee9ef1781010fc4070000000000140000000000000000000000000030ffff",
     "element": "air",
     "name": "Whirlwind",
     "type": "regular"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014ca0100000000000000000000043031a2",
+    "data": "afbee9ef1781010fc407000000000014ca01000000000000000000000030ffff",
     "element": "fire",
     "name": "Wildfire",
     "type": "trapmaster"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014c30b00000000000000000000043031a2",
+    "data": "afbee9ef1781010fc407000000000014c30b000000000000000000000030ffff",
     "element": "tech",
     "name": "Wind-up",
     "type": "regular"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014170000000000000000000000043031a2",
+    "data": "afbee9ef1781010fc4070000000000141700000000000000000000000030ffff",
     "element": "magic",
     "name": "Wrecking ball",
     "type": "regular"
   },
   {
-    "data": "afbee9ef1781010fc4070000000000140c0000000000000000000000043031a2",
+    "data": "afbee9ef1781010fc4070000000000140c00000000000000000000000030ffff",
     "element": "water",
     "name": "Zap",
     "type": "regular"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014bf0b00000000000000000000043031a2",
+    "data": "afbee9ef1781010fc407000000000014bf0b000000000000000000000030ffff",
     "element": "life",
     "name": "Zoo lou",
     "type": "regular"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014190000000000000000000000043031a2",
+    "data": "afbee9ef1781010fc4070000000000141900000000000000000000000030ffff",
     "element": "life",
     "name": "Zook",
     "type": "regular"

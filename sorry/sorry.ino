@@ -16,14 +16,29 @@ void setup() {
 
 void loop() {
   debouncer.update();
-  int value = debouncer.read();
 
-  if (value == LOW) {
-    Serial.println(s(value));
-    digitalWrite(LED_PIN, HIGH);
-  } else {
-    digitalWrite(LED_PIN, LOW);
+  if (debouncer.fell() ){
+
+    Keyboard.set_modifier(MODIFIERKEY_CTRL);
+    Keyboard.send_now();
+
+    Keyboard.set_modifier(MODIFIERKEY_CTRL | MODIFIERKEY_ALT);
+    Keyboard.send_now();
+
+    Keyboard.set_modifier(MODIFIERKEY_CTRL | MODIFIERKEY_ALT | MODIFIERKEY_GUI);
+    Keyboard.send_now();
+
+    Keyboard.set_key1(KEY_8);
+    Keyboard.send_now();
+
+    // release all the keys at the same instant
+    Keyboard.set_modifier(0);
+    Keyboard.set_key1(0);
+    Keyboard.send_now();
   }
+
+  digitalWrite(LED_PIN, debouncer.read() == LOW ? HIGH : LOW);
+
 }
 
 String s(int state) {

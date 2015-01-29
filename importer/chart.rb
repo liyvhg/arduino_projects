@@ -30,9 +30,11 @@ end
 
 def main
   tokens = parseJson
-  tokens.sort_by!(&:id)
-  tokens.each do |token|
-    puts "#{token.id}(#{token.hexId})".ljust(16) + token.element.to_s.ljust(15) + token.type.to_s.ljust(15)  + token.variant.to_s.ljust(4) + token.subvariant.to_s.ljust(4) + token.name
+  tokens.sort_by!(&:name)
+  tokens.each.with_index do |token, index|
+    puts index.to_s.ljust(4) + token.element.to_s.ljust(15) + token.type.to_s.ljust(15) + token.name
+    #puts "kTfbSpyroTag_ToyType_Character_#{token.name.gsub(' ', '')} = #{token.id},"
+
   end
 end
 

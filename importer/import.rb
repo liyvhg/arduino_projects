@@ -59,6 +59,7 @@ def importTokens(tokens, sp)
     block_1 = bin.slice(BLOCK_SIZE, BLOCK_SIZE)
     #puts "writing block 1: #{block_1.unpack('H*')}"
     sp.write(block_1)
+    sleep 0.5
 
   end
 end
@@ -85,7 +86,7 @@ end
 
 #This needs to be kept in sync with the real code
 def elementAndType(token)
-  types = ["none", "trapmaster", "trap", "item", "location", "mini", "regular"]
+  types = ["none", "trapmaster", "trap", "item", "location", "mini", "regular", "giant", "legendary"]
   elements = ["none", "magic", "earth", "water", "fire", "tech", "undead", "life", "air", "dark", "light"]
 
   type_enum = types.find_index(token.type).to_i * 0x10
@@ -96,7 +97,7 @@ end
 
 def main
   #params for serial port
-  port_str = "/dev/tty.usbmodem1411"  #may be different for you
+  port_str = "/dev/tty.usbmodem1d13231"  #may be different for you
   baud_rate = 115200
   data_bits = 8
   stop_bits = 1

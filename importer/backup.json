@@ -1,5 +1,4 @@
 [
-
   {
     "data": "afbee9ef1781010fc407000000000014d500000000000000000000000430ffff",
     "name": "Spirit Sphere",
@@ -36,8 +35,6 @@
     "element": "undead",
     "type": "trap"
   },
-
-
   {
     "data": "afbee9ef1781010fc407000000000014d200000000000000000000000230ffff",
     "name": "Biter's Bane",
@@ -391,50 +388,50 @@
     "data": "00000000c581010fc435000000000013c900000078130c8bc01d000000300c54",
     "name": "Platinum Treasure Chest",
     "type": "item",
-    "element": "none"
+    "element": ""
   },
 
   {
     "data": "00000000c581010fc435000000000013c800000078130c8bc01d000000300c54",
     "name": "Anvil Rain",
     "type": "item",
-    "element": "none"
+    "element": ""
   },
   {
     "data": "00000000c581010fc435000000000013ca00000078130c8bc01d000000300c54",
     "name": "Healing Elixer",
     "type": "item",
-    "element": "none"
+    "element": ""
   },
   {
     "data": "00000000c581010fc435000000000013cb00000078130c8bc01d000000300c54",
     "name": "Ghost Pirate Swords",
     "type": "item",
-    "element": "none"
+    "element": ""
   },
   {
     "data": "00000000c581010fc435000000000013cc00000078130c8bc01d000000300c54",
     "name": "Time Twist Hourglass",
     "type": "item",
-    "element": "none"
+    "element": ""
   },
   {
     "data": "00000000c581010fc435000000000013cd00000078130c8bc01d000000300c54",
     "name": "Sky-iron Shield",
     "type": "item",
-    "element": "none"
+    "element": ""
   },
   {
     "data": "00000000c581010fc435000000000013ce00000078130c8bc01d000000300c54",
     "name": "Winged Boots",
     "type": "item",
-    "element": "none"
+    "element": ""
   },
   {
     "data": "00000000c581010fc435000000000013cf00000078130c8bc01d000000300c54",
     "name": "Sparx",
     "type": "item",
-    "element": "none"
+    "element": ""
   },
   {
     "data": "00000000c581010fc435000000000013a001000078130c8bc01d000000300c54",
@@ -554,7 +551,7 @@
   {
     "data": "dff047bad281010fc43400000000001332010000bb61ead830cb00000030ef2e",
     "name": "Nightmare Express",
-    "element": "none",
+    "element": "",
     "type": "location"
   },
   {
@@ -584,7 +581,7 @@
   {
     "data": "3f4983b84d81010fc434000000000013e900000044f751c7e14e00000030de03",
     "name": "Tiki Speaky",
-    "element": "none",
+    "element": "",
     "type": "item"
   },
   {
@@ -668,7 +665,7 @@
   {
     "data": "afbee9ef1781010fc407000000000014d000000000000000000000000030ffff",
     "type": "item",
-    "element": "none",
+    "element": "",
     "name": "Cannon"
   },
   {
@@ -709,7 +706,7 @@
   },
   {
     "data": "afbee9ef1781010fc4070000000000142f01000000000000000000000030ffff",
-    "element": "none",
+    "element": "",
     "type": "location",
     "name": "Darklight crypt"
   },
@@ -734,7 +731,7 @@
   {
     "data": "afbee9ef1781010fc4070000000000142c01000000000000000000000030ffff",
     "type": "location",
-    "element": "none",
+    "element": "",
     "name": "Dragons peak"
   },
   {
@@ -770,7 +767,7 @@
   {
     "data": "afbee9ef1781010fc4070000000000142d01000000000000000000000030ffff",
     "type": "location",
-    "element": "none",
+    "element": "",
     "name": "Empire of ice"
   },
   {
@@ -836,7 +833,7 @@
   {
     "data": "afbee9ef1781010fc407000000000014e600000000000000000000000030ffff",
     "type": "item",
-    "element": "none",
+    "element": "",
     "name": "Hand of Fate"
   },
   {
@@ -876,9 +873,9 @@
     "type": "trapmaster"
   },
   {
-    "data": "afbee9ef1781010fc407000000000014dc00000000000000000000000030ffff",
+    "data": "afbee9ef1781010fc407000000000014dc00000000000000000000003030ffff",
     "type": "trap",
-    "element": "none",
+    "element": "",
     "name": "KAOS TRAP!"
   },
   {
@@ -914,13 +911,13 @@
   {
     "data": "afbee9ef1781010fc4070000000000143401000000000000000000000030ffff",
     "type": "location",
-    "element": "none",
+    "element": "",
     "name": "Midnight museum"
   },
   {
     "data": "afbee9ef1781010fc4070000000000143101000000000000000000000030ffff",
     "type": "location",
-    "element": "none",
+    "element": "",
     "name": "Mirror of mystery"
   },
   {
@@ -932,13 +929,13 @@
   {
     "data": "afbee9ef1781010fc407000000000014e700000000000000000000000030ffff",
     "type": "item",
-    "element": "none",
+    "element": "",
     "name": "Piggy bank"
   },
   {
     "data": "afbee9ef1781010fc4070000000000142e01000000000000000000000030ffff",
     "type": "location",
-    "element": "none",
+    "element": "",
     "name": "Pirate seas"
   },
   {
@@ -968,7 +965,7 @@
   {
     "data": "afbee9ef1781010fc407000000000014e800000000000000000000000030ffff",
     "type": "item",
-    "element": "none",
+    "element": "",
     "name": "Rocket ram"
   },
   {
@@ -992,7 +989,7 @@
   {
     "data": "afbee9ef1781010fc407000000000014d100000000000000000000000030ffff",
     "type": "item",
-    "element": "none",
+    "element": "",
     "name": "Scorpion striker"
   },
   {
@@ -1070,7 +1067,7 @@
   {
     "data": "afbee9ef1781010fc4070000000000143301000000000000000000000030ffff",
     "type": "location",
-    "element": "none",
+    "element": "",
     "name": "Sunscraper spire"
   },
   {
@@ -1124,7 +1121,7 @@
   {
     "data": "afbee9ef1781010fc4070000000000143001000000000000000000000030ffff",
     "type": "location",
-    "element": "none",
+    "element": "",
     "name": "Volcanic vault"
   },
   {

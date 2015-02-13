@@ -291,147 +291,147 @@
   {
     "data": "00000000c581010fc4350000000000136400000078130c8bc01d000000300c54",
     "name": "Jet-Vac",
-    "type": "giants",
+    "type": "giant",
     "element": "air"
   },
   {
     "data": "00000000c581010fc4350000000000136500000078130c8bc01d000000300c54",
     "name": "Swarm",
-    "type": "giants",
+    "type": "giant",
     "element": "air"
   },
   {
     "data": "00000000c581010fc4350000000000136600000078130c8bc01d000000300c54",
     "name": "Crusher",
-    "type": "giants",
+    "type": "giant",
     "element": "earth"
   },
   {
     "data": "00000000c581010fc4350000000000136700000078130c8bc01d000000300c54",
     "name": "Flashwing",
-    "type": "giants",
+    "type": "giant",
     "element": "earth"
   },
   {
     "data": "00000000c581010fc4350000000000136800000078130c8bc01d000000300c54",
     "name": "Hot Head",
-    "type": "giants",
+    "type": "giant",
     "element": "fire"
   },
   {
     "data": "00000000c581010fc4350000000000136900000078130c8bc01d000000300c54",
     "name": "Hot Dog",
-    "type": "giants",
+    "type": "giant",
     "element": "fire"
   },
   {
     "data": "00000000c581010fc4350000000000136a00000078130c8bc01d000000300c54",
     "name": "Chill",
-    "type": "giants",
+    "type": "giant",
     "element": "water"
   },
   {
     "data": "00000000c581010fc4350000000000136b00000078130c8bc01d000000300c54",
     "name": "Thumpback",
-    "type": "giants",
+    "type": "giant",
     "element": "water"
   },
   {
     "data": "00000000c581010fc4350000000000136c00000078130c8bc01d000000300c54",
     "name": "Pop Fizz",
-    "type": "giants",
+    "type": "giant",
     "element": "magic"
   },
   {
     "data": "00000000c581010fc4350000000000136d00000078130c8bc01d000000300c54",
     "name": "Nin Jini",
-    "type": "giants",
+    "type": "giant",
     "element": "magic"
   },
   {
     "data": "00000000c581010fc4350000000000136e00000078130c8bc01d000000300c54",
     "name": "Bouncer",
-    "type": "giants",
+    "type": "giant",
     "element": "tech"
   },
   {
     "data": "00000000c581010fc4350000000000136f00000078130c8bc01d000000300c54",
     "name": "Sprocket",
-    "type": "giants",
+    "type": "giant",
     "element": "tech"
   },
   {
     "data": "00000000c581010fc4350000000000137000000078130c8bc01d000000300c54",
     "name": "Tree Rex",
-    "type": "giants",
+    "type": "giant",
     "element": "life"
   },
   {
     "data": "00000000c581010fc4350000000000137100000078130c8bc01d000000300c54",
     "name": "Shroomboom",
-    "type": "giants",
+    "type": "giant",
     "element": "life"
   },
   {
     "data": "00000000c581010fc4350000000000137200000078130c8bc01d000000300c54",
     "name": "Eye-broawl",
-    "type": "giants",
+    "type": "giant",
     "element": "undead"
   },
   {
     "data": "00000000c581010fc4350000000000137300000078130c8bc01d000000300c54",
     "name": "Fright Rider",
-    "type": "giants",
+    "type": "giant",
     "element": "undead"
   },
   {
     "data": "00000000c581010fc435000000000013c900000078130c8bc01d000000300c54",
     "name": "Platinum Treasure Chest",
     "type": "item",
-    "element": ""
+    "element": "none"
   },
 
   {
     "data": "00000000c581010fc435000000000013c800000078130c8bc01d000000300c54",
     "name": "Anvil Rain",
     "type": "item",
-    "element": ""
+    "element": "none"
   },
   {
     "data": "00000000c581010fc435000000000013ca00000078130c8bc01d000000300c54",
     "name": "Healing Elixer",
     "type": "item",
-    "element": ""
+    "element": "none"
   },
   {
     "data": "00000000c581010fc435000000000013cb00000078130c8bc01d000000300c54",
     "name": "Ghost Pirate Swords",
     "type": "item",
-    "element": ""
+    "element": "none"
   },
   {
     "data": "00000000c581010fc435000000000013cc00000078130c8bc01d000000300c54",
     "name": "Time Twist Hourglass",
     "type": "item",
-    "element": ""
+    "element": "none"
   },
   {
     "data": "00000000c581010fc435000000000013cd00000078130c8bc01d000000300c54",
     "name": "Sky-iron Shield",
     "type": "item",
-    "element": ""
+    "element": "none"
   },
   {
     "data": "00000000c581010fc435000000000013ce00000078130c8bc01d000000300c54",
     "name": "Winged Boots",
     "type": "item",
-    "element": ""
+    "element": "none"
   },
   {
     "data": "00000000c581010fc435000000000013cf00000078130c8bc01d000000300c54",
     "name": "Sparx",
     "type": "item",
-    "element": ""
+    "element": "none"
   },
   {
     "data": "00000000c581010fc435000000000013a001000078130c8bc01d000000300c54",
@@ -551,7 +551,7 @@
   {
     "data": "dff047bad281010fc43400000000001332010000bb61ead830cb00000030ef2e",
     "name": "Nightmare Express",
-    "element": "",
+    "element": "none",
     "type": "location"
   },
   {
@@ -581,7 +581,7 @@
   {
     "data": "3f4983b84d81010fc434000000000013e900000044f751c7e14e00000030de03",
     "name": "Tiki Speaky",
-    "element": "",
+    "element": "none",
     "type": "item"
   },
   {
@@ -665,7 +665,7 @@
   {
     "data": "afbee9ef1781010fc407000000000014d000000000000000000000000030ffff",
     "type": "item",
-    "element": "",
+    "element": "none",
     "name": "Cannon"
   },
   {
@@ -706,7 +706,7 @@
   },
   {
     "data": "afbee9ef1781010fc4070000000000142f01000000000000000000000030ffff",
-    "element": "",
+    "element": "none",
     "type": "location",
     "name": "Darklight crypt"
   },
@@ -731,7 +731,7 @@
   {
     "data": "afbee9ef1781010fc4070000000000142c01000000000000000000000030ffff",
     "type": "location",
-    "element": "",
+    "element": "none",
     "name": "Dragons peak"
   },
   {
@@ -767,7 +767,7 @@
   {
     "data": "afbee9ef1781010fc4070000000000142d01000000000000000000000030ffff",
     "type": "location",
-    "element": "",
+    "element": "none",
     "name": "Empire of ice"
   },
   {
@@ -833,7 +833,7 @@
   {
     "data": "afbee9ef1781010fc407000000000014e600000000000000000000000030ffff",
     "type": "item",
-    "element": "",
+    "element": "none",
     "name": "Hand of Fate"
   },
   {
@@ -875,7 +875,7 @@
   {
     "data": "afbee9ef1781010fc407000000000014dc00000000000000000000003030ffff",
     "type": "trap",
-    "element": "",
+    "element": "none",
     "name": "KAOS TRAP!"
   },
   {
@@ -911,13 +911,13 @@
   {
     "data": "afbee9ef1781010fc4070000000000143401000000000000000000000030ffff",
     "type": "location",
-    "element": "",
+    "element": "none",
     "name": "Midnight museum"
   },
   {
     "data": "afbee9ef1781010fc4070000000000143101000000000000000000000030ffff",
     "type": "location",
-    "element": "",
+    "element": "none",
     "name": "Mirror of mystery"
   },
   {
@@ -929,13 +929,13 @@
   {
     "data": "afbee9ef1781010fc407000000000014e700000000000000000000000030ffff",
     "type": "item",
-    "element": "",
+    "element": "none",
     "name": "Piggy bank"
   },
   {
     "data": "afbee9ef1781010fc4070000000000142e01000000000000000000000030ffff",
     "type": "location",
-    "element": "",
+    "element": "none",
     "name": "Pirate seas"
   },
   {
@@ -965,7 +965,7 @@
   {
     "data": "afbee9ef1781010fc407000000000014e800000000000000000000000030ffff",
     "type": "item",
-    "element": "",
+    "element": "none",
     "name": "Rocket ram"
   },
   {
@@ -989,7 +989,7 @@
   {
     "data": "afbee9ef1781010fc407000000000014d100000000000000000000000030ffff",
     "type": "item",
-    "element": "",
+    "element": "none",
     "name": "Scorpion striker"
   },
   {
@@ -1067,7 +1067,7 @@
   {
     "data": "afbee9ef1781010fc4070000000000143301000000000000000000000030ffff",
     "type": "location",
-    "element": "",
+    "element": "none",
     "name": "Sunscraper spire"
   },
   {
@@ -1121,7 +1121,7 @@
   {
     "data": "afbee9ef1781010fc4070000000000143001000000000000000000000030ffff",
     "type": "location",
-    "element": "",
+    "element": "none",
     "name": "Volcanic vault"
   },
   {

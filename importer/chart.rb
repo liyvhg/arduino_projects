@@ -19,10 +19,9 @@ def parseJson
   end
   tokens.each do |token|
     token['name'] = token['name'].titleize
-    token['hexId'] = token['data'][34..35] + token['data'][32..33]
+    token['hexId'] = token['data'][32..35]
     token['id'] = 0x100 * token['data'][34..35].to_i(16) + token['data'][32..33].to_i(16)
-    token['variant'] = token['data'][56..57].to_i(16)
-    token['subvariant'] = token['data'][58..59].to_i(16)
+    token['variant'] = token['data'][56..59]
   end
 
   tokens.collect{|token| OpenStruct.new(token) }
@@ -30,9 +29,9 @@ end
 
 def main
   tokens = parseJson
-  tokens.sort_by!(&:name)
+  tokens.sort_by!(&:id)
   tokens.each.with_index do |token, index|
-    puts index.to_s.ljust(4) + token.element.to_s.ljust(15) + token.type.to_s.ljust(15) + token.name
+    puts token.id.to_s.ljust(6) + token.hexId.to_s.ljust(8) + token.variant.to_s.ljust(6) + token.element.to_s.ljust(15) + token.type.to_s.ljust(15) + token.name
     #puts "kTfbSpyroTag_ToyType_Character_#{token.name.gsub(' ', '')} = #{token.id},"
 
   end

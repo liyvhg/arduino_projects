@@ -9,8 +9,7 @@
 
 Adafruit_NeoPixel ring = Adafruit_NeoPixel(LED_COUNT, NEO_PIN, NEO_GRB + NEO_KHZ800);
 
-  
-int speed = 0;
+char speed = 0;
 
 void setup() {  
   ring.begin();
@@ -44,7 +43,6 @@ void loop() {
         case 'R': //Rotate
           speed = ble_read();
           break;
-
       }
     }    
   }
@@ -71,7 +69,7 @@ void rotate() {
   }
 
   unsigned long interval = 1000 / abs(speed);
-  byte direction = speed / abs(speed); //+1 or -1
+  char direction = speed / abs(speed); //+1 or -1
   unsigned long currentMillis = millis();
   if (currentMillis - previousUpdateMs >= interval) {
     previousUpdateMs = currentMillis;
@@ -82,10 +80,16 @@ void rotate() {
     for(int i = 0; i < max; i++) {      
       colors[i] = ring.getPixelColor(i);      
     }
-    
-    for(int i = 0; i < max; i++) {      
-      ring.setPixelColor(i, colors[(i + 1) % max]);
-    } 
+
+
+    for(int i = 0; i < max; i++) {     
+      ring.setPixelColor(i, colors[pmod(i + direction,max)]);
+    }
+
     ring.show();   
   }
+}
+
+inline int pmod(int i, int n) { //Module with always positive result.
+  return (i % n + n) % n;
 }

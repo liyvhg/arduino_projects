@@ -7,43 +7,85 @@
 #define NEO_PIN 9
 #define LED_COUNT 24
 
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(LED_COUNT, NEO_PIN, NEO_GRB + NEO_KHZ800);
-int R = 0;
-int G = 0;
-int B = 0;
-int brightness = 255;
+Adafruit_NeoPixel ring = Adafruit_NeoPixel(LED_COUNT, NEO_PIN, NEO_GRB + NEO_KHZ800);
+
+  
+int speed = 0;
 
 void setup() {  
-  strip.begin();
-  strip.show(); // Initialize all pixels to 'off'  
+  ring.begin();
+  ring.show(); // Initialize all pixels to 'off'  
   ble_begin();
 }
 
 void loop() {
+  int R = 0;
+  int G = 0;
+  int B = 0;
+  int index = 0;
+
   if (ble_connected()) {
-    switch(ble_available()) {
-      case 4:
-        R = ble_read();
-        G = ble_read();
-        B = ble_read();
-        brightness = ble_read();
-        break;
-      case 3:
-        R = ble_read();
-        G = ble_read();
-        B = ble_read();
-        break;
-    }
-    strip.setBrightness(brightness);
-    colorWipe( strip.Color(R, G, B) );
+    if(ble_available()) {
+      char command = ble_read();
+      switch(command) {
+        case 'O': //Set One
+          index = ble_read();
+          R = ble_read();
+          G = ble_read();
+          B = ble_read();
+          setOne(index, ring.Color(R, G, B));
+          break;
+        case 'A': //Set All                
+          R = ble_read();        
+          G = ble_read();
+          B = ble_read();
+          setAll(ring.Color(R, G, B));
+          break;
+        case 'R': //Rotate
+          speed = ble_read();
+          break;
+
+      }
+    }    
   }
+  rotate(); //Always called, may be a no-op
   ble_do_events();
 }
 
-// Fill the dots one after the other with a color
-void colorWipe(uint32_t c) {
-  for(uint16_t i=0; i<strip.numPixels(); i++) {
-      strip.setPixelColor(i, c);
-      strip.show();
+void setOne(int i, uint32_t c) {
+  ring.setPixelColor(i, c);      
+  ring.show();
+}
+
+void setAll(uint32_t c) {
+  for(int i=0; i<ring.numPixels(); i++) {
+    setOne(i, c);
+  }
+}
+
+unsigned long previousUpdateMs;
+
+void rotate() {
+  if (speed == 0) {
+    return;//Stopped
+  }
+
+  unsigned long interval = 1000 / abs(speed);
+  byte direction = speed / abs(speed); //+1 or -1
+  unsigned long currentMillis = millis();
+  if (currentMillis - previousUpdateMs >= interval) {
+    previousUpdateMs = currentMillis;
+    int max = ring.numPixels(); //pre-compute
+
+    //Save off the existing colors to prevent loss
+    uint32_t colors[LED_COUNT] = {0};
+    for(int i = 0; i < max; i++) {      
+      colors[i] = ring.getPixelColor(i);      
+    }
+    
+    for(int i = 0; i < max; i++) {      
+      ring.setPixelColor(i, colors[(i + 1) % max]);
+    } 
+    ring.show();   
   }
 }

@@ -4,16 +4,46 @@
 #include <RBL_nRF8001.h>
 #include <Adafruit_NeoPixel.h>
 
-#define NEO_PIN 9
+#define NEO_PIN 8
 #define LED_COUNT 24
 
 Adafruit_NeoPixel ring = Adafruit_NeoPixel(LED_COUNT, NEO_PIN, NEO_GRB + NEO_KHZ800);
 
-char speed = 0;
+struct RGB {
+  byte r;
+  byte g;
+  byte b;
+};
+
+struct Rotation {
+  char speed = 0; //sign indicates direction
+  byte count = 0;
+} rotation;
+
+struct Blink {
+  char speed = 0;
+  byte count = 0; //even ends on, odd ends off
+};
+
+enum RStyle {
+  roulette,
+  jump 
+};
+
+struct Random {
+  RStyle type;
+  byte endIndex;
+};
 
 void setup() {  
   ring.begin();
-  ring.show(); // Initialize all pixels to 'off'  
+  ring.setBrightness(64);
+  setOne(0, ring.Color(0xFF, 0x00, 0x00));
+  setOne(8, ring.Color(0x00, 0xFF, 0x00));
+  setOne(16, ring.Color(0x00, 0x00, 0xFF));  
+  ring.show();
+
+  ble_set_name("TeleLux");
   ble_begin();
 }
 
@@ -41,7 +71,8 @@ void loop() {
           setAll(ring.Color(R, G, B));
           break;
         case 'R': //Rotate
-          speed = ble_read();
+          rotation.speed = ble_read();
+          rotation.count = ble_read();
           break;
       }
     }    
@@ -64,15 +95,19 @@ void setAll(uint32_t c) {
 unsigned long previousUpdateMs;
 
 void rotate() {
-  if (speed == 0) {
-    return;//Stopped
+  if (rotation.speed == 0) {
+    return; //Stopped
+  }
+  if (rotation.count == 0) {
+    rotation.speed = 0;
   }
 
-  unsigned long interval = 1000 / abs(speed);
-  char direction = speed / abs(speed); //+1 or -1
+  unsigned long interval = 1000 / abs(rotation.speed);
+  char direction = rotation.speed / abs(rotation.speed); //+1 or -1
   unsigned long currentMillis = millis();
   if (currentMillis - previousUpdateMs >= interval) {
     previousUpdateMs = currentMillis;
+    rotation.count--;
     int max = ring.numPixels(); //pre-compute
 
     //Save off the existing colors to prevent loss
@@ -81,12 +116,11 @@ void rotate() {
       colors[i] = ring.getPixelColor(i);      
     }
 
-
     for(int i = 0; i < max; i++) {     
       ring.setPixelColor(i, colors[pmod(i + direction,max)]);
     }
 
-    ring.show();   
+    ring.show();
   }
 }
 

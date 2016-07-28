@@ -15,15 +15,23 @@ struct RGB {
   byte b;
 };
 
+struct Colors {
+  uint32_t off = ring.Color(0, 0, 0);
+  uint32_t white = ring.Color(0xff, 0xff, 0xff);
+} colors;
+
 struct Rotation {
+  unsigned long previousUpdateMs = 0;
   char speed = 0; //sign indicates direction
   byte count = 0;
 } rotation;
 
 struct Blink {
+  unsigned long previousUpdateMs = 0;
   char speed = 0;
-  byte count = 0; //even ends on, odd ends off
-};
+  byte count = 0xFF;
+  uint32_t saved[LED_COUNT] = {0};
+} blinky;
 
 enum RStyle {
   roulette,
@@ -74,10 +82,17 @@ void loop() {
           rotation.speed = ble_read();
           rotation.count = ble_read();
           break;
+                 
+         case 'B': //Blink
+          blinky.speed = ble_read();
+          blinky.count = 0xFF - ble_read();
+          break;
       }
     }    
   }
-  rotate(); //Always called, may be a no-op
+  //Update animations
+  rotate();
+  flash();
   ble_do_events();
 }
 
@@ -92,8 +107,6 @@ void setAll(uint32_t c) {
   }
 }
 
-unsigned long previousUpdateMs;
-
 void rotate() {
   if (rotation.speed == 0) {
     return; //Stopped
@@ -105,21 +118,63 @@ void rotate() {
   unsigned long interval = 1000 / abs(rotation.speed);
   char direction = rotation.speed / abs(rotation.speed); //+1 or -1
   unsigned long currentMillis = millis();
-  if (currentMillis - previousUpdateMs >= interval) {
-    previousUpdateMs = currentMillis;
+  if (currentMillis - rotation.previousUpdateMs >= interval) {
+    rotation.previousUpdateMs = currentMillis;
     rotation.count--;
-    int max = ring.numPixels(); //pre-compute
 
     //Save off the existing colors to prevent loss
     uint32_t colors[LED_COUNT] = {0};
-    for(int i = 0; i < max; i++) {      
+    for(int i = 0; i < LED_COUNT; i++) {      
       colors[i] = ring.getPixelColor(i);      
     }
 
-    for(int i = 0; i < max; i++) {     
-      ring.setPixelColor(i, colors[pmod(i + direction,max)]);
+    for(int i = 0; i < LED_COUNT; i++) {     
+      ring.setPixelColor(i, colors[pmod(i + direction, LED_COUNT)]);
     }
 
+    ring.show();
+  }
+}
+
+
+/*
+ * 0 = no op
+ * 1 = off
+ * 2 = off, then on
+ * 3 = off, then on, then off
+ */
+/*
+ * The speed is the amout of time in each state.  The count is 0xFF - the intended value in order to make the math work out for the final state
+ * Future improvements:
+ *  Color for alternate state
+ *  Second 'speed' for the alternate state
+ */
+void flash() {
+  if (blinky.count == 0xFF) {
+    return;
+  }
+
+  unsigned long interval = 1000 / blinky.speed;
+  unsigned long currentMillis = millis();
+  if (currentMillis - blinky.previousUpdateMs >= interval) {
+    blinky.previousUpdateMs = currentMillis;
+    
+    if (blinky.count % 2 == 0) {
+      for(int i = 0; i < LED_COUNT; i++) {     
+        ring.setPixelColor(i, blinky.saved[i]);
+      }
+    } else {  
+      //Save
+      for(int i = 0; i < LED_COUNT; i++) {      
+        blinky.saved[i] = ring.getPixelColor(i);
+      }
+      //Off
+      for(int i = 0; i < LED_COUNT; i++) {     
+        ring.setPixelColor(i, colors.off);
+      }
+    }
+
+    blinky.count++;
     ring.show();
   }
 }

@@ -23,7 +23,7 @@ struct Colors {
 struct Rotation {
   unsigned long previousUpdateMs = 0;
   char speed = 0; //sign indicates direction
-  byte count = 0;
+  byte steps = 0;
 } rotation;
 
 struct Blink {
@@ -33,17 +33,25 @@ struct Blink {
   uint32_t saved[LED_COUNT] = {0};
 } blinky;
 
-enum RStyle {
+enum AimlessStyle {
+  off,
   roulette,
-  jump 
+  jump
 };
 
-struct Random {
-  RStyle type;
-  byte endIndex;
-};
+//Because 'random' is too loaded
+struct Aimless {
+  AimlessStyle style = off;
+  unsigned long previousUpdateMs = 0;
+  char speed = 0;
+  byte count = 0;
+  uint32_t color = colors.white;
+  byte endIndex = 0;
+} aimless;
 
 void setup() {  
+  randomSeed(analogRead(0));
+
   ring.begin();
   ring.setBrightness(64);
   setOne(0, ring.Color(0xFF, 0x00, 0x00));
@@ -53,6 +61,24 @@ void setup() {
 
   ble_set_name("TeleLux");
   ble_begin();
+
+  //Testing
+  /*
+  rotation.speed = 125;
+  rotation.steps = 24;
+  */
+  
+  /*
+  blinky.speed = 2;
+  blinky.count = 0xFF - 2;
+  */
+
+  /*
+  aimless.style = roulette;
+  aimless.speed = 2;
+  aimless.count = 5;
+  aimless.endIndex = 9;
+  */
 }
 
 void loop() {
@@ -80,12 +106,33 @@ void loop() {
           break;
         case 'R': //Rotate
           rotation.speed = ble_read();
-          rotation.count = ble_read();
-          break;
-                 
-         case 'B': //Blink
+          rotation.steps = ble_read();
+          break;                 
+        case 'B': //Blink
+        case 'F': //Flash
           blinky.speed = ble_read();
-          blinky.count = 0xFF - ble_read();
+          blinky.count = 0xFF - ble_read(); //See flash function comment
+          break;
+        case 'J': //Jump
+          aimless.style = jump;
+          aimless.speed = ble_read();
+          aimless.count = ble_read();
+          aimless.endIndex = ble_read();                    
+          R = ble_read();        
+          G = ble_read();
+          B = ble_read();
+          aimless.color = ring.Color(R, G, B);
+          break;
+        case 'G': //Roulette
+          break; //NOT READY YET
+          aimless.style = roulette;                    
+          aimless.speed = ble_read();
+          aimless.count = ble_read();
+          aimless.endIndex = ble_read();                    
+          R = ble_read();        
+          G = ble_read();
+          B = ble_read();
+          aimless.color = ring.Color(R, G, B);
           break;
       }
     }    
@@ -93,6 +140,7 @@ void loop() {
   //Update animations
   rotate();
   flash();
+  aim();
   ble_do_events();
 }
 
@@ -102,16 +150,23 @@ void setOne(int i, uint32_t c) {
 }
 
 void setAll(uint32_t c) {
-  for(int i=0; i<ring.numPixels(); i++) {
-    setOne(i, c);
-  }
+  for(int i = 0; i < ring.numPixels(); i++) {    
+    ring.setPixelColor(i, c);      
+  }    
+  ring.show();
 }
+
+/*
+ * a 'step' is a single movement of the pixels.
+ * Future improvements:
+ *  a 'count' that represents x complete cycles
+ */
 
 void rotate() {
   if (rotation.speed == 0) {
     return; //Stopped
   }
-  if (rotation.count == 0) {
+  if (rotation.steps == 0) {
     rotation.speed = 0;
   }
 
@@ -120,7 +175,7 @@ void rotate() {
   unsigned long currentMillis = millis();
   if (currentMillis - rotation.previousUpdateMs >= interval) {
     rotation.previousUpdateMs = currentMillis;
-    rotation.count--;
+    
 
     //Save off the existing colors to prevent loss
     uint32_t colors[LED_COUNT] = {0};
@@ -129,9 +184,10 @@ void rotate() {
     }
 
     for(int i = 0; i < LED_COUNT; i++) {     
-      ring.setPixelColor(i, colors[pmod(i + direction, LED_COUNT)]);
+      setOne(i, colors[pmod(i + direction, LED_COUNT)]);
     }
-
+    
+    rotation.steps--;
     ring.show();
   }
 }
@@ -160,8 +216,8 @@ void flash() {
     blinky.previousUpdateMs = currentMillis;
     
     if (blinky.count % 2 == 0) {
-      for(int i = 0; i < LED_COUNT; i++) {     
-        ring.setPixelColor(i, blinky.saved[i]);
+      for(int i = 0; i < LED_COUNT; i++) {
+        setOne(i, blinky.saved[i]);
       }
     } else {  
       //Save
@@ -169,15 +225,47 @@ void flash() {
         blinky.saved[i] = ring.getPixelColor(i);
       }
       //Off
-      for(int i = 0; i < LED_COUNT; i++) {     
-        ring.setPixelColor(i, colors.off);
-      }
+      setAll(colors.off);
     }
 
     blinky.count++;
     ring.show();
   }
 }
+
+
+void aim() {
+  switch(aimless.style) {
+    case off:
+      return;
+    case roulette:
+      spinRoulette();
+    case jump:
+      jumpAround(); 
+  }  
+}
+
+
+void spinRoulette() {
+}
+
+void jumpAround() {
+  unsigned long interval = 1000 / abs(aimless.speed);
+  unsigned long currentMillis = millis();
+  if (currentMillis - aimless.previousUpdateMs >= interval) {
+    aimless.previousUpdateMs = currentMillis;    
+
+    setAll(colors.off);    
+    if (aimless.count == 1) {
+      setOne(aimless.endIndex, aimless.color);
+      aimless.style = off;
+    } else {
+      setOne(random(ring.numPixels()), aimless.color);
+    }    
+    aimless.count--;
+  }
+}
+
 
 inline int pmod(int i, int n) { //Module with always positive result.
   return (i % n + n) % n;

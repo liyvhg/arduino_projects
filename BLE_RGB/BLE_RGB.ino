@@ -9,15 +9,12 @@
 
 Adafruit_NeoPixel ring = Adafruit_NeoPixel(LED_COUNT, NEO_PIN, NEO_GRB + NEO_KHZ800);
 
-struct RGB {
-  byte r;
-  byte g;
-  byte b;
-};
-
 struct Colors {
   uint32_t off = ring.Color(0, 0, 0);
   uint32_t white = ring.Color(0xff, 0xff, 0xff);
+  uint32_t red = ring.Color(0xff, 0x00, 0x00);
+  uint32_t green = ring.Color(0x00, 0xff, 0x00);
+  uint32_t blue = ring.Color(0x00, 0x00, 0xff);
 } colors;
 
 struct Rotation {
@@ -52,9 +49,9 @@ void setup() {
 
   ring.begin();
   ring.setBrightness(64);
-  setOne(0, ring.Color(0xFF, 0x00, 0x00));
-  setOne(8, ring.Color(0x00, 0xFF, 0x00));
-  setOne(16, ring.Color(0x00, 0x00, 0xFF));  
+  setOne(0, colors.red);
+  setOne(8, colors.green);
+  setOne(16, colors.blue);  
   ring.show();
 
   ble_set_name("TeleLux");
@@ -72,8 +69,8 @@ void testing(int i) {
       rotation.steps = 240;
       break;
     case 2:
-      blinky.speed = 2;
-      blinky.count = 0xFF - 2;
+      blinky.speed = 1;
+      blinky.count = 5;
       break;
     case 3:
       aimless.style = jump;
@@ -88,28 +85,25 @@ void testing(int i) {
   }
 }
 
-void loop() {
-  int R = 0;
-  int G = 0;
-  int B = 0;
-  int index = 0;
+uint32_t readColor() {
+  int R = ble_read();
+  int G = ble_read();
+  int B = ble_read();
+  return ring.Color(R, G, B);
+}
 
+void loop() {
   if (ble_connected()) {
     if(ble_available()) {
       char command = ble_read();
       switch(command) {
         case 'O': //Set One
-          index = ble_read();
-          R = ble_read();
-          G = ble_read();
-          B = ble_read();
-          setOne(index, ring.Color(R, G, B));
+          setOne(ble_read(), readColor());
+          ring.show();
           break;
-        case 'A': //Set All                
-          R = ble_read();        
-          G = ble_read();
-          B = ble_read();
-          setAll(ring.Color(R, G, B));
+        case 'A': //Set All
+          setAll(readColor());
+          ring.show();
           break;
         case 'R': //Rotate
           rotation.speed = ble_read();
@@ -118,7 +112,7 @@ void loop() {
         case 'B': //Blink
         case 'F': //Flash
           blinky.speed = ble_read();
-          blinky.count = 0xFF - ble_read(); //See flash function comment
+          blinky.count = ble_read();
           break;
         case 'J': //Jump
           aimless.style = jump;
@@ -126,18 +120,18 @@ void loop() {
           aimless.count = ble_read();
           break;
         case 'G': //Roulette
-          break; //NOT READY YET
           aimless.style = roulette;                    
           aimless.speed = ble_read();
           break;
       }
     }    
   }
+  ble_do_events();  
   //Update animations
   if (rotate() || flash() || aim()) {
     ring.show();
   }
-  ble_do_events();
+
 }
 
 void setOne(int i, uint32_t c) {
@@ -200,7 +194,7 @@ bool rotate() {
  *  Second 'speed' for the alternate state
  */
 bool flash() {
-  if (blinky.count == 0xFF) {
+  if (blinky.count == 0) {
     return false;
   }
 
@@ -222,7 +216,7 @@ bool flash() {
       setAll(colors.off);
     }
 
-    blinky.count++;
+    blinky.count--;
     return true;
   }
   return false;

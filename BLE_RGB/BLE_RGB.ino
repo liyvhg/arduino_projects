@@ -60,22 +60,32 @@ void setup() {
   ble_set_name("TeleLux");
   ble_begin();
 
-  //Testing
-  /*
-  rotation.speed = 125;
-  rotation.steps = 24;
-  */
-  
-  /*
-  blinky.speed = 2;
-  blinky.count = 0xFF - 2;
-  */
+  testing(2);
+}
 
-  /*
-  aimless.style = jump;
-  aimless.speed = 1;
-  aimless.count = 15;
-  */
+void testing(int i) {
+  switch(i) {
+    case 0:
+      break;
+    case 1:
+      rotation.speed = 18;
+      rotation.steps = 240;
+      break;
+    case 2:
+      blinky.speed = 2;
+      blinky.count = 0xFF - 2;
+      break;
+    case 3:
+      aimless.style = jump;
+      aimless.speed = 1;
+      aimless.count = 15;
+      break;
+    case 4:       
+      aimless.style = roulette;
+      aimless.speed = 2;
+      aimless.count = 18;
+      break;
+  }
 }
 
 void loop() {
@@ -124,28 +134,31 @@ void loop() {
     }    
   }
   //Update animations
-  rotate();
-  flash();
-  aim();
+  if (rotate() || flash() || aim()) {
+    ring.show();
+  }
   ble_do_events();
 }
 
 void setOne(int i, uint32_t c) {
-  setOne(i, c, true);
-}
-
-void setOne(int i, uint32_t c, bool show) {
-  ring.setPixelColor(i, c);      
-  if (show) {
-    ring.show();
-  }
+  ring.setPixelColor(i, c);
 }
 
 void setAll(uint32_t c) {
-  for(int i = 0; i < ring.numPixels(); i++) {    
-    ring.setPixelColor(i, c);      
-  }    
-  ring.show();
+  for(int i = 0; i < ring.numPixels(); i++) {
+    setOne(i, c);
+  }
+}
+
+void shift(int n) {
+  uint32_t colors[LED_COUNT] = {0};
+  for(int i = 0; i < LED_COUNT; i++) {      
+    colors[i] = ring.getPixelColor(i);      
+  }
+
+  for(int i = 0; i < LED_COUNT; i++) {     
+    setOne(i, colors[pmod(i + n, LED_COUNT)]);
+  }
 }
 
 /*
@@ -153,10 +166,9 @@ void setAll(uint32_t c) {
  * Future improvements:
  *  a 'count' that represents x complete cycles
  */
-
-void rotate() {
+bool rotate() {
   if (rotation.speed == 0) {
-    return; //Stopped
+    return false; //Stopped
   }
   if (rotation.steps == 0) {
     rotation.speed = 0;
@@ -168,24 +180,11 @@ void rotate() {
   if (currentMillis - rotation.previousUpdateMs >= interval) {
     rotation.previousUpdateMs = currentMillis;
     
-    shift(direction);
-    
+    shift(direction);    
     rotation.steps--;
-    ring.show();
+    return true;
   }
-}
-
-
-void shift(int n) {
-  uint32_t colors[LED_COUNT] = {0};
-  for(int i = 0; i < LED_COUNT; i++) {      
-    colors[i] = ring.getPixelColor(i);      
-  }
-
-  for(int i = 0; i < LED_COUNT; i++) {     
-    setOne(i, colors[pmod(i + n, LED_COUNT)], false);
-  }
-  ring.show();
+  return false;
 }
 
 /*
@@ -200,9 +199,9 @@ void shift(int n) {
  *  Color for alternate state
  *  Second 'speed' for the alternate state
  */
-void flash() {
+bool flash() {
   if (blinky.count == 0xFF) {
-    return;
+    return false;
   }
 
   unsigned long interval = 1000 / blinky.speed;
@@ -213,7 +212,7 @@ void flash() {
     if (blinky.count % 2 == 0) {
       for(int i = 0; i < LED_COUNT; i++) {
         setOne(i, blinky.saved[i]);
-      }
+      }          
     } else {  
       //Save
       for(int i = 0; i < LED_COUNT; i++) {      
@@ -224,38 +223,60 @@ void flash() {
     }
 
     blinky.count++;
-    ring.show();
+    return true;
   }
+  return false;
 }
 
 
-void aim() {
+bool aim() {
   switch(aimless.style) {
     case off:
-      return;
+      break;
     case roulette:
-      spinRoulette();
+      return spinRoulette();
     case jump:
-      jumpAround(); 
+      return jumpAround(); 
   }  
+  return false;
+}
+
+bool spinRoulette() {
+  unsigned long interval = 1000 / abs(aimless.speed);
+  char direction = aimless.speed / abs(aimless.speed); //+1 or -1
+  unsigned long currentMillis = millis();
+  if (currentMillis - aimless.previousUpdateMs >= interval) {
+    aimless.previousUpdateMs = currentMillis;
+    shift(direction);
+    
+    if (aimless.count == 0) {
+      aimless.speed--;
+      aimless.count = aimless.speed;  
+    }
+    
+    if (aimless.speed == 0) {
+      aimless.style = off;
+    }
+    return true;
+  }
+  return false;
 }
 
 
-void spinRoulette() {
-}
-
-void jumpAround() {
+bool jumpAround() {
   unsigned long interval = 1000 / abs(aimless.speed);
   unsigned long currentMillis = millis();
   if (currentMillis - aimless.previousUpdateMs >= interval) {
     aimless.previousUpdateMs = currentMillis;
     shift(random(ring.numPixels()));
     aimless.count--;
-  }
-
-  if (aimless.count == 0) {
+ 
+    if (aimless.count == 0) {
       aimless.style = off;
+    }
+    return true;
   }
+  return false;
 }
 
 inline int pmod(int i, int n) { //Module with always positive result.

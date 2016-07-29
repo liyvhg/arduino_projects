@@ -45,8 +45,6 @@ struct Aimless {
   unsigned long previousUpdateMs = 0;
   char speed = 0;
   byte count = 0;
-  uint32_t color = colors.white;
-  byte endIndex = 0;
 } aimless;
 
 void setup() {  
@@ -74,10 +72,9 @@ void setup() {
   */
 
   /*
-  aimless.style = roulette;
-  aimless.speed = 2;
-  aimless.count = 5;
-  aimless.endIndex = 9;
+  aimless.style = jump;
+  aimless.speed = 1;
+  aimless.count = 15;
   */
 }
 
@@ -117,22 +114,11 @@ void loop() {
           aimless.style = jump;
           aimless.speed = ble_read();
           aimless.count = ble_read();
-          aimless.endIndex = ble_read();                    
-          R = ble_read();        
-          G = ble_read();
-          B = ble_read();
-          aimless.color = ring.Color(R, G, B);
           break;
         case 'G': //Roulette
           break; //NOT READY YET
           aimless.style = roulette;                    
           aimless.speed = ble_read();
-          aimless.count = ble_read();
-          aimless.endIndex = ble_read();                    
-          R = ble_read();        
-          G = ble_read();
-          B = ble_read();
-          aimless.color = ring.Color(R, G, B);
           break;
       }
     }    
@@ -145,8 +131,14 @@ void loop() {
 }
 
 void setOne(int i, uint32_t c) {
+  setOne(i, c, true);
+}
+
+void setOne(int i, uint32_t c, bool show) {
   ring.setPixelColor(i, c);      
-  ring.show();
+  if (show) {
+    ring.show();
+  }
 }
 
 void setAll(uint32_t c) {
@@ -176,22 +168,25 @@ void rotate() {
   if (currentMillis - rotation.previousUpdateMs >= interval) {
     rotation.previousUpdateMs = currentMillis;
     
-
-    //Save off the existing colors to prevent loss
-    uint32_t colors[LED_COUNT] = {0};
-    for(int i = 0; i < LED_COUNT; i++) {      
-      colors[i] = ring.getPixelColor(i);      
-    }
-
-    for(int i = 0; i < LED_COUNT; i++) {     
-      setOne(i, colors[pmod(i + direction, LED_COUNT)]);
-    }
+    shift(direction);
     
     rotation.steps--;
     ring.show();
   }
 }
 
+
+void shift(int n) {
+  uint32_t colors[LED_COUNT] = {0};
+  for(int i = 0; i < LED_COUNT; i++) {      
+    colors[i] = ring.getPixelColor(i);      
+  }
+
+  for(int i = 0; i < LED_COUNT; i++) {     
+    setOne(i, colors[pmod(i + n, LED_COUNT)], false);
+  }
+  ring.show();
+}
 
 /*
  * 0 = no op
@@ -253,19 +248,15 @@ void jumpAround() {
   unsigned long interval = 1000 / abs(aimless.speed);
   unsigned long currentMillis = millis();
   if (currentMillis - aimless.previousUpdateMs >= interval) {
-    aimless.previousUpdateMs = currentMillis;    
-
-    setAll(colors.off);    
-    if (aimless.count == 1) {
-      setOne(aimless.endIndex, aimless.color);
-      aimless.style = off;
-    } else {
-      setOne(random(ring.numPixels()), aimless.color);
-    }    
+    aimless.previousUpdateMs = currentMillis;
+    shift(random(ring.numPixels()));
     aimless.count--;
   }
-}
 
+  if (aimless.count == 0) {
+      aimless.style = off;
+  }
+}
 
 inline int pmod(int i, int n) { //Module with always positive result.
   return (i % n + n) % n;
